@@ -73,6 +73,37 @@ def run_campaign_on_db(adapter, adapter_name: str, cases: List, run_id: str) -> 
     executor = Executor(adapter, precond, oracles)
     triage = Triage()
 
+    # SETUP PHASE: Create test collection for dependent operations
+    print(f"  [{adapter_name}] SETUP: Creating test collection...")
+    setup_request = {
+        "operation": "create_collection",
+        "params": {
+            "collection_name": "diff_test",
+            "dimension": 128,
+            "metric_type": "L2"
+        }
+    }
+    setup_result = adapter.execute(setup_request)
+    if setup_result.get("status") == "success":
+        print(f"  [{adapter_name}] SETUP: Test collection created")
+    else:
+        print(f"  [{adapter_name}] SETUP WARNING: {setup_result.get('error', 'Unknown error')}")
+
+    # SETUP PHASE: Insert test data
+    print(f"  [{adapter_name}] SETUP: Inserting test data...")
+    insert_request = {
+        "operation": "insert",
+        "params": {
+            "collection_name": "diff_test",
+            "vectors": [[0.1] * 128, [0.2] * 128, [0.3] * 128]
+        }
+    }
+    insert_result = adapter.execute(insert_request)
+    if insert_result.get("status") == "success":
+        print(f"  [{adapter_name}] SETUP: Test data inserted")
+    else:
+        print(f"  [{adapter_name}] SETUP WARNING: Insert failed - {insert_result.get('error', 'Unknown error')[:80]}")
+
     # Execute cases
     results = []
     for case in cases:
@@ -175,10 +206,23 @@ def main():
     # Run on Milvus
     if not args.skip_milvus:
         try:
-            milvus_adapter = MilvusAdapter(
-                api_endpoint=args.milvus_endpoint,
-                collection="diff_test"
-            )
+            # Parse Milvus endpoint (expected format: http://host:port or host:port)
+            endpoint = args.milvus_endpoint
+            if "://" in endpoint:
+                endpoint = endpoint.split("://")[-1]
+            if ":" in endpoint:
+                host, port = endpoint.split(":")
+                port = int(port)
+            else:
+                host = endpoint
+                port = 19530
+
+            # Milvus adapter expects connection_config dict
+            milvus_adapter = MilvusAdapter({
+                "host": host,
+                "port": port,
+                "alias": "default"
+            })
             if milvus_adapter.health_check():
                 campaign_results["milvus"] = run_campaign_on_db(
                     milvus_adapter, "milvus", cases, run_id
