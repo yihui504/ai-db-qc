@@ -2,12 +2,19 @@
 
 This adapter provides a thin parameter mapping layer to reuse existing
 test case families with seekdb's AI-native search capabilities.
+
+Uses MySQL-compatible SQL protocol (NOT REST API).
+SQL Dialect Features:
+- Vector columns: VECTOR(N)
+- Vector literals: '[x, y, z]'
+- Distance function: l2_distance(vector, query)
+- Vector search: SELECT ... ORDER BY l2_distance(...) LIMIT k
 """
 
 from __future__ import annotations
 
-import requests
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+import pymysql
 
 from adapters.base import AdapterBase
 
@@ -19,40 +26,66 @@ class SeekDBAdapter(AdapterBase):
     Reuses: existing triage, oracles, evidence pipeline.
 
     Architecture:
-    - Maps generic operations to seekdb REST API
+    - Maps generic operations to seekdb SQL queries
     - Thin parameter mapping layer for Milvus-shaped parameters
-    - Handles hybrid, vector, and keyword search transparently
+    - Handles vector, filtered search via SQL
     """
 
     def __init__(
         self,
         api_endpoint: str,
         api_key: str,
-        collection: str = "default",
-        timeout: int = 30
+        collection: str = "test_collection",
+        timeout: int = 30,
+        user: str = "root",
+        password: str = "",
+        database: str = "test"
     ):
         """Initialize seekdb adapter.
 
         Args:
-            api_endpoint: seekdb API endpoint (e.g., "https://api.seekdb.ai")
-            api_key: seekdb API key for authentication
-            collection: Default collection name
-            timeout: Request timeout in seconds
+            api_endpoint: seekdb host (e.g., "127.0.0.1:2881" or "127.0.0.1")
+            api_key: Not used for SQL connection (kept for API compatibility)
+            collection: Default collection (table) name
+            timeout: Query timeout in seconds
+            user: MySQL username
+            password: MySQL password
+            database: MySQL database name
         """
-        self.api_endpoint = api_endpoint.rstrip("/")
-        self.api_key = api_key
+        # Parse host and port from api_endpoint
+        if ":" in api_endpoint:
+            self.host, self.port = api_endpoint.split(":")
+            self.port = int(self.port)
+        else:
+            self.host = api_endpoint
+            self.port = 2881  # Default seekdb SQL port
+
+        self.api_key = api_key  # Not used for SQL, kept for compatibility
         self.collection = collection
         self.timeout = timeout
-        self.session = requests.Session()
-        self.session.headers.update({
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        })
+        self.user = user
+        self.password = password
+        self.database = database
+        self.conn: Optional[pymysql.connections.Connection] = None
+
+    def _get_connection(self) -> pymysql.connections.Connection:
+        """Get or create MySQL connection."""
+        if self.conn is None or not self.conn.open:
+            self.conn = pymysql.connect(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+                charset='utf8mb4',
+                cursorclass=pymysql.cursors.DictCursor
+            )
+        return self.conn
 
     def execute(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Execute request against seekdb.
 
-        Maps generic operations to seekdb API calls with parameter mapping.
+        Maps generic operations to seekdb SQL queries with parameter mapping.
 
         Args:
             request: Dict with keys:
@@ -86,8 +119,8 @@ class SeekDBAdapter(AdapterBase):
                 return self._load_index(params)
             else:
                 return self._error(f"Unknown operation: {operation}")
-        except requests.RequestException as e:
-            return self._error(f"Network error: {e}")
+        except pymysql.Error as e:
+            return self._error(f"Database error: {e}")
         except Exception as e:
             return self._error(f"Unexpected error: {e}")
 
@@ -105,23 +138,22 @@ class SeekDBAdapter(AdapterBase):
         }
 
         try:
-            response = self.session.get(
-                f"{self.api_endpoint}/collections",
-                timeout=5
-            )
-            if response.status_code == 200:
-                data = response.json()
-                snapshot["collections"] = data.get("collections", [])
-                snapshot["indexed_collections"] = [
-                    c for c in snapshot["collections"]
-                    if data.get("indexes", {}).get(c, False)
-                ]
-                snapshot["loaded_collections"] = [
-                    c for c in snapshot["collections"]
-                    if data.get("loaded", {}).get(c, False)
-                ]
-                snapshot["connected"] = True
-        except Exception:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            # Get all tables (collections)
+            cursor.execute("SHOW TABLES")
+            tables = cursor.fetchall()
+            snapshot["collections"] = [t[list(t.keys())[0]] for t in tables]
+
+            # For S1, assume all tables are indexed and loaded
+            # In S2, we can query actual index status
+            snapshot["indexed_collections"] = snapshot["collections"].copy()
+            snapshot["loaded_collections"] = snapshot["collections"].copy()
+            snapshot["connected"] = True
+
+            cursor.close()
+        except Exception as e:
             snapshot["connected"] = False
 
         return snapshot
@@ -129,321 +161,318 @@ class SeekDBAdapter(AdapterBase):
     def health_check(self) -> bool:
         """Check if seekdb is accessible."""
         try:
-            response = self.session.get(
-                f"{self.api_endpoint}/health",
-                timeout=5
-            )
-            return response.status_code == 200
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+            cursor.close()
+            return True
         except Exception:
             return False
 
-    # Private operation methods with parameter mapping
+    # Private operation methods with SQL mapping
 
     def _search(self, params: Dict) -> Dict[str, Any]:
         """Execute vector search operation.
 
         Parameter mapping:
-        - collection_name → collection
-        - vector → vector
-        - top_k → limit
+        - collection_name → table name
+        - vector → query vector for l2_distance()
+        - top_k → LIMIT
+
+        SQL: SELECT id, l2_distance(embedding, '[...]') AS distance
+             FROM table ORDER BY distance LIMIT k
         """
         collection_name = params.get("collection_name", self.collection)
         vector = params.get("vector", [])
         top_k = params.get("top_k", 10)
 
-        payload = {
-            "collection": collection_name,
-            "vector": vector,
-            "limit": top_k
+        if not vector:
+            return self._error("Empty vector")
+
+        # Convert vector to seekdb literal format '[x, y, z]'
+        vector_literal = self._vector_to_literal(vector)
+
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        # Build SQL query - assumes embedding column exists
+        sql = f"""
+            SELECT id, l2_distance(embedding, %s) AS distance
+            FROM {collection_name}
+            ORDER BY distance
+            LIMIT %s
+        """
+
+        cursor.execute(sql, (vector_literal, top_k))
+        results = cursor.fetchall()
+        cursor.close()
+
+        # Normalize to standard format
+        normalized = [
+            {"id": r["id"], "score": float(r["distance"])}
+            for r in results
+        ]
+
+        return {
+            "status": "success",
+            "operation": "search",
+            "data": normalized
         }
-
-        response = self.session.post(
-            f"{self.api_endpoint}/search/vector",
-            json=payload,
-            timeout=self.timeout
-        )
-
-        if response.status_code == 200:
-            data = response.json()
-            # Normalize to standard format
-            results = [
-                {"id": r.get("id"), "score": r.get("score", 0.0)}
-                for r in data.get("results", [])
-            ]
-            return {
-                "status": "success",
-                "operation": "search",
-                "data": results
-            }
-        else:
-            return self._error_from_response(response)
 
     def _filtered_search(self, params: Dict) -> Dict[str, Any]:
         """Execute filtered search operation.
 
         Parameter mapping:
-        - collection_name → collection
-        - vector → vector
-        - top_k → limit
-        - filter → filter_expression
+        - collection_name → table name
+        - vector → query vector
+        - top_k → LIMIT
+        - filter → WHERE clause
+
+        SQL: SELECT id, l2_distance(embedding, '[...]') AS distance
+             FROM table WHERE filter ORDER BY distance LIMIT k
         """
         collection_name = params.get("collection_name", self.collection)
         vector = params.get("vector", [])
         top_k = params.get("top_k", 10)
         filter_expr = params.get("filter", "")
 
-        payload = {
-            "collection": collection_name,
-            "vector": vector,
-            "limit": top_k,
-            "filter_expression": filter_expr
+        if not vector:
+            return self._error("Empty vector")
+
+        vector_literal = self._vector_to_literal(vector)
+
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        # Build SQL with WHERE clause if filter provided
+        where_clause = f"WHERE {filter_expr}" if filter_expr else ""
+        sql = f"""
+            SELECT id, l2_distance(embedding, %s) AS distance
+            FROM {collection_name}
+            {where_clause}
+            ORDER BY distance
+            LIMIT %s
+        """
+
+        cursor.execute(sql, (vector_literal, top_k))
+        results = cursor.fetchall()
+        cursor.close()
+
+        normalized = [
+            {"id": r["id"], "score": float(r["distance"])}
+            for r in results
+        ]
+
+        return {
+            "status": "success",
+            "operation": "filtered_search",
+            "data": normalized
         }
-
-        response = self.session.post(
-            f"{self.api_endpoint}/search/filtered",
-            json=payload,
-            timeout=self.timeout
-        )
-
-        if response.status_code == 200:
-            data = response.json()
-            results = [
-                {"id": r.get("id"), "score": r.get("score", 0.0)}
-                for r in data.get("results", [])
-            ]
-            return {
-                "status": "success",
-                "operation": "filtered_search",
-                "data": results
-            }
-        else:
-            return self._error_from_response(response)
 
     def _hybrid_search(self, params: Dict) -> Dict[str, Any]:
-        """Execute hybrid search (vector + keyword).
+        """Execute hybrid search (vector + text).
+
+        For S1, hybrid search falls back to vector search.
+        In S2, this can be extended with text search capabilities.
 
         Parameter mapping:
-        - collection_name → collection
-        - vector → vector
-        - top_k → limit
-        - query_text (optional) → query_text
+        - collection_name → table name
+        - vector → query vector
+        - top_k → LIMIT
+        - query_text → (ignored in S1)
         """
-        collection_name = params.get("collection_name", self.collection)
-        vector = params.get("vector", [])
-        top_k = params.get("top_k", 10)
-        query_text = params.get("query_text", "")
-
-        payload = {
-            "collection": collection_name,
-            "vector": vector,
-            "query": query_text,
-            "limit": top_k
-        }
-
-        response = self.session.post(
-            f"{self.api_endpoint}/search/hybrid",
-            json=payload,
-            timeout=self.timeout
-        )
-
-        if response.status_code == 200:
-            data = response.json()
-            results = [
-                {"id": r.get("id"), "score": r.get("score", 0.0)}
-                for r in data.get("results", [])
-            ]
-            return {
-                "status": "success",
-                "operation": "hybrid_search",
-                "data": results
-            }
-        else:
-            return self._error_from_response(response)
+        # S1: Hybrid search is just vector search
+        return self._search(params)
 
     def _insert(self, params: Dict) -> Dict[str, Any]:
-        """Insert documents.
+        """Insert documents with vectors.
 
         Parameter mapping:
-        - collection_name → collection
-        - vectors → documents (with vector field)
+        - collection_name → table name
+        - vectors → list of vectors to insert
+
+        SQL: INSERT INTO table (id, embedding) VALUES (1, '[...]'), (2, '[...]')
         """
         collection_name = params.get("collection_name", self.collection)
         vectors = params.get("vectors", [])
 
-        # Map vectors to documents
-        documents = [
-            {"id": i, "vector": vec}
-            for i, vec in enumerate(vectors)
-        ]
+        if not vectors:
+            return self._error("No vectors provided")
 
-        payload = {
-            "collection": collection_name,
-            "documents": documents
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        # Insert each vector with auto-incrementing id
+        # Start from max(id) + 1 or 0 if table is empty
+        cursor.execute(f"SELECT COALESCE(MAX(id), -1) + 1 AS next_id FROM {collection_name}")
+        result = cursor.fetchone()
+        next_id = result["next_id"] if result else 0
+
+        inserted_ids = []
+        for i, vec in enumerate(vectors):
+            vec_literal = self._vector_to_literal(vec)
+            cursor.execute(
+                f"INSERT INTO {collection_name} (id, embedding) VALUES (%s, %s)",
+                (next_id + i, vec_literal)
+            )
+            inserted_ids.append(next_id + i)
+
+        conn.commit()
+        cursor.close()
+
+        return {
+            "status": "success",
+            "operation": "insert",
+            "insert_count": len(vectors),
+            "data": [{"id": id} for id in inserted_ids]
         }
 
-        response = self.session.post(
-            f"{self.api_endpoint}/documents",
-            json=payload,
-            timeout=self.timeout
-        )
-
-        if response.status_code in [200, 201]:
-            data = response.json()
-            return {
-                "status": "success",
-                "operation": "insert",
-                "insert_count": data.get("inserted_count", len(documents)),
-                "data": documents
-            }
-        else:
-            return self._error_from_response(response)
-
     def _delete(self, params: Dict) -> Dict[str, Any]:
-        """Delete documents.
+        """Delete documents by ID.
 
         Parameter mapping:
-        - collection_name → collection
-        - ids → ids
+        - collection_name → table name
+        - ids → list of IDs to delete
+
+        SQL: DELETE FROM table WHERE id IN (...)
         """
         collection_name = params.get("collection_name", self.collection)
         ids = params.get("ids", [])
 
-        payload = {
-            "collection": collection_name,
-            "ids": ids
-        }
+        if not ids:
+            return self._error("No IDs provided")
 
-        response = self.session.delete(
-            f"{self.api_endpoint}/documents",
-            json=payload,
-            timeout=self.timeout
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        placeholders = ",".join(["%s"] * len(ids))
+        cursor.execute(
+            f"DELETE FROM {collection_name} WHERE id IN ({placeholders})",
+            ids
         )
 
-        if response.status_code == 200:
-            return {
-                "status": "success",
-                "operation": "delete",
-                "data": {"deleted": len(ids)}
-            }
-        else:
-            return self._error_from_response(response)
+        conn.commit()
+        deleted_count = cursor.rowcount
+        cursor.close()
+
+        return {
+            "status": "success",
+            "operation": "delete",
+            "data": {"deleted": deleted_count}
+        }
 
     def _create_collection(self, params: Dict) -> Dict[str, Any]:
-        """Create collection.
+        """Create collection (table).
 
         Parameter mapping:
-        - collection_name → name
-        - dimension → dimension
-        - metric_type → metric_type
+        - collection_name → table name
+        - dimension → VECTOR(N) size
+        - metric_type → (ignored in S1, seekdb uses L2 by default)
+
+        SQL: CREATE TABLE table (id INT PRIMARY KEY, embedding VECTOR(N))
         """
         collection_name = params.get("collection_name")
-        dimension = params.get("dimension", 1536)
+        dimension = params.get("dimension", 128)
         metric_type = params.get("metric_type", "L2")
 
-        payload = {
-            "name": collection_name,
-            "dimension": dimension,
-            "metric_type": metric_type
+        if not collection_name:
+            return self._error("collection_name required")
+
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        # Create table with vector column
+        # Note: metric_type is ignored in S1 - seekdb defaults to L2
+        cursor.execute(f"""
+            CREATE TABLE {collection_name} (
+                id INT PRIMARY KEY,
+                embedding VECTOR({dimension})
+            )
+        """)
+
+        conn.commit()
+        cursor.close()
+
+        return {
+            "status": "success",
+            "operation": "create_collection",
+            "collection_name": collection_name,
+            "data": [{"id": collection_name}]
         }
 
-        response = self.session.put(
-            f"{self.api_endpoint}/collections",
-            json=payload,
-            timeout=self.timeout
-        )
-
-        if response.status_code in [200, 201]:
-            return {
-                "status": "success",
-                "operation": "create_collection",
-                "collection_name": collection_name,
-                "data": [{"id": collection_name}]
-            }
-        else:
-            return self._error_from_response(response)
-
     def _drop_collection(self, params: Dict) -> Dict[str, Any]:
-        """Drop collection.
+        """Drop collection (table).
 
         Parameter mapping:
-        - collection_name → name
+        - collection_name → table name
+
+        SQL: DROP TABLE table
         """
         collection_name = params.get("collection_name")
 
-        response = self.session.delete(
-            f"{self.api_endpoint}/collections/{collection_name}",
-            timeout=self.timeout
-        )
+        if not collection_name:
+            return self._error("collection_name required")
 
-        if response.status_code == 200:
-            return {
-                "status": "success",
-                "operation": "drop_collection",
-                "data": []
-            }
-        else:
-            return self._error_from_response(response)
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(f"DROP TABLE IF EXISTS {collection_name}")
+        conn.commit()
+        cursor.close()
+
+        return {
+            "status": "success",
+            "operation": "drop_collection",
+            "data": []
+        }
 
     def _build_index(self, params: Dict) -> Dict[str, Any]:
         """Build index.
 
+        For S1, this is a no-op since seekdb handles indexing automatically.
+        In S2, this can call explicit index building if needed.
+
         Parameter mapping:
-        - collection_name → collection
-        - index_type → index_type
+        - collection_name → table name
+        - index_type → (ignored in S1)
         """
         collection_name = params.get("collection_name", self.collection)
-        index_type = params.get("index_type", "IVF_FLAT")
 
-        payload = {
-            "collection": collection_name,
-            "index_type": index_type
+        # S1: No-op - seekdb handles indexing automatically
+        return {
+            "status": "success",
+            "operation": "build_index",
+            "collection_name": collection_name,
+            "data": []
         }
-
-        response = self.session.post(
-            f"{self.api_endpoint}/indexes",
-            json=payload,
-            timeout=self.timeout
-        )
-
-        if response.status_code in [200, 201]:
-            return {
-                "status": "success",
-                "operation": "build_index",
-                "collection_name": collection_name,
-                "data": []
-            }
-        else:
-            return self._error_from_response(response)
 
     def _load_index(self, params: Dict) -> Dict[str, Any]:
         """Load index.
 
+        For S1, this is a no-op since seekdb handles index loading automatically.
+        In S2, this can call explicit index loading if needed.
+
         Parameter mapping:
-        - collection_name → collection
+        - collection_name → table name
         """
         collection_name = params.get("collection_name", self.collection)
 
-        payload = {
-            "collection": collection_name
+        # S1: No-op - seekdb handles index loading automatically
+        return {
+            "status": "success",
+            "operation": "load_index",
+            "collection_name": collection_name,
+            "data": []
         }
 
-        response = self.session.post(
-            f"{self.api_endpoint}/indexes/load",
-            json=payload,
-            timeout=self.timeout
-        )
+    # Helper methods
 
-        if response.status_code == 200:
-            return {
-                "status": "success",
-                "operation": "load_index",
-                "collection_name": collection_name,
-                "data": []
-            }
-        else:
-            return self._error_from_response(response)
+    def _vector_to_literal(self, vector: List[float]) -> str:
+        """Convert vector list to seekdb vector literal.
 
-    # Error handling helpers
+        Example: [0.1, 0.2, 0.3] -> '[0.1, 0.2, 0.3]'
+        """
+        return "[" + ", ".join(str(v) for v in vector) + "]"
 
     def _error(self, message: str) -> Dict[str, Any]:
         """Build error response."""
@@ -451,25 +480,4 @@ class SeekDBAdapter(AdapterBase):
             "status": "error",
             "error": message,
             "operation": "unknown"
-        }
-
-    def _error_from_response(self, response) -> Dict[str, Any]:
-        """Build error response from HTTP response.
-
-        Extracts error message for triage classification.
-        """
-        try:
-            error_data = response.json()
-            error_msg = error_data.get(
-                "message",
-                error_data.get("error", f"HTTP {response.status_code}")
-            )
-        except Exception:
-            error_msg = f"HTTP {response.status_code}: {response.text[:200]}"
-
-        return {
-            "status": "error",
-            "error": error_msg,
-            "operation": "unknown",
-            "status_code": response.status_code
         }

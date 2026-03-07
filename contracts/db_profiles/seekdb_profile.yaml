@@ -1,6 +1,7 @@
 # Minimal profile for seekdb AI-native database
 profile_name: seekdb_minimal
-profile_version: "1.0.0"
+db_type: seekdb
+db_version: "1.0"
 description: Minimal profile for seekdb AI-native database
 
 # Reuse existing core contract operations

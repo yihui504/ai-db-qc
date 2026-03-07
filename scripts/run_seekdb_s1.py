@@ -271,13 +271,13 @@ def main():
     print()
     print("Criteria:")
     print("  1. Connection: seekdb adapter executes operations successfully")
-    print(f"     ✓ PASS: Executed {len(results)} cases")
+    print(f"     [OK] PASS: Executed {len(results)} cases")
     print()
     print("  2. Coverage: Existing oracles work on seekdb results")
     if args.no_oracle:
         print("     - SKIP: Oracle execution disabled")
     else:
-        print(f"     ✓ PASS: {len(oracles)} oracles executed")
+        print(f"     [OK] PASS: {len(oracles)} oracles executed")
     print()
     print("  3. Bug Yield: ≥1 high-quality issue-ready bug OR ≥2 cross-database differential cases")
 
@@ -291,12 +291,12 @@ def main():
 
     print(f"     Bugs found: {high_quality_bugs}")
     if high_quality_bugs >= 1:
-        print("     ✓ PASS: Met bug yield criteria (≥1 bug)")
+        print("     [OK] PASS: Met bug yield criteria (≥1 bug)")
     else:
-        print("     ⚠ INFO: Bug yield below threshold")
+        print("     [WARN] INFO: Bug yield below threshold")
     print()
     print("  4. Stability: No crashes, clean evidence output")
-    print(f"     ✓ PASS: Evidence written to {run_dir}")
+    print(f"     [OK] PASS: Evidence written to {run_dir}")
     print()
 
     # Overall assessment
@@ -308,7 +308,7 @@ def main():
 
     print("=== Overall S1 Assessment ===")
     if success:
-        print("✓ Stage S1 SUCCESS criteria met")
+        print("[OK] Stage S1 SUCCESS criteria met")
         print()
         print("Next steps:")
         print("  1. Review bug evidence in:", run_dir)
@@ -316,7 +316,7 @@ def main():
         print("  3. If S2 warranted: Plan seekdb-specific semantic extension")
         print("  4. Otherwise: Debug and retry S1")
     else:
-        print("⚠ Stage S1 needs attention before proceeding to S2")
+        print("[WARN] Stage S1 needs attention before proceeding to S2")
         print()
         print("Recommended actions:")
         print("  1. Review connection configuration")
