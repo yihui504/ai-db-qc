@@ -1,0 +1,86 @@
+# Experimental strengthening test cases for ablation demonstration
+# Focus: Triage effect (diagnostic quality variation)
+
+templates:
+  # ========================================
+  # Good diagnostic cases (should be non-bug in diagnostic mode)
+  # ========================================
+  - template_id: "diag-good-dim"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1]]"  # 1-dim vector for default collection
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+    rationale: "Error should mention 'dimension' or 'vector size' (good diagnostic)"
+
+  - template_id: "diag-good-topk"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "[0.1, 0.2, 0.3]"
+      top_k: 0  # Invalid: top_k must be >= 1
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Error should mention 'top_k' or 'greater than 0' (good diagnostic)"
+
+  - template_id: "diag-good-metric"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: 128
+      metric_type: "INVALID_METRIC"  # Invalid metric type
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Error should mention 'metric_type' or list valid metrics (good diagnostic)"
+
+  # ========================================
+  # Poor diagnostic cases (should be Type-2 in both modes)
+  # ========================================
+  - template_id: "diag-poor-generic"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "INVALID"  # Invalid vector format
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+    rationale: "Generic error like 'invalid parameter' without specifying which (poor diagnostic)"
+
+  - template_id: "diag-poor-vague"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "WRONG_DIM"  # Wrong dimension vector
+      top_k: 10
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Vague error like 'operation failed' without root cause (poor diagnostic)"
+
+  # ========================================
+  # Edge cases to test triage sensitivity
+  # ========================================
+  - template_id: "diag-edge-empty"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[]"  # Empty vector list
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+    rationale: "Error about empty vectors - may or may not be specific"
+
+  - template_id: "diag-edge-null"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "null"
+      top_k: 10
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Error about null query vector - diagnostic quality depends on error message"

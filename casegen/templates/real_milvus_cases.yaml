@@ -1,0 +1,123 @@
+# Real Milvus test cases for Phase 4 validation
+
+cases:
+  # Category: legal + precondition-pass
+  - case_id: "real-001"
+    operation: "create_collection"
+    params:
+      collection_name: "test_collection"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: []
+    oracle_refs: []
+
+  - case_id: "real-002"
+    operation: "insert"
+    params:
+      collection_name: "test_collection"
+      vectors: [[0.1] * 128, [0.2] * 128, [0.3] * 128]
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]
+
+  - case_id: "real-003"
+    operation: "build_index"
+    params:
+      collection_name: "test_collection"
+      index_type: "IVF_FLAT"
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "min_data_count"]
+    oracle_refs: []
+
+  - case_id: "real-004"
+    operation: "load"
+    params:
+      collection_name: "test_collection"
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "index_built"]
+    oracle_refs: []
+
+  # Category: illegal
+  - case_id: "real-005"
+    operation: "create_collection"
+    params:
+      collection_name: "test_collection"
+      dimension: -1
+      metric_type: "L2"
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+
+  - case_id: "real-006"
+    operation: "search"
+    params:
+      collection_name: "test_collection"
+      vector: [0.1] * 64  # Wrong dimension
+      top_k: 10
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+
+  - case_id: "real-007"
+    operation: "insert"
+    params:
+      collection_name: "test_collection"
+      vectors: "not_a_vector"  # Invalid data type
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+
+  # Category: legal syntax but precondition-fail
+  - case_id: "real-008"
+    operation: "insert"
+    params:
+      collection_name: "nonexistent_collection"
+      vectors: [[0.1] * 128]
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]  # Will fail at runtime
+    oracle_refs: []
+
+  - case_id: "real-009"
+    operation: "search"
+    params:
+      collection_name: "test_collection"
+      vector: [0.1] * 128
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["index_built", "index_loaded"]  # Will fail if no index
+    oracle_refs: []
+
+  # Category: oracle-evaluable legal cases
+  - case_id: "real-010-unfiltered"
+    operation: "search"
+    params:
+      collection_name: "test_collection"
+      vector: [0.1] * 128
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "index_built", "index_loaded"]
+    oracle_refs: []
+    pair_with: "real-010-filtered"
+
+  - case_id: "real-010-filtered"
+    operation: "filtered_search"
+    params:
+      collection_name: "test_collection"
+      vector: [0.1] * 128
+      top_k: 10
+      filter: "id > 0"
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "index_built", "index_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "real-010-unfiltered"
+
+  - case_id: "real-011"
+    operation: "insert"
+    params:
+      collection_name: "test_collection"
+      vectors: [[0.4] * 128, [0.5] * 128]
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]

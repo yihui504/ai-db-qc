@@ -1,0 +1,104 @@
+[
+  {
+    "case_id": "test-001",
+    "run_id": "phase5-baseline_real-20260307-183035",
+    "bug_type": "type-3",
+    "operation": "create_collection",
+    "params": {
+      "collection_name": "test_collection",
+      "dimension": 128,
+      "metric_type": "L2"
+    },
+    "expected_validity": "legal",
+    "precondition_pass": true,
+    "observed_outcome": "failure",
+    "error_message": "<PrimaryKeyException: (code=1, message=Schema must have a primary key field.)>",
+    "interpretation": "Legal input failed: Legal operation failed (precondition satisfied)"
+  },
+  {
+    "case_id": "test-002",
+    "run_id": "phase5-baseline_real-20260307-183035",
+    "bug_type": "type-2.precondition_failed",
+    "operation": "insert",
+    "params": {
+      "collection_name": "test_collection",
+      "vectors": [
+        [
+          0.1,
+          0.2,
+          0.3
+        ]
+      ]
+    },
+    "expected_validity": "legal",
+    "precondition_pass": false,
+    "observed_outcome": "failure",
+    "error_message": "<SchemaNotReadyException: (code=1, message=Collection 'test_collection' not exist, or you can pass in schema to create one.)>",
+    "interpretation": "Expected failure (precondition not met): Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "test-003",
+    "run_id": "phase5-baseline_real-20260307-183035",
+    "bug_type": "type-2",
+    "operation": "create_collection",
+    "params": {
+      "collection_name": "test_collection",
+      "dimension": -1,
+      "metric_type": "L2"
+    },
+    "expected_validity": "illegal",
+    "precondition_pass": true,
+    "observed_outcome": "failure",
+    "error_message": "<PrimaryKeyException: (code=1, message=Schema must have a primary key field.)>",
+    "interpretation": "Illegal input rejected, lacks diagnostic: Illegal operation with poor diagnostic"
+  },
+  {
+    "case_id": "test-003",
+    "run_id": "phase5-baseline_mock-20260307-183121",
+    "bug_type": "type-1",
+    "operation": "create_collection",
+    "params": {
+      "collection_name": "test_collection",
+      "dimension": -1,
+      "metric_type": "L2"
+    },
+    "expected_validity": "illegal",
+    "precondition_pass": true,
+    "observed_outcome": "success",
+    "error_message": null,
+    "interpretation": "Illegal input accepted: Illegal operation succeeded"
+  },
+  {
+    "case_id": "test-001",
+    "run_id": "phase5-baseline_mock-20260307-183121",
+    "bug_type": "non-bug",
+    "operation": "create_collection",
+    "params": {
+      "collection_name": "test_collection",
+      "dimension": 128,
+      "metric_type": "L2"
+    },
+    "expected_validity": "legal",
+    "precondition_pass": true,
+    "observed_outcome": "success",
+    "error_message": null,
+    "interpretation": "Expected behavior - operation succeeded as designed"
+  },
+  {
+    "case_id": "synthetic-type4-001",
+    "run_id": "synthetic",
+    "bug_type": "type-4",
+    "operation": "search",
+    "params": {
+      "collection_name": "test_collection",
+      "query_vector": "[0.1, 0.2, 0.3]",
+      "top_k": 10
+    },
+    "expected_validity": "legal",
+    "precondition_pass": true,
+    "observed_outcome": "success",
+    "error_message": "",
+    "interpretation": "Semantic oracle violation: Top-K=10 returned only 5 results without explanation",
+    "note": "SYNTHETIC EXAMPLE - Type-4 requires oracle-visible violations not present in current test set"
+  }
+]

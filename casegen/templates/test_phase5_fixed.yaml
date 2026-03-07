@@ -1,0 +1,47 @@
+# Phase 5 test templates - Fixed for Milvus compatibility
+# These templates match Milvus's actual requirements (primary key field required)
+
+templates:
+  # Type-1 candidate: Illegal input that might succeed (mock only)
+  - template_id: "test-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: -1  # Illegal: negative dimension
+      metric_type: "L2"
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+
+  # Type-2.PF candidate: Legal syntax, precondition fail
+  - template_id: "test-002"
+    operation: "insert"
+    param_template:
+      collection_name: "nonexistent_collection"
+      vectors: [[0.1, 0.2, 0.3]]
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+
+  # Non-bug: Legal input with clear validation error
+  # (Mock might accept this, real Milvus requires primary key)
+  - template_id: "test-003"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: []
+    oracle_refs: []
+
+  # Type-2.PF candidate: Another precondition fail case
+  - template_id: "test-004"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: [0.1, 0.2, 0.3]
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]

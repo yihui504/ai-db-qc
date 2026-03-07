@@ -1,0 +1,100 @@
+# Milvus 2.3.x database profile
+profile_name: milvus-2.3
+db_type: milvus
+db_version: "2.3.x"
+description: Milvus 2.3.x database profile
+
+# Supported operations
+supported_operations:
+  - create_collection
+  - drop_collection
+  - insert
+  - delete
+  - build_index
+  - load_index
+  - search
+  - filtered_search
+  - hybrid_search
+
+# Operation mappings (core op -> Milvus API)
+operation_mappings:
+  create_collection:
+    core_operation: create_collection
+    db_operation: create_collection
+    api_endpoint: /collections
+    parameter_mapping:
+      collection_name: collection_name
+      dimension: dimension
+      metric_type: metric_type
+
+  drop_collection:
+    core_operation: drop_collection
+    db_operation: drop_collection
+    api_endpoint: /collections/{collection_name}
+
+  insert:
+    core_operation: insert
+    db_operation: insert
+    api_endpoint: /collections/{collection_name}/entities
+    parameter_mapping:
+      collection_name: collection_name
+      vectors: data
+
+  delete:
+    core_operation: delete
+    db_operation: delete
+    api_endpoint: /collections/{collection_name}/entities
+
+  build_index:
+    core_operation: build_index
+    db_operation: create_index
+    api_endpoint: /collections/{collection_name}/index
+
+  load_index:
+    core_operation: load_index
+    db_operation: load
+    api_endpoint: /collections/{collection_name}/load
+
+  search:
+    core_operation: search
+    db_operation: search
+    api_endpoint: /collections/{collection_name}/search
+    parameter_mapping:
+      collection_name: collection_name
+      vector: data
+      top_k: top_k
+
+  filtered_search:
+    core_operation: filtered_search
+    db_operation: search
+    api_endpoint: /collections/{collection_name}/search
+    parameter_mapping:
+      filter: expr
+
+  hybrid_search:
+    core_operation: hybrid_search
+    db_operation: hybrid_search
+    api_endpoint: /collections/{collection_name}/hybrid_search
+
+# Parameter relaxations (override core constraints)
+parameter_relaxations:
+  search:
+    top_k:
+      max_value: 16384  # Milvus allows larger top_k
+      min_value: 1
+
+# Supported features
+supported_features:
+  - IVF_FLAT
+  - IVF_SQ8
+  - HNSW
+  - SCALAR_INDEX
+  - FILTERED_SEARCH
+  - HYBRID_SEARCH
+  - BULK_OPERATIONS
+
+# Environment requirements
+environment_requirements:
+  service: milvus-standalone or milvus-cluster
+  min_memory: 4GB
+  min_disk: 10GB

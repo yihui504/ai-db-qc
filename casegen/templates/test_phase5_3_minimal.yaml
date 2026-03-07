@@ -1,0 +1,113 @@
+# Phase 5.3 minimal test set for ablation demonstration
+# Focused on demonstrating framework component effects
+
+templates:
+  # ========================================
+  # Type-1: Mock accepts illegal input
+  # ========================================
+  - template_id: "type1-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_bad"
+      dimension: -1
+      metric_type: "L2"
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Mock may accept (Type-1), real rejects with Type-2"
+
+  # ========================================
+  # Type-2: Illegal input rejected with POOR diagnostic
+  # ========================================
+  - template_id: "type2-001"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: -5
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Error should mention 'top_k' for good diagnostic (Type-2 if not mentioned)"
+
+  # ========================================
+  # Type-2: Illegal input rejected with GOOD diagnostic
+  # ========================================
+  - template_id: "type2-good-001"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1]]"  # Wrong dimension for 128-dim collection
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+    rationale: "Error mentions dimension mismatch - good diagnostic (non-bug)"
+
+  # ========================================
+  # Type-2.PF: Legal syntax, precondition fail
+  # ========================================
+  - template_id: "type2pf-001"
+    operation: "search"
+    param_template:
+      collection_name: "nonexistent_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Precondition fail - collection doesn't exist (Type-2.PF, filtered by gate)"
+
+  # ========================================
+  # Type-3: Legal input, precondition pass, execution fail
+  # ========================================
+  - template_id: "type3-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Legal input but fails (Type-3 - real Milvus requires primary key)"
+
+  # ========================================
+  # Type-4: Oracle violation (filter strictness)
+  # ========================================
+  - template_id: "type4-001"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "type4-001-unfiltered"
+    rationale: "Filter strictness oracle checks if unfiltered returns >= filtered"
+
+  - template_id: "type4-001-unfiltered"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "type4-001"
+    rationale: "Unfiltered search for Type-4 filter strictness comparison"
+
+  # ========================================
+  # Non-bug: Expected success
+  # ========================================
+  - template_id: "nonbug-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "success_collection"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Should succeed with proper implementation (non-bug)"

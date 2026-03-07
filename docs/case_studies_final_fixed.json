@@ -1,0 +1,46 @@
+[
+  {
+    "run_id": "phase5-baseline_mock-20260307-183121",
+    "case_id": "test-003",
+    "operation": "create_collection",
+    "expected_validity": "illegal",
+    "precondition_pass": true,
+    "observed_outcome": "success",
+    "bug_type": "type-1",
+    "evidence_files": "phase5-baseline_mock-20260307-183121/",
+    "interpretation": "Illegal input accepted: Illegal operation succeeded"
+  },
+  {
+    "run_id": "phase5-baseline_real-20260307-183035",
+    "case_id": "test-003",
+    "operation": "create_collection",
+    "expected_validity": "illegal",
+    "precondition_pass": true,
+    "observed_outcome": "failure",
+    "bug_type": "type-2",
+    "evidence_files": "phase5-baseline_real-20260307-183035/",
+    "interpretation": "Illegal input rejected (poor diagnostic): Illegal operation with poor diagnostic"
+  },
+  {
+    "run_id": "phase5-baseline_mock-20260307-183121",
+    "case_id": "test-002",
+    "operation": "insert",
+    "expected_validity": "legal",
+    "precondition_pass": false,
+    "observed_outcome": "success",
+    "bug_type": "type-2.precondition_failed",
+    "evidence_files": "phase5-baseline_mock-20260307-183121/",
+    "interpretation": "Precondition violation: Contract-valid but precondition-fail"
+  },
+  {
+    "run_id": "phase5-baseline_real-20260307-183035",
+    "case_id": "test-001",
+    "operation": "create_collection",
+    "expected_validity": "legal",
+    "precondition_pass": true,
+    "observed_outcome": "failure",
+    "bug_type": "type-3",
+    "evidence_files": "phase5-baseline_real-20260307-183035/",
+    "interpretation": "Legal input failed (runtime error): Legal operation failed (precondition satisfied)"
+  }
+]

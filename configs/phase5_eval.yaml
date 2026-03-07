@@ -1,0 +1,14 @@
+# configs/phase5_eval.yaml
+# Phase 5 evaluation configuration
+
+# Case template to use
+case_template: "casegen/templates/real_milvus_cases.yaml"
+
+# Default collection name for cases
+collection_name: "test_collection"
+
+# Output directory
+output_dir: "runs"
+
+# Phase 5 identifier
+phase: "5"

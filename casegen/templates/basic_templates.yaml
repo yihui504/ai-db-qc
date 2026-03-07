@@ -1,0 +1,141 @@
+# Basic case templates for Phase 1
+templates:
+  # ===== VALID CASES (3) =====
+
+  - template_id: tmpl-valid-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_collection_{id}"
+      dimension: 128
+      metric_type: "L2"
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Basic valid collection creation with standard parameters"
+
+  - template_id: tmpl-valid-002
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{vectors}"
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs:
+      - write_read_consistency
+    rationale: "Valid insert into existing collection"
+
+  - template_id: tmpl-valid-003
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: "{k}"
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+    oracle_refs:
+      - topk_monotonicity
+    rationale: "Valid search with all preconditions satisfied"
+
+  # ===== INVALID PARAMETER CASES (4) =====
+
+  - template_id: tmpl-invalid-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_collection_{id}"
+      dimension: 0
+      metric_type: "L2"
+    validity_category: invalid
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Invalid collection creation with zero dimension (min_value=1)"
+
+  - template_id: tmpl-invalid-002
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: -1
+    validity_category: invalid
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+    oracle_refs: []
+    rationale: "Invalid search with negative top_k parameter (min_value=1)"
+
+  - template_id: tmpl-invalid-003
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{vectors}"  # Wrong dimension expected
+    validity_category: invalid
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: []
+    rationale: "Invalid insert with dimension mismatch"
+
+  - template_id: tmpl-invalid-004
+    operation: create_collection
+    param_template:
+      collection_name: "test_collection_{id}"
+      dimension: 128
+      metric_type: "INVALID_METRIC"
+    validity_category: invalid
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Invalid metric type outside allowed values [L2, IP, COSINE]"
+
+  # ===== PSEUDO-VALID / PRECONDITION-SENSITIVE CASES (3) =====
+
+  - template_id: tmpl-pseudo-001
+    operation: search
+    param_template:
+      collection_name: "nonexistent_collection"
+      vector: "{query_vector}"
+      top_k: "{k}"
+    validity_category: pseudo_valid
+    expected_validity: legal  # Contract-valid but precondition-fail
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+    oracle_refs: []
+    rationale: "Contract-valid search on non-existent collection (precondition-fail)"
+
+  - template_id: tmpl-pseudo-002
+    operation: search
+    param_template:
+      collection_name: "{collection}"  # Exists but index not loaded
+      vector: "{query_vector}"
+      top_k: "{k}"
+    validity_category: pseudo_valid
+    expected_validity: legal  # Contract-valid but precondition-fail
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+    oracle_refs: []
+    rationale: "Contract-valid search before index load (precondition-fail)"
+
+  - template_id: tmpl-pseudo-003
+    operation: insert
+    param_template:
+      collection_name: "nonexistent_collection"
+      vectors: "{vectors}"
+    validity_category: pseudo_valid
+    expected_validity: legal  # Contract-valid but precondition-fail
+    required_preconditions:
+      - collection_exists
+    oracle_refs: []
+    rationale: "Contract-valid insert into non-existent collection (precondition-fail)"

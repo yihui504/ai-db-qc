@@ -1,0 +1,199 @@
+# Phase 5.3 comprehensive test case set for demonstrating ablation effects
+# Each test case is designed to exercise specific framework components
+
+templates:
+  # ========================================
+  # Type-1: Illegal input that succeeds (mock only, real should reject)
+  # ========================================
+  - template_id: "type1-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_negative_dim"
+      dimension: -1  # Illegal: negative dimension
+      metric_type: "L2"
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Mock may accept this; real Milvus should reject with Type-2"
+
+  # ========================================
+  # Type-2: Illegal input rejected with poor diagnostic
+  # ========================================
+  - template_id: "type2-001"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: -5  # Illegal: negative top_k
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Should reject but error should mention 'top_k' for good diagnostic"
+
+  # ========================================
+  # Type-2.PF: Legal syntax, precondition fail
+  # ========================================
+  - template_id: "type2pf-001"
+    operation: "search"
+    param_template:
+      collection_name: "nonexistent_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    rationale: "Precondition fail - collection doesn't exist"
+
+  - template_id: "type2pf-002"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1, 0.2, 0.3]]"
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Precondition fail - collection not created yet"
+
+  # ========================================
+  # Type-3: Legal input, precondition pass, execution fail
+  # ========================================
+  - template_id: "type3-001"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1, 0.2, 0.3]]"  # 3-dim vector
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Should fail if collection was created with different dimension"
+    # Setup: This requires creating collection with different dimension first
+
+  # ========================================
+  # Type-4: Legal input, precondition pass, succeeds but oracle violation
+  # ========================================
+  - template_id: "type4-001"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "type4-001-unfiltered"
+    rationale: "Top-K=10 should return 10 results. Filter strictness oracle checks if filter actually filters"
+
+  - template_id: "type4-001-unfiltered"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+      filter: "id >= 0"  # Should match all results
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "type4-001"
+    rationale: "Unfiltered search for filter strictness comparison"
+
+  # ========================================
+  # Type-4: Write-read consistency violation
+  # ========================================
+  - template_id: "type4-002"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1, 0.2, 0.3]]"
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Oracle should verify written data can be read back"
+
+  # ========================================
+  # Non-bug: Expected behavior with clear diagnostics
+  # ========================================
+  - template_id: "nonbug-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Completely legal input - should succeed with proper setup"
+
+  - template_id: "nonbug-002"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    rationale: "Legal search request - should succeed with proper setup"
+
+  # ========================================
+  # Gate effect demonstration: Same operation, different precondition states
+  # ========================================
+  - template_id: "gate-001-no-precond"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: []  # No preconditions - should always pass
+    oracle_refs: []
+    rationale: "No preconditions - gate has no effect"
+
+  - template_id: "gate-001-with-precond"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]  # Has preconditions
+    oracle_refs: []
+    rationale: "Has preconditions - gate will filter if collection not loaded"
+
+  # ========================================
+  # Oracle effect demonstration: Cases that trigger oracle violations
+  # ========================================
+  - template_id: "oracle-001"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 5
+      filter: "invalid_field > 0"  # Invalid filter - should be caught
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    rationale: "Invalid filter - oracle should detect violation"
+
+  # ========================================
+  # Triage effect demonstration: Poor vs good diagnostics
+  # ========================================
+  - template_id: "triage-001"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1]]"  # 1-dim vector
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []
+    rationale: "Wrong dimension - error should mention dimension mismatch (good diagnostic)"
+
+  - template_id: "triage-002"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      query_vector: "[0.1, 0.2, 0.3]"
+      top_k: 999999  # Unreasonably large
+    expected_validity: "illegal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: []
+    rationale: "Unreasonable top_k - should give clear error (good diagnostic) or generic error (poor)"

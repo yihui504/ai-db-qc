@@ -1,0 +1,157 @@
+# Default core contract (database-agnostic)
+contract_name: ai_db_core_v1
+contract_version: "1.0.0"
+description: Core AI database contract
+
+operations:
+  create_collection:
+    operation_type: create_collection
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      dimension:
+        name: dimension
+        type: int
+        required: true
+        min_value: 1
+      metric_type:
+        name: metric_type
+        type: str
+        required: false
+        allowed_values: ["L2", "IP", "COSINE"]
+    required_preconditions: []
+
+  drop_collection:
+    operation_type: drop_collection
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+    required_preconditions:
+      - collection_exists
+
+  insert:
+    operation_type: insert
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      vectors:
+        name: vectors
+        type: list
+        required: true
+    required_preconditions:
+      - collection_exists
+
+  delete:
+    operation_type: delete
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      ids:
+        name: ids
+        type: list
+        required: true
+    required_preconditions:
+      - collection_exists
+
+  build_index:
+    operation_type: build_index
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      index_type:
+        name: index_type
+        type: str
+        required: false
+    required_preconditions:
+      - collection_exists
+      - min_data_count
+
+  load_index:
+    operation_type: load_index
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+    required_preconditions:
+      - collection_exists
+      - index_built
+
+  search:
+    operation_type: search
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      vector:
+        name: vector
+        type: list
+        required: true
+      top_k:
+        name: top_k
+        type: int
+        required: true
+        min_value: 1
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+
+  filtered_search:
+    operation_type: filtered_search
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      vector:
+        name: vector
+        type: list
+        required: true
+      top_k:
+        name: top_k
+        type: int
+        required: true
+        min_value: 1
+      filter:
+        name: filter
+        type: str
+        required: true
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+      - supported_features
+
+  hybrid_search:
+    operation_type: hybrid_search
+    parameters:
+      collection_name:
+        name: collection_name
+        type: str
+        required: true
+      vector:
+        name: vector
+        type: list
+        required: true
+      top_k:
+        name: top_k
+        type: int
+        required: true
+        min_value: 1
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+      - supported_features

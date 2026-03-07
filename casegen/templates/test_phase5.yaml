@@ -1,0 +1,43 @@
+# Simple test templates for Phase 5 evaluation runner testing
+
+templates:
+  # Category: legal + precondition-pass
+  - template_id: "test-001"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: "legal"
+    required_preconditions: []
+    oracle_refs: []
+
+  - template_id: "test-002"
+    operation: "insert"
+    param_template:
+      collection_name: "{collection}"
+      vectors: [[0.1, 0.2, 0.3]]
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]
+
+  # Category: illegal
+  - template_id: "test-003"
+    operation: "create_collection"
+    param_template:
+      collection_name: "test_collection"
+      dimension: -1
+      metric_type: "L2"
+    expected_validity: "illegal"
+    required_preconditions: []
+    oracle_refs: []
+
+  # Category: legal syntax but precondition-fail
+  - template_id: "test-004"
+    operation: "insert"
+    param_template:
+      collection_name: "nonexistent_collection"
+      vectors: [[0.1, 0.2, 0.3]]
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: []

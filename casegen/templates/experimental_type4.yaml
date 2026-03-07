@@ -1,0 +1,73 @@
+# Experimental strengthening test cases for Type-4 demonstration
+# Focus: Oracle-detected semantic violations
+
+templates:
+  # ========================================
+  # Type-4: Filter strictness violation
+  # Prerequisite: Mock adapter with paired execution support
+  # ========================================
+  - template_id: "type4-filter-unfiltered"
+    operation: "filtered_search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+      filter: ""  # Empty filter = unfiltered
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "type4-filter-filtered"
+    rationale: "Unfiltered search - should return 10 results (or as many as exist)"
+
+  - template_id: "type4-filter-filtered"
+    operation: "filtered_search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+      filter: "id >= 9999"  # Impossible condition - should return 0 results
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["filter_strictness"]
+    pair_with: "type4-filter-unfiltered"
+    rationale: "Filtered search with impossible filter - should return 0 results"
+
+  # ========================================
+  # Type-4: Write-read consistency violation
+  # ========================================
+  - template_id: "type4-write-read"
+    operation: "insert"
+    param_template:
+      collection_name: "test_collection"
+      vectors: "[[0.1, 0.2, 0.3]]"
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists"]
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Insert operation - oracle should verify data can be read back"
+
+  # ========================================
+  # Type-4: Top-K monotonicity violation
+  # ========================================
+  - template_id: "type4-monotonic-5"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "[0.1, 0.2, 0.3]"
+      top_k: 5
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["monotonicity"]
+    pair_with: "type4-monotonic-10"
+    rationale: "Top-K=5 search - should return 5 results"
+
+  - template_id: "type4-monotonic-10"
+    operation: "search"
+    param_template:
+      collection_name: "test_collection"
+      vector: "[0.1, 0.2, 0.3]"
+      top_k: 10
+    expected_validity: "legal"
+    required_preconditions: ["collection_exists", "collection_loaded"]
+    oracle_refs: ["monotonicity"]
+    pair_with: "type4-monotonic-5"
+    rationale: "Top-K=10 search - should return >= 5 results (monotonicity: K10 >= K5)"
