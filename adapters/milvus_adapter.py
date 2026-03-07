@@ -137,7 +137,7 @@ class MilvusAdapter(AdapterBase):
 
         # Define schema with proper DataType enums
         fields = [
-            FieldSchema(name="id", dtype=DataType.INT64),
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True),
             FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dimension)
         ]
         schema = CollectionSchema(fields, f"Auto generated schema for {collection_name}")

@@ -156,6 +156,7 @@ def main():
     parser.add_argument("--skip-milvus", action="store_true")
     parser.add_argument("--skip-seekdb", action="store_true")
     parser.add_argument("--output-dir", default="runs")
+    parser.add_argument("--templates", default="casegen/templates/differential_shared_pack.yaml", help="Template file to use")
 
     args = parser.parse_args()
 
@@ -169,8 +170,8 @@ def main():
     print()
 
     # Load shared case pack
-    print("Loading shared case pack...")
-    templates = load_templates("casegen/templates/differential_shared_pack.yaml")
+    print(f"Loading templates from {args.templates}...")
+    templates = load_templates(args.templates)
     print(f"Loaded {len(templates)} templates")
 
     # Instantiate

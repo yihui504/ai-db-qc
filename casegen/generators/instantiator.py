@@ -12,7 +12,7 @@ from schemas.common import OperationType, InputValidity
 
 def load_templates(path: str | Path) -> List[Dict[str, Any]]:
     """Load templates from YAML file."""
-    data = yaml.safe_load(Path(path).read_text())
+    data = yaml.safe_load(Path(path).read_text(encoding='utf-8'))
     return data.get("templates", [])
 
 
