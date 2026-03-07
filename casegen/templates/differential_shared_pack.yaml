@@ -1,0 +1,352 @@
+# Shared case pack for Milvus-vs-seekdb differential campaign
+# 30 cases total: 10 per bucket
+# All cases run on BOTH databases with identical parameters
+
+templates:
+  # ===== BUCKET 1: PARAMETER BOUNDARY / CONSTRAINTS (10 cases) =====
+
+  - template_id: diff-boundary-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_boundary_{id}"
+      dimension: 0
+      metric_type: "L2"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Zero dimension - should be rejected"
+
+  - template_id: diff-boundary-002
+    operation: create_collection
+    param_template:
+      collection_name: "test_boundary_{id}"
+      dimension: -1
+      metric_type: "L2"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Negative dimension - should be rejected"
+
+  - template_id: diff-boundary-003
+    operation: create_collection
+    param_template:
+      collection_name: "test_boundary_{id}"
+      dimension: 99999
+      metric_type: "L2"
+    validity_category: valid
+    expected_validity: legal
+    bucket: parameter_boundary
+    rationale: "Very large dimension - edge case"
+
+  - template_id: diff-boundary-004
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 0
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Zero top_k - should be rejected"
+
+  - template_id: diff-boundary-005
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: -1
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Negative top_k - should be rejected"
+
+  - template_id: diff-boundary-006
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 1000000
+    validity_category: valid
+    expected_validity: legal
+    bucket: parameter_boundary
+    rationale: "Very large top_k - may have different limits"
+
+  - template_id: diff-boundary-007
+    operation: create_collection
+    param_template:
+      collection_name: "test_boundary_{id}"
+      dimension: 128
+      metric_type: "INVALID_METRIC"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Invalid metric type - should be rejected"
+
+  - template_id: diff-boundary-008
+    operation: create_collection
+    param_template:
+      collection_name: "test_boundary_{id}"
+      dimension: 128
+      metric_type: ""
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Empty metric type - should be rejected"
+
+  - template_id: diff-boundary-009
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: []
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Empty vector list - should be rejected"
+
+  - template_id: diff-boundary-010
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{wrong_dim_vectors}"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: parameter_boundary
+    rationale: "Dimension mismatch - should be rejected"
+
+  # ===== BUCKET 2: DIAGNOSTIC QUALITY (10 cases) =====
+
+  - template_id: diff-diag-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_diag_{id}"
+      dimension: 0
+      metric_type: "L2"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for invalid dimension"
+
+  - template_id: diff-diag-002
+    operation: create_collection
+    param_template:
+      collection_name: "test_diag_{id}"
+      dimension: 128
+      metric_type: "BOGUS_METRIC"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for invalid metric"
+
+  - template_id: diff-diag-003
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: -5
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for negative top_k"
+
+  - template_id: diff-diag-004
+    operation: search
+    param_template:
+      collection_name: "nonexistent_collection"
+      vector: "{query_vector}"
+      top_k: 10
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for non-existent collection"
+
+  - template_id: diff-diag-005
+    operation: insert
+    param_template:
+      collection_name: "nonexistent_collection"
+      vectors: "{vectors}"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for insert into non-existent collection"
+
+  - template_id: diff-diag-006
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{wrong_dim_vectors}"
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for dimension mismatch"
+
+  - template_id: diff-diag-007
+    operation: delete
+    param_template:
+      collection_name: "{collection}"
+      ids: []
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for empty delete list"
+
+  - template_id: diff-diag-008
+    operation: delete
+    param_template:
+      collection_name: "nonexistent_collection"
+      ids: [1, 2, 3]
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for delete from non-existent collection"
+
+  - template_id: diff-diag-009
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: []
+      top_k: 10
+    validity_category: invalid
+    expected_validity: illegal
+    bucket: diagnostic_quality
+    rationale: "Test diagnostic for empty query vector"
+
+  - template_id: diff-diag-010
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{vectors}"
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: diagnostic_quality
+    rationale: "Valid insert - test success message"
+
+  # ===== BUCKET 3: PRECONDITION / STATE HANDLING (10 cases) =====
+
+  - template_id: diff-precond-001
+    operation: search
+    param_template:
+      collection_name: "nonexistent_collection"
+      vector: "{query_vector}"
+      top_k: 10
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Search on non-existent collection"
+
+  - template_id: diff-precond-002
+    operation: insert
+    param_template:
+      collection_name: "nonexistent_collection"
+      vectors: "{vectors}"
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Insert into non-existent collection"
+
+  - template_id: diff-precond-003
+    operation: delete
+    param_template:
+      collection_name: "nonexistent_collection"
+      ids: [1, 2, 3]
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Delete from non-existent collection"
+
+  - template_id: diff-precond-004
+    operation: search
+    param_template:
+      collection_name: "{empty_collection}"
+      vector: "{query_vector}"
+      top_k: 10
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Search on empty collection"
+
+  - template_id: diff-precond-005
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 10
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+    bucket: precondition_state
+    rationale: "Search before index load"
+
+  - template_id: diff-precond-006
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{vectors}"
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Insert with schema variation"
+
+  - template_id: diff-precond-007
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 10
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - index_built
+      - index_loaded
+    bucket: precondition_state
+    rationale: "Valid search - baseline"
+
+  - template_id: diff-precond-008
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{vectors}"
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Valid insert - baseline"
+
+  - template_id: diff-precond-009
+    operation: create_collection
+    param_template:
+      collection_name: "test_precond_{id}"
+      dimension: 128
+      metric_type: "L2"
+    validity_category: valid
+    expected_validity: legal
+    required_preconditions: []
+    bucket: precondition_state
+    rationale: "Valid collection creation - baseline"
+
+  - template_id: diff-precond-010
+    operation: drop_collection
+    param_template:
+      collection_name: "nonexistent_collection"
+    validity_category: pseudo_valid
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    bucket: precondition_state
+    rationale: "Drop non-existent collection"
