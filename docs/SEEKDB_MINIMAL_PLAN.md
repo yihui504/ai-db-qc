@@ -21,7 +21,7 @@
 
 1. **Connection**: seekdb adapter successfully executes operations
 2. **Coverage**: Existing pipeline (triage, oracles) runs on seekdb
-3. **Bug Yield**: At least **3 real bug candidates** OR **meaningful differential results** vs Milvus/Qdrant
+3. **Bug Yield**: At least **1 high-quality issue-ready real bug candidate** OR **at least 2 taxonomy-consistent, cross-database differential cases with clear evidence**
 4. **Stability**: No crashes, clean evidence output
 
 **If success criteria not met**: Re-evaluate approach before proceeding to S2.
@@ -282,10 +282,12 @@ max_batch_size: 100
 - `WriteReadConsistency` (works with any insert/delete)
 - `Monotonicity` (works with any top_k search)
 
-**No new test templates in S1**—reuse existing:
+**No new test templates in S1**—reuse existing case families with minimal parameter mapping:
 - `basic_templates.yaml` (generic cases)
 - `real_milvus_cases.yaml` (parameter boundaries)
 - `test_phase5_comprehensive.yaml` (diagnostic variation)
+
+**Template reuse approach**: Reuse existing case families, with a thin parameter mapping layer where needed. Don't force Milvus-shaped parameters directly onto seekdb if they're incompatible—the adapter handles the mapping.
 
 #### 4. High-Yield Case Families (S1 Focus)
 
@@ -437,7 +439,7 @@ def run_seekdb_s1():
 
 1. ✅ **Connection**: seekdb adapter executes operations successfully
 2. ✅ **Coverage**: All existing oracles work on seekdb results
-3. ✅ **Bug Yield**: ≥ 3 real bug candidates OR meaningful differential vs Milvus
+3. ✅ **Bug Yield**: ≥ 1 high-quality issue-ready real bug candidate OR ≥ 2 taxonomy-consistent, cross-database differential cases with clear evidence
 4. ✅ **Evidence Quality**: Clean triage reports, consistent with taxonomy
 
 **If S1 fails**: Debug and retry before considering S2.
@@ -515,14 +517,14 @@ Detects:
 
 1. **Create minimal adapter**: `adapters/seekdb_adapter.py`
 2. **Create minimal profile**: `contracts/db_profiles/seekdb_profile.yaml`
-3. **Test with mock endpoint**: Verify adapter works
+3. **Connect to real seekdb instance**: Verify adapter works against real seekdb
 4. **Run S1 campaign**: Reuse existing templates and oracles
 5. **Evaluate success criteria**: Decide whether S2 is warranted
 
 ### Decision Point
 
 **After S1 completes, decide**:
-- ✅ **S2 warranted**: If ≥3 bugs found OR meaningful differential results
+- ✅ **S2 warranted**: If ≥1 high-quality issue-ready bug OR ≥2 taxonomy-consistent cross-database differential cases
 - ❌ **S2 postponed**: If S1 shows seekdb integration is too complex
 - ❌ **S2 redesigned**: If S1 reveals different high-yield opportunities
 

@@ -1,0 +1,45 @@
+# Minimal profile for seekdb AI-native database
+profile_name: seekdb_minimal
+profile_version: "1.0.0"
+description: Minimal profile for seekdb AI-native database
+
+# Reuse existing core contract operations
+# No seekdb-specific operation definitions needed for S1
+supported_operations:
+  - search
+  - filtered_search
+  - hybrid_search
+  - insert
+  - delete
+  - create_collection
+  - drop_collection
+  - build_index
+  - load_index
+
+# seekdb-specific capabilities
+capabilities:
+  hybrid_search: true
+  multi_model: true
+  filtering: true
+  vector_search: true
+  keyword_search: true
+
+# Basic configuration
+default_top_k: 10
+default_dimension: 1536  # Common embedding dimension (OpenAI ada-002)
+max_batch_size: 100
+default_metric_type: "L2"
+
+# Parameter mapping hints for thin mapping layer
+# These guide the adapter's parameter mapping from Milvus-shaped to seekdb
+parameter_mapping:
+  # search operations
+  collection_name: "collection"
+  vector: "vector"
+  top_k: "limit"
+  filter: "filter_expression"
+  query_text: "query"
+  # collection operations
+  dimension: "dimension"
+  metric_type: "metric_type"
+  index_type: "index_type"
