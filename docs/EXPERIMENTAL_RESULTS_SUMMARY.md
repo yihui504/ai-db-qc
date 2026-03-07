@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document summarizes the results of the experimental strengthening phase (v0.6-experimental-strengthening) designed to demonstrate ablation effects for the AI-DB-QC prototype.
+This document summarizes the results of a **targeted experimental strengthening phase** designed to add differentiation signals to the AI-DB-QC prototype. These are **experimental demonstrations**, not large-scale benchmark results.
 
 ## Baseline (v0.5.0-phase5-baseline)
 
@@ -10,6 +10,14 @@ The baseline had flat ablation results:
 - **Gate effect**: 2 vs 2 (no differentiation)
 - **Triage effect**: 1 vs 1 (no differentiation)
 - **Type-4**: 0 real cases, 1 synthetic example
+
+## Important Limitations
+
+**These are targeted experimental demonstrations, not production-grade benchmarks:**
+- Uses MockAdapter for controlled testing, not real database behavior
+- Small test case sets (7 triage cases, 5 Type-4 cases)
+- Semi-synthetic examples designed to demonstrate oracle functionality
+- Not yet validated on large-scale real database deployments
 
 ## Experimental Improvements
 
@@ -89,15 +97,40 @@ The filter_strictness oracle correctly detected that the mock adapter violates f
 
 ## Comparison to Baseline
 
-| Goal | Baseline | Experimental |
-|------|----------|--------------|
-| Triage Effect | Flat (1 vs 1) | **Differentiated** (6 vs 7) |
-| Type-4 Coverage | 0 real, 1 synthetic | **2 oracle-detected** |
+| Goal | Baseline | Experimental | Notes |
+|------|----------|--------------|-------|
+| Triage Effect | Flat (1 vs 1) | **Differentiated** (6 vs 7) | Targeted mock-based demonstration |
+| Type-4 Coverage | 0 real, 1 synthetic | **2 oracle-detected** | Semi-synthetic (mock adapter) |
 
-## Next Steps
+## What Was Improved
 
-1. **Generate comparison tables** with new experimental runs
-2. **Update case studies** with Type-4 examples
+**Triage Differentiation:**
+- Added diagnostic quality variation test cases
+- Demonstrated that diagnostic-aware triage reduces false positives when error messages have good diagnostic information
+- 1 case (`diag-good-metric`) correctly excluded due to good diagnostics
+
+**Type-4 Detection:**
+- Added oracle-based Type-4 detection framework
+- Demonstrated filter_strictness oracle detecting semantic violations
+- 2 cases correctly classified as Type-4 (oracle-detected)
+
+## Important Caveats
+
+**Not yet demonstrated:**
+- Large-scale validation on real databases
+- Statistical significance of the differentiation signal
+- Generalizability beyond the controlled test cases
+
+**These results should be described as:**
+- "Targeted experimental strengthening"
+- "Additional differentiation signal in experimental setup"
+- "Oracle-detected Type-4 examples using MockAdapter"
+- "Proof-of-concept for ablation demonstration"
+
+**NOT as:**
+- "Fully validated experimental results"
+- "Production-grade benchmarks"
+- "Complete experimental proof"
 3. **Update completion report** with experimental results
 4. **Prepare for paper drafting** with strengthened experimental package
 
