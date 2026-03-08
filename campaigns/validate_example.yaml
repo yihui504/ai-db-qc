@@ -1,0 +1,8 @@
+name: "Example Validation"
+databases:
+  - type: milvus
+    host: localhost
+    port: 19530
+case_pack: packs/example_pack.json
+contract:
+  profile: contracts/db_profiles/milvus_profile.yaml

@@ -1,9 +1,12 @@
 """Execution result schema."""
 
 from pydantic import BaseModel, Field
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, TYPE_CHECKING
 
 from schemas.common import ObservedOutcome, GateTrace
+
+if TYPE_CHECKING:
+    from schemas.triage import TriageResult
 
 
 class OracleResult(BaseModel):
@@ -32,6 +35,7 @@ class ExecutionResult(BaseModel):
     gate_trace: List[GateTrace] = Field(default_factory=list)
     oracle_results: List[OracleResult] = Field(default_factory=list)
     snapshot_id: str = Field(default="", description="Runtime snapshot ID for this execution")
+    triage_result: Optional["TriageResult"] = Field(default=None, description="Triage classification result")
 
     @property
     def observed_success(self) -> bool:

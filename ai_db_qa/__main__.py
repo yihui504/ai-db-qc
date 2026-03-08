@@ -43,7 +43,8 @@ Documentation: docs/plans/2026-03-08-cli-productization-design.md
         from .workflows.generate import run_generate
         run_generate(args)
     elif args.command == 'validate':
-        print("Validate workflow - Coming in Block 3")
+        from .workflows.validate import run_validate
+        run_validate(args)
     elif args.command == 'compare':
         print("Compare workflow - Coming in Block 5")
     elif args.command == 'export':

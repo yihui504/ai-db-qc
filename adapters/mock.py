@@ -137,3 +137,17 @@ class MockAdapter(AdapterBase):
                 "error": "Error",
                 "operation": operation
             }
+
+    def get_runtime_snapshot(self) -> Dict[str, Any]:
+        """Get runtime state for PreconditionEvaluator.
+
+        Returns mock state for testing.
+        """
+        return {
+            "collections": ["mock_collection_1", "mock_collection_2"],
+            "indexed_collections": ["mock_collection_1"],
+            "loaded_collections": ["mock_collection_1"],
+            "connected": True,
+            "supported_features": ["search", "filtered_search", "insert", "create_collection"],
+            "memory_stats": {}
+        }
