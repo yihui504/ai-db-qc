@@ -104,7 +104,18 @@ def _create_adapter(db_type: str, db_config: dict):
     config = {**db_config, 'type': db_type}
     if db_type == 'milvus':
         return MilvusAdapter(config)
-    return SeekDBAdapter(config)
+    # SeekDB requires positional arguments: api_endpoint, api_key
+    # api_key is not used for SQL connection but required by constructor
+    api_endpoint = f"{config.get('host', 'localhost')}:{config.get('port', 2881)}"
+    api_key = ""  # Not used for SQL connection
+    return SeekDBAdapter(
+        api_endpoint=api_endpoint,
+        api_key=api_key,
+        collection=config.get('alias', 'test_collection'),
+        user=config.get('user', 'root'),
+        password=config.get('password', ''),
+        database=config.get('database', 'test')
+    )
 
 
 def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str, adapter, config_source: str):

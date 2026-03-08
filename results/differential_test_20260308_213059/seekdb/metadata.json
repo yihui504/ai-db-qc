@@ -1,0 +1,9 @@
+{
+  "tool_version": "0.1.0",
+  "workflow_type": "validate",
+  "db_type": "seekdb",
+  "adapter_used": "SeekDBAdapter",
+  "config_source": "compare_workflow",
+  "timestamp": "test_20260308_213059",
+  "run_tag": "validation"
+}

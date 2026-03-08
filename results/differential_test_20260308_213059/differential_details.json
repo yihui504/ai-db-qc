@@ -1,0 +1,16 @@
+{
+  "total_cases": 6,
+  "genuine_difference_count": 1,
+  "stricter_db": "milvus",
+  "genuine_differences": [
+    {
+      "case_id": "cap-006-invalid-index-type",
+      "difference_type": "db1_stricter",
+      "milvus_outcome": "failure",
+      "seekdb_outcome": "success",
+      "interpretation": "Milvus rejects, Seekdb accepts (stricter)"
+    }
+  ],
+  "milvus_strict_count": 1,
+  "seekdb_strict_count": 0
+}

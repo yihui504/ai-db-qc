@@ -1,0 +1,23 @@
+{
+  "tool_version": "0.1.0",
+  "workflow_type": "compare",
+  "databases": [
+    {
+      "type": "milvus",
+      "host": "localhost",
+      "port": 19530
+    },
+    {
+      "type": "seekdb",
+      "host": "localhost",
+      "port": 2881
+    }
+  ],
+  "adapter_used": [
+    "MilvusAdapter",
+    "SeekDBAdapter"
+  ],
+  "config_source": "campaigns\\compare_example.yaml",
+  "timestamp": "20260308_213059",
+  "run_tag": "test"
+}
