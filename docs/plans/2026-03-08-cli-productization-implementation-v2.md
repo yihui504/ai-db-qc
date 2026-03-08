@@ -330,18 +330,8 @@ def run_generate(args):
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w') as f:
-        case_data = [
-            {
-                "case_id": c.case_id,
-                "operation": c.operation.value,
-                "params": c.params,
-                "expected_validity": c.expected_validity.value,
-                "required_preconditions": c.required_preconditions,
-                "oracle_refs": c.oracle_refs,
-                "rationale": c.rationale
-            }
-            for c in cases
-        ]
+        # Use centralized serialization helper (avoids hand-maintaining field list)
+        case_data = [_serialize_case(c) for c in cases]
         pack_meta = {
             "pack_meta": {
                 "name": "Generated Case Pack",
@@ -370,6 +360,23 @@ def _parse_substitutions(subst_str: str) -> dict:
             key, value = pair.split('=', 1)
             result[key] = value
     return result
+
+
+def _serialize_case(case) -> dict:
+    """Centralized serialization helper for TestCase objects.
+
+    Aligned with existing schemas.case.TestCase schema.
+    If schema changes, update this single function.
+    """
+    return {
+        "case_id": case.case_id,
+        "operation": case.operation.value,
+        "params": case.params,
+        "expected_validity": case.expected_validity.value,
+        "required_preconditions": case.required_preconditions,
+        "oracle_refs": case.oracle_refs,
+        "rationale": case.rationale
+    }
 ```
 
 **Step 2: Create example campaign (compact)**
@@ -400,10 +407,11 @@ Expected: Success message
 
 ```bash
 git add ai_db_qa/workflows/generate.py campaigns/
-git commit -m "feat(cli): implement generate workflow
+git commit -m "feat(cli): implement generate workflow with centralized serialization
 
 - Add run_generate() wrapping existing instantiator
-- Support campaign file and direct template input
+- Support campaign file (recommended) and direct template input
+- Add _serialize_case() helper (avoids hand-maintaining field list)
 - Create example campaign with compact substitutions
 - Output uses existing TestCase schema
 
@@ -458,12 +466,14 @@ def run_validate(args):
         f"contracts/db_profiles/{config['db_type']}_profile.yaml"
     )
 
+    # Derive runtime context from snapshot (no hardcoded feature list)
     runtime_context = {
         "collections": snapshot.get("collections", []),
         "indexed_collections": snapshot.get("indexed_collections", []),
         "loaded_collections": snapshot.get("loaded_collections", []),
         "connected": snapshot.get("connected", True),
-        "supported_features": ["hybrid_search", "filtering", "multi_model"]
+        # Derive from profile/adapter if available, otherwise empty set
+        "supported_features": snapshot.get("supported_features", profile.get("supported_features", []))
     }
 
     precond = PreconditionEvaluator(contract, profile, runtime_context)
@@ -566,11 +576,18 @@ def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str
 
     precondition_filtered = sum(1 for r in results if not r.precondition_pass)
     total_bugs = len(bugs)
-
-    # Correct accounting: distinguish bugs, precondition-filtered, non-bugs
-    # non_bugs = cases that ran successfully (precondition passed) AND were not classified as bugs
     ran_successfully = sum(1 for r in results if r.precondition_pass)
-    non_bugs = ran_successfully - total_bugs
+
+    # Tightened accounting: non_bugs are explicitly defined
+    # non_bugs = executed cases (precondition_pass=true) with no bug-classifying triage result
+    # A triage_result that is None, or is type-2.precondition_failed, means "not a bug"
+    non_bugs = sum(
+        1 for r in results
+        if r.precondition_pass and (
+            r.triage_result is None or
+            r.triage_result.final_type.value == "type-2.precondition_failed"
+        )
+    )
 
     summary = {
         "run_id": f"{db_type}_validation_{timestamp}",
@@ -647,8 +664,9 @@ git commit -m "feat(cli): implement validate workflow with taxonomy-aware artifa
 - Support campaign and direct parameter input
 - Save 5 artifacts: execution_results.jsonl, triage_results.json, cases.jsonl, summary.json, metadata.json
 - triage_results.json: ONLY bugs, excludes type-2.precondition_failed (taxonomy-aware)
-- summary.json: Distinguishes bugs, precondition-filtered, non-bugs (correct accounting)
+- summary.json: Distinguishes bugs, precondition-filtered, non-bugs (explicit non-bug definition)
 - config_source passed explicitly to _save_results() (no args scope issues)
+- Derive supported_features from profile/snapshot (no hardcoded list)
 - Export _create_adapter and _save_results for compare reuse
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
@@ -790,10 +808,7 @@ def _get_severity(bug_type: str) -> str:
 
 ```bash
 cd C:\Users\11428\Desktop\ai-db-qc
-# After validate has created results, find the latest run
-ls -lt results/ | head
-
-# Export from specific results directory
+# After validate has created results, use the printed output directory
 ai-db-qa export --input results/milvus_validation_20260308_120000 --type issue-report --output bugs.md
 cat bugs.md
 ```
@@ -934,18 +949,23 @@ def _run_db_validation(db_config, cases, output_dir, run_id):
         result.triage_result = triage.classify(case, result, naive=False)
         results.append(result)
 
-    config_source = "compare_workflow"  # compare workflow always uses cli/campaign
+    config_source = "compare_workflow"  # compare workflow context
     _save_results(results, cases, output_dir, db_config['type'], run_id, adapter, config_source)
     return adapter, results
 
 
 def _analyze_differential(results_by_db: dict, cases) -> dict:
-    """Analyze differences - reuses existing differential-label logic."""
+    """Analyze differences - reuses existing differential-label logic.
+
+    MILESTONE-1 NOTE: This imports from scripts/analyze_differential_results.py.
+    This is temporary technical debt. Future milestone should extract
+    reusable differential functions into a neutral module (e.g., analysis/differential.py).
+    """
     db_names = list(results_by_db.keys())
     if len(db_names) != 2:
         return {'total_cases': len(cases), 'genuine_difference_count': 0, 'stricter_db': 'none', 'genuine_differences': []}
 
-    # Import existing differential analysis logic
+    # Import existing differential analysis logic (MILESTONE-1 TEMPORARY)
     from scripts.analyze_differential_results import (
         compare_outcomes, label_differences, identify_stricter_database
     )
@@ -1068,10 +1088,14 @@ git commit -m "feat(cli): implement compare workflow with strengthened different
 
 - Add run_compare() for cross-database comparison
 - Reuse validate logic per database via _run_db_validation
-- Import and reuse existing differential-label logic from scripts/analyze_differential_results.py
+- Import existing differential-label logic from scripts/analyze_differential_results.py
 - Use label_differences() for proper classification (not just observed_outcome)
 - Track stricter_db with milvus_strict_count/seekdb_strict_count
 - Save 3 differential artifacts: details.json, report.md, metadata.json
+
+TECHNICAL DEBT (milestone-1): Importing from scripts/ is temporary.
+Future milestone should extract reusable differential functions to
+analysis/differential.py for better modularity.
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
@@ -1097,29 +1121,15 @@ pip install -e .
 # Generate case pack
 ai-db-qa generate --campaign campaigns/generate_example.yaml
 
-# Validate database
+# Validate database (prints output directory)
 ai-db-qa validate --campaign campaigns/validate_example.yaml
+# Output: ✅ Validation complete! Results: results/milvus_validation_20260308_120000
 
-# Export bugs (results are in timestamped directories under results/)
-ai-db-qa export --input results/milvus_validation_latest --type issue-report --output bugs.md
-
-# Or export from specific directory
+# Export bugs (use the printed directory path)
 ai-db-qa export --input results/milvus_validation_20260308_120000 --type issue-report --output bugs.md
 
 # Compare databases
 ai-db-qa compare --campaign campaigns/compare_example.yaml
-```
-
-## Finding Your Results
-
-After running validate or compare, results are saved to timestamped directories:
-
-```bash
-# List recent results (newest first)
-ls -lt results/ | head
-
-# Export from the most recent run
-ai-db-qa export --input results/milvus_validation_latest --type issue-report --output bugs.md
 ```
 
 ## Output Artifacts
@@ -1160,13 +1170,15 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 - [ ] `pip install -e .` works
 - [ ] `ai-db-qa --help` shows 4 commands
-- [ ] Generate creates valid pack JSON
+- [ ] Generate creates valid pack JSON with _serialize_case() helper
 - [ ] Validate runs and creates 5 artifacts
 - [ ] execution_results.jsonl has triage_result for ALL cases (null or object)
 - [ ] triage_results.json has ONLY bugs (excludes type-2.precondition_failed)
-- [ ] summary.json distinguishes bugs, precondition-filtered, non-bugs
+- [ ] summary.json has explicit non-bug definition (executed, no bug triage)
+- [ ] supported_features derived from profile/snapshot (not hardcoded)
 - [ ] Export reads correct input files
 - [ ] Compare uses existing differential-label logic (not just outcome comparison)
+- [ ] Compare documents scripts/ import as technical debt
 - [ ] No sys.path.insert in workflows
 
 ---
