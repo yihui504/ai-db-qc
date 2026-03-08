@@ -68,9 +68,16 @@
 ```
 
 **Key points:**
-- Contains ONLY bugs (triage_result != null)
+- Contains ONLY bugs (triage_result != null AND not type-2.precondition_failed)
 - Type-2.precondition_failed is EXCLUDED (expected behavior, not a bug)
 - Export reads this file for issue-report generation
+
+**Taxonomy-aware filtering:**
+```python
+# Bug types to INCLUDE in triage_results.json:
+bug_types = {"type-1", "type-2", "type-3", "type-4"}
+# EXCLUDE: "type-2.precondition_failed"
+```
 
 ### Export Input Contracts
 
@@ -276,6 +283,19 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 - Create: `ai_db_qa/workflows/generate.py`
 - Create: `campaigns/generate_example.yaml`
 
+**Generate Substitutions Contract:**
+
+**Recommended: Campaign file** (supports structured, complex substitutions)
+- Use YAML-native types (scalars, lists)
+- For complex vectors: use compact representations or helper scripts
+- Example: `dimension: 128`, `k: 10`, `collection: test`
+
+**Minimal: Direct `--substitutions` flag** (simple key=value pairs only)
+- Supports: scalar values (strings, numbers)
+- Limitations: No lists, no nested structures, no complex types
+- Example: `--substitutions "collection=test,dimension=128,k=10"`
+- For vectors: Use campaign file instead
+
 **Step 1: Implement generate workflow**
 
 ```python
@@ -472,7 +492,8 @@ def run_validate(args):
         results.append(result)
         print(f"{result.observed_outcome.value}")
 
-    _save_results(results, cases, output_base, config['db_type'], timestamp, adapter)
+    config_source = str(args.campaign) if args.campaign else "cli_args"
+    _save_results(results, cases, output_base, config['db_type'], timestamp, adapter, config_source)
 
     print(f"\n✅ Validation complete! Results: {output_base}")
 
@@ -510,7 +531,7 @@ def _create_adapter(db_type: str, db_config: dict):
     return SeekDBAdapter(config)
 
 
-def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str, adapter):
+def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str, adapter, config_source: str):
     """Save all output artifacts following explicit contracts."""
 
     # 1. execution_results.jsonl - ALL cases, triage_result included (may be null)
@@ -520,8 +541,15 @@ def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str
             d['triage_result'] = result.triage_result.__dict__ if result.triage_result else None
             f.write(json.dumps(d, default=str) + "\n")
 
-    # 2. triage_results.json - ONLY bugs (triage_result != null)
-    bugs = [r.triage_result.__dict__ for r in results if r.triage_result is not None]
+    # 2. triage_results.json - ONLY bugs (taxonomy-aware filtering)
+    # Exclude type-2.precondition_failed (expected behavior, not a bug)
+    bug_types_to_include = {"type-1", "type-2", "type-3", "type-4"}
+    bugs = [
+        r.triage_result.__dict__
+        for r in results
+        if r.triage_result is not None
+        and r.triage_result.final_type.value in bug_types_to_include
+    ]
     with open(output_dir / "triage_results.json", "w") as f:
         json.dump(bugs, f, indent=2)
 
@@ -530,11 +558,19 @@ def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str
         for case in cases:
             f.write(json.dumps(case.__dict__, default=str) + "\n")
 
-    # 4. summary.json - with minimum required fields
+    # 4. summary.json - with minimum required fields and correct accounting
     bug_counts = {}
     for b in bugs:
         bt = b.get('final_type', 'unknown')
         bug_counts[bt] = bug_counts.get(bt, 0) + 1
+
+    precondition_filtered = sum(1 for r in results if not r.precondition_pass)
+    total_bugs = len(bugs)
+
+    # Correct accounting: distinguish bugs, precondition-filtered, non-bugs
+    # non_bugs = cases that ran successfully (precondition passed) AND were not classified as bugs
+    ran_successfully = sum(1 for r in results if r.precondition_pass)
+    non_bugs = ran_successfully - total_bugs
 
     summary = {
         "run_id": f"{db_type}_validation_{timestamp}",
@@ -542,9 +578,11 @@ def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str
         "db_type": db_type,
         "timestamp": timestamp,
         "total_cases": len(cases),
+        "total_executed": ran_successfully + precondition_filtered,
         "bug_candidate_counts_by_type": bug_counts,
-        "precondition_filtered_count": sum(1 for r in results if not r.precondition_pass),
-        "non_bug_count": len(cases) - len(bugs)
+        "total_bugs": total_bugs,
+        "precondition_filtered_count": precondition_filtered,
+        "non_bug_count": non_bugs
     }
     with open(output_dir / "summary.json", "w") as f:
         json.dump(summary, f, indent=2)
@@ -555,7 +593,7 @@ def _save_results(results, cases, output_dir: Path, db_type: str, timestamp: str
         "workflow_type": "validate",
         "db_type": db_type,
         "adapter_used": type(adapter).__name__,
-        "config_source": str(args.campaign) if args.campaign else "cli_args",
+        "config_source": config_source,
         "timestamp": timestamp,
         "run_tag": "validation"
     }
@@ -603,12 +641,14 @@ cat results/milvus_validation_*/summary.json
 
 ```bash
 git add ai_db_qa/workflows/validate.py campaigns/validate_example.yaml
-git commit -m "feat(cli): implement validate workflow
+git commit -m "feat(cli): implement validate workflow with taxonomy-aware artifact saving
 
 - Add run_validate() wrapping existing pipeline
 - Support campaign and direct parameter input
 - Save 5 artifacts: execution_results.jsonl, triage_results.json, cases.jsonl, summary.json, metadata.json
-- Follow explicit artifact contracts
+- triage_results.json: ONLY bugs, excludes type-2.precondition_failed (taxonomy-aware)
+- summary.json: Distinguishes bugs, precondition-filtered, non-bugs (correct accounting)
+- config_source passed explicitly to _save_results() (no args scope issues)
 - Export _create_adapter and _save_results for compare reuse
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
@@ -653,7 +693,7 @@ def run_export(args):
 
 
 def _export_issue_report(input_paths: list[Path], output_file: Path):
-    """Export issue report - wraps existing logic."""
+    """Export issue report - wraps existing logic with taxonomy-aware filtering."""
     print(f"📝 Generating issue report...")
 
     # Load from execution_results.jsonl (following contract)
@@ -666,9 +706,14 @@ def _export_issue_report(input_paths: list[Path], output_file: Path):
                     if line.strip():
                         all_results.append(json.loads(line))
 
-    # Filter: triage_result != null means bug
-    bugs = [r for r in all_results if r.get('triage_result') is not None]
-    print(f"   Found {len(bugs)} bugs")
+    # Filter: taxonomy-aware (triage_result != null AND not type-2.precondition_failed)
+    bug_types_to_include = {"type-1", "type-2", "type-3", "type-4"}
+    bugs = [
+        r for r in all_results
+        if r.get('triage_result') is not None
+        and r['triage_result'].get('final_type') in bug_types_to_include
+    ]
+    print(f"   Found {len(bugs)} bugs (excluding type-2.precondition_failed)")
 
     # Sort by severity
     bugs.sort(key=lambda r: _get_severity(r.get('triage_result', {}).get('final_type', '')))
@@ -745,8 +790,11 @@ def _get_severity(bug_type: str) -> str:
 
 ```bash
 cd C:\Users\11428\Desktop\ai-db-qc
-# After validate has created results
-ai-db-qa export --input results/milvus_validation_<timestamp>/ --type issue-report --output bugs.md
+# After validate has created results, find the latest run
+ls -lt results/ | head
+
+# Export from specific results directory
+ai-db-qa export --input results/milvus_validation_20260308_120000 --type issue-report --output bugs.md
 cat bugs.md
 ```
 
@@ -754,13 +802,14 @@ cat bugs.md
 
 ```bash
 git add ai_db_qa/workflows/export.py
-git commit -m "feat(cli): implement export workflow
+git commit -m "feat(cli): implement export workflow with taxonomy-aware filtering
 
 - Add run_export() with type routing
 - Wrap existing analysis scripts (summarize_runs, export_case_studies)
 - Implement issue-report generation from execution_results.jsonl
-- Filter bugs where triage_result != null
+- Filter bugs: triage_result != null AND type not in {type-2.precondition_failed}
 - Reuse paper-cases and summary from existing code
+- Sort bugs by severity (HIGH before MEDIUM)
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
@@ -835,7 +884,8 @@ def _load_compare_config(args) -> dict:
             'databases': c['databases'],
             'pack_path': Path(c['case_pack']),
             'tag': c.get('tag'),
-            'output_dir': args.output
+            'output_dir': args.output,
+            '_campaign_path': str(args.campaign)  # Store for metadata
         }
     # Direct params parsing...
     dbs = args.databases.split(',')
@@ -843,7 +893,8 @@ def _load_compare_config(args) -> dict:
         'databases': [{'type': d.strip(), 'host': 'localhost', 'port': 19530 if d.strip() == 'milvus' else 2881, 'alias': d.strip()} for d in dbs],
         'pack_path': args.pack,
         'tag': args.tag,
-        'output_dir': args.output
+        'output_dir': args.output,
+        '_campaign_path': 'cli_args'
     }
 
 
@@ -883,36 +934,85 @@ def _run_db_validation(db_config, cases, output_dir, run_id):
         result.triage_result = triage.classify(case, result, naive=False)
         results.append(result)
 
-    _save_results(results, cases, output_dir, db_config['type'], run_id, adapter)
+    config_source = "compare_workflow"  # compare workflow always uses cli/campaign
+    _save_results(results, cases, output_dir, db_config['type'], run_id, adapter, config_source)
     return adapter, results
 
 
 def _analyze_differential(results_by_db: dict, cases) -> dict:
-    """Analyze differences - minimal implementation."""
+    """Analyze differences - reuses existing differential-label logic."""
     db_names = list(results_by_db.keys())
     if len(db_names) != 2:
         return {'total_cases': len(cases), 'genuine_difference_count': 0, 'stricter_db': 'none', 'genuine_differences': []}
 
+    # Import existing differential analysis logic
+    from scripts.analyze_differential_results import (
+        compare_outcomes, label_differences, identify_stricter_database
+    )
+
     r1 = {r.case_id: r for r in results_by_db[db_names[0]]}
     r2 = {r.case_id: r for r in results_by_db[db_names[1]]}
 
+    # Use existing comparison logic
     diffs = []
+    milvus_strict_count = 0
+    seekdb_strict_count = 0
+
     for case in cases:
         res1, res2 = r1.get(case.case_id), r2.get(case.case_id)
-        if res1 and res2 and res1.observed_outcome.value != res2.observed_outcome.value:
+        if not res1 or not res2:
+            continue
+
+        # Reuse existing label_differences logic
+        label = label_differences(res1, res2, case)
+        if label != 'no_difference':
             diffs.append({
                 'case_id': case.case_id,
-                'difference_type': f"{db_names[0]}_{res1.observed_outcome.value}_{db_names[1]}_{res2.observed_outcome.value}",
-                'interpretation': f"Different outcomes: {db_names[0]}={res1.observed_outcome.value}, {db_names[1]}={res2.observed_outcome.value}"
+                'difference_type': label,
+                f'{db_names[0]}_outcome': res1.observed_outcome.value,
+                f'{db_names[1]}_outcome': res2.observed_outcome.value,
+                'interpretation': _interpret_label(label, db_names)
             })
 
-    # TODO: Use stricter_db logic from existing analyze_differential_results.py if needed
+            # Track stricter database
+            if label == f'{db_names[0]}_stricter':
+                if db_names[0] == 'milvus':
+                    milvus_strict_count += 1
+                else:
+                    seekdb_strict_count += 1
+            elif label == f'{db_names[1]}_stricter':
+                if db_names[1] == 'milvus':
+                    milvus_strict_count += 1
+                else:
+                    seekdb_strict_count += 1
+
+    # Determine stricter database
+    if milvus_strict_count > seekdb_strict_count:
+        stricter_db = 'milvus'
+    elif seekdb_strict_count > milvus_strict_count:
+        stricter_db = 'seekdb'
+    else:
+        stricter_db = 'none'
+
     return {
         'total_cases': len(cases),
         'genuine_difference_count': len(diffs),
-        'stricter_db': 'none',
-        'genuine_differences': diffs
+        'stricter_db': stricter_db,
+        'genuine_differences': diffs,
+        'milvus_strict_count': milvus_strict_count,
+        'seekdb_strict_count': seekdb_strict_count
     }
+
+
+def _interpret_label(label: str, db_names: list) -> str:
+    """Convert difference label to human-readable interpretation."""
+    if label == f'{db_names[0]}_stricter':
+        return f"{db_names[0].capitalize()} rejects, {db_names[1].capitalize()} accepts (stricter)"
+    elif label == f'{db_names[1]}_stricter':
+        return f"{db_names[1].capitalize()} rejects, {db_names[0].capitalize()} accepts (stricter)"
+    elif 'oracle' in label.lower():
+        return f"Different oracle results"
+    return label.replace('_', ' ').title()
 
 
 def _save_differential_artifacts(details: dict, output_dir: Path, tag: str, timestamp: str, config: dict, adapters: list):
@@ -934,7 +1034,7 @@ def _save_differential_artifacts(details: dict, output_dir: Path, tag: str, time
         "workflow_type": "compare",
         "databases": config['databases'],
         "adapter_used": adapters,
-        "config_source": str(args.campaign) if args.campaign else "cli_args",
+        "config_source": str(config.get('_campaign_path', 'cli_args')),
         "timestamp": timestamp,
         "run_tag": tag
     }
@@ -964,11 +1064,13 @@ case_pack: packs/example_pack.json
 
 ```bash
 git add ai_db_qa/workflows/compare.py campaigns/compare_example.yaml
-git commit -m "feat(cli): implement compare workflow
+git commit -m "feat(cli): implement compare workflow with strengthened differential analysis
 
 - Add run_compare() for cross-database comparison
 - Reuse validate logic per database via _run_db_validation
-- Minimal differential analysis (extend with existing logic if needed)
+- Import and reuse existing differential-label logic from scripts/analyze_differential_results.py
+- Use label_differences() for proper classification (not just observed_outcome)
+- Track stricter_db with milvus_strict_count/seekdb_strict_count
 - Save 3 differential artifacts: details.json, report.md, metadata.json
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
@@ -998,19 +1100,34 @@ ai-db-qa generate --campaign campaigns/generate_example.yaml
 # Validate database
 ai-db-qa validate --campaign campaigns/validate_example.yaml
 
-# Export bugs
-ai-db-qa export --input results/milvus_validation_<timestamp>/ --type issue-report --output bugs.md
+# Export bugs (results are in timestamped directories under results/)
+ai-db-qa export --input results/milvus_validation_latest --type issue-report --output bugs.md
+
+# Or export from specific directory
+ai-db-qa export --input results/milvus_validation_20260308_120000 --type issue-report --output bugs.md
 
 # Compare databases
 ai-db-qa compare --campaign campaigns/compare_example.yaml
+```
+
+## Finding Your Results
+
+After running validate or compare, results are saved to timestamped directories:
+
+```bash
+# List recent results (newest first)
+ls -lt results/ | head
+
+# Export from the most recent run
+ai-db-qa export --input results/milvus_validation_latest --type issue-report --output bugs.md
 ```
 
 ## Output Artifacts
 
 ### Validate
 - `execution_results.jsonl` - All cases (bugs + non-bugs)
-- `triage_results.json` - Only bugs
-- `summary.json` - Statistics
+- `triage_results.json` - Only bugs (excludes type-2.precondition_failed)
+- `summary.json` - Statistics (bugs, precondition-filtered, non-bugs)
 - `metadata.json` - Run info
 - `cases.jsonl` - Original cases
 
@@ -1045,10 +1162,11 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 - [ ] `ai-db-qa --help` shows 4 commands
 - [ ] Generate creates valid pack JSON
 - [ ] Validate runs and creates 5 artifacts
-- [ ] execution_results.jsonl has triage_result for ALL cases
-- [ ] triage_results.json has ONLY bugs
+- [ ] execution_results.jsonl has triage_result for ALL cases (null or object)
+- [ ] triage_results.json has ONLY bugs (excludes type-2.precondition_failed)
+- [ ] summary.json distinguishes bugs, precondition-filtered, non-bugs
 - [ ] Export reads correct input files
-- [ ] Compare runs on 2 databases
+- [ ] Compare uses existing differential-label logic (not just outcome comparison)
 - [ ] No sys.path.insert in workflows
 
 ---
