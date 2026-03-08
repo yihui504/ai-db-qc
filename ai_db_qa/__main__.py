@@ -40,7 +40,8 @@ Documentation: docs/plans/2026-03-08-cli-productization-design.md
 
     # Workflows will be implemented in Blocks 2-5
     if args.command == 'generate':
-        print("Generate workflow - Coming in Block 2")
+        from .workflows.generate import run_generate
+        run_generate(args)
     elif args.command == 'validate':
         print("Validate workflow - Coming in Block 3")
     elif args.command == 'compare':

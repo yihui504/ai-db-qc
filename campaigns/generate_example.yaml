@@ -1,0 +1,7 @@
+name: "Example Case Pack"
+template: casegen/templates/differential_v3_phase1.yaml
+substitutions:
+  collection: test_collection
+  dimension: 128
+  k: 10
+output: packs/example_pack.json
