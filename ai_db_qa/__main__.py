@@ -48,7 +48,8 @@ Documentation: docs/plans/2026-03-08-cli-productization-design.md
     elif args.command == 'compare':
         print("Compare workflow - Coming in Block 5")
     elif args.command == 'export':
-        print("Export workflow - Coming in Block 4")
+        from .workflows.export import run_export
+        run_export(args)
 
 
 if __name__ == '__main__':
