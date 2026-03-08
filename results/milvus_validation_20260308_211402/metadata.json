@@ -1,0 +1,9 @@
+{
+  "tool_version": "0.1.0",
+  "workflow_type": "validate",
+  "db_type": "milvus",
+  "adapter_used": "MilvusAdapter",
+  "config_source": "campaigns\\validate_example.yaml",
+  "timestamp": "20260308_211402",
+  "run_tag": "validation"
+}

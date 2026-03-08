@@ -1,0 +1,58 @@
+templates:
+  # ========== v3 Phase 1: Capability-Boundary Cases (6 cases) ==========
+  # High-yield family targeting limits that databases implement differently
+
+  - template_id: cap-001-invalid-metric
+    operation: create_collection
+    param_template:
+      collection_name: "cap_invalid_metric"
+      dimension: 128
+      metric_type: "INVALID_METRIC"
+    description: "Test invalid metric type - check error specificity"
+    rationale: "Different databases may support different metric types (L2, IP, COSINE)"
+
+  - template_id: cap-002-metric-string-variant
+    operation: create_collection
+    param_template:
+      collection_name: "cap_metric_variant"
+      dimension: 128
+      metric_type: "IP"
+    description: "Test metric string variant - IP vs IP_IP acceptance"
+    rationale: "Databases may accept 'IP' or require 'IP_IP', different string validation"
+
+  - template_id: cap-003-max-topk-large
+    operation: search
+    param_template:
+      collection_name: "diff_test"
+      vector: "{query_vector}"
+      top_k: 1000000
+    description: "Test very large top_k value - check limit differences"
+    rationale: "seekdb may have lower top_k limit than Milvus"
+
+  - template_id: cap-004-max-topk-int-max
+    operation: search
+    param_template:
+      collection_name: "diff_test"
+      vector: "{query_vector}"
+      top_k: 2147483647
+    description: "Test INT_MAX as top_k - check integer overflow handling"
+    rationale: "Databases may handle INT_MAX differently (overflow vs rejection vs cap)"
+
+  - template_id: cap-005-filter-type-coercion
+    operation: filtered_search
+    param_template:
+      collection_name: "diff_test"
+      vector: "{query_vector}"
+      top_k: 10
+      filter: "id > 'string_value'"
+    description: "Test type coercion in filter - string vs integer comparison"
+    rationale: "Databases may differ in type coercion behavior (error vs coercion vs no-match)"
+
+  - template_id: cap-006-invalid-index-type
+    operation: build_index
+    param_template:
+      collection_name: "diff_test"
+      index_type: "INVALID_INDEX"
+      metric_type: "L2"
+    description: "Test invalid index type - check supported index types"
+    rationale: "Different databases support different index types (IVF_FLAT, HNSW, etc.)"

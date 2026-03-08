@@ -65,6 +65,10 @@ class MilvusAdapter(AdapterBase):
                 return self._search(params)
             elif operation == "filtered_search":
                 return self._filtered_search(params)
+            elif operation == "drop_collection":
+                return self._drop_collection(params)
+            elif operation == "delete":
+                return self._delete(params)
             else:
                 return {
                     "status": "error",
@@ -285,3 +289,59 @@ class MilvusAdapter(AdapterBase):
             "collection_name": collection_name,
             "data": formatted_results
         }
+
+    def _drop_collection(self, params: Dict) -> Dict[str, Any]:
+        """Drop a collection."""
+        collection_name = params.get("collection_name")
+
+        try:
+            utility.drop_collection(collection_name, using=self.alias)
+            return {
+                "status": "success",
+                "operation": "drop_collection",
+                "data": []
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "drop_collection"
+            }
+
+    def _delete(self, params: Dict) -> Dict[str, Any]:
+        """Delete entities by ID.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+                - ids (list): List of IDs to delete
+
+        Returns:
+            Response dict with status and delete_count
+        """
+        collection_name = params.get("collection_name")
+        ids = params.get("ids", [])
+
+        if not ids:
+            return {
+                "status": "error",
+                "error": "No IDs provided for deletion",
+                "operation": "delete"
+            }
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+            result = collection.delete(expr=f"id in {ids}")
+            return {
+                "status": "success",
+                "operation": "delete",
+                "collection_name": collection_name,
+                "delete_count": result.delete_count,
+                "data": []
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "delete"
+            }

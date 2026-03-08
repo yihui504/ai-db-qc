@@ -1,0 +1,12 @@
+{
+  "run_id": "milvus_validation_20260308_211402",
+  "run_tag": "validation",
+  "db_type": "milvus",
+  "timestamp": "20260308_211402",
+  "total_cases": 6,
+  "total_executed": 6,
+  "bug_candidate_counts_by_type": {},
+  "total_bugs": 0,
+  "precondition_filtered_count": 4,
+  "non_bug_count": 2
+}

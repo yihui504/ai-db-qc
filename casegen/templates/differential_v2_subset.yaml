@@ -1,0 +1,153 @@
+templates:
+  # ========== Category A: Parameter Boundaries (6 cases) - High Yield ==========
+  - template_id: boundary-001-dim-zero
+    operation: create_collection
+    param_template:
+      collection_name: "dim_zero_test"
+      dimension: 0
+      metric_type: "L2"
+    description: "Test dimension=0 rejection (boundary below minimum)"
+
+  - template_id: boundary-002-dim-max
+    operation: create_collection
+    param_template:
+      collection_name: "dim_max_test"
+      dimension: 32768
+      metric_type: "L2"
+    description: "Test maximum dimension (edge of valid range)"
+
+  - template_id: boundary-003-dim-min
+    operation: create_collection
+    param_template:
+      collection_name: "dim_min_test"
+      dimension: 2
+      metric_type: "L2"
+    description: "Test minimum dimension (edge of valid range)"
+
+  - template_id: boundary-004-topk-min
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 1
+    description: "Test top_k=1 (minimum valid value)"
+    setup_needs: ["collection_exists", "has_data"]
+
+  - template_id: boundary-005-topk-max
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 65535
+    description: "Test top_k=65535 (edge of valid range)"
+    setup_needs: ["collection_exists", "has_data"]
+
+  - template_id: boundary-006-topk-negative
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: -1
+    description: "Test top_k=-1 (negative value)"
+    setup_needs: ["collection_exists", "has_data"]
+
+  # ========== Category B: Diagnostic Quality (5 cases) - Medium Yield ==========
+  - template_id: diag-001-dim-zero-message
+    operation: create_collection
+    param_template:
+      collection_name: "diag_dim_zero"
+      dimension: 0
+      metric_type: "L2"
+    description: "Compare error message quality for dimension=0"
+
+  - template_id: diag-002-dim-negative-message
+    operation: create_collection
+    param_template:
+      collection_name: "diag_dim_negative"
+      dimension: -1
+      metric_type: "L2"
+    description: "Compare error message quality for dimension=-1"
+
+  - template_id: diag-003-topk-zero-message
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 0
+    description: "Compare error quality for top_k=0 (known diff)"
+    setup_needs: ["collection_exists", "has_data"]
+
+  - template_id: diag-004-nonexistent-collection
+    operation: search
+    param_template:
+      collection_name: "nonexistent_{collection}"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Compare error message for non-existent collection"
+
+  - template_id: diag-005-wrong-dimension
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors:
+        - "{wrong_dim_vectors}"
+    description: "Compare error quality for dimension mismatch"
+    setup_needs: ["collection_exists"]
+
+  # ========== Category C: Precondition Sensitivity (4 cases) - Medium Yield ==========
+  - template_id: precond-001-search-nonexistent
+    operation: search
+    param_template:
+      collection_name: "precond_nonexistent"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Search on non-existent collection (error vs silent)"
+
+  - template_id: precond-002-insert-nonexistent
+    operation: insert
+    param_template:
+      collection_name: "precond_nonexistent"
+      vectors: "{vectors}"
+    description: "Insert into non-existent collection"
+
+  - template_id: precond-003-delete-nonexistent
+    operation: delete
+    param_template:
+      collection_name: "precond_nonexistent"
+      ids: [1, 2, 3]
+    description: "Delete from non-existent collection"
+
+  - template_id: precond-004-search-empty
+    operation: search
+    param_template:
+      collection_name: "{empty_collection}"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Search on empty collection (empty result vs error)"
+    setup_needs: ["empty_collection_exists"]
+
+  # ========== Category D: Valid Operations (3 cases) - Baseline ==========
+  - template_id: valid-001-create-valid
+    operation: create_collection
+    param_template:
+      collection_name: "{collection}"
+      dimension: 128
+      metric_type: "L2"
+    description: "Valid create_collection (should both succeed)"
+
+  - template_id: valid-002-search-valid
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Valid search with data (should both succeed)"
+    setup_needs: ["collection_exists", "indexed", "loaded", "has_data"]
+
+  - template_id: valid-003-insert-valid
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors: "{vectors}"
+    description: "Valid insert into existing collection"
+    setup_needs: ["collection_exists"]

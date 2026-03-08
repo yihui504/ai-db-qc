@@ -41,3 +41,8 @@ class ExecutionResult(BaseModel):
     def observed_success(self) -> bool:
         """Convenience property: was the execution successful?"""
         return self.observed_outcome == ObservedOutcome.SUCCESS
+
+
+# Resolve forward reference for Pydantic v2
+from schemas.triage import TriageResult
+ExecutionResult.model_rebuild()

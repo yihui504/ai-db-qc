@@ -1,0 +1,89 @@
+{
+  "pack_meta": {
+    "name": "Generated Case Pack",
+    "version": "1.0",
+    "description": "From differential_v3_phase1.yaml",
+    "author": "ai-db-qa"
+  },
+  "cases": [
+    {
+      "case_id": "cap-001-invalid-metric",
+      "operation": "create_collection",
+      "params": {
+        "collection_name": "cap_invalid_metric",
+        "dimension": 128,
+        "metric_type": "INVALID_METRIC"
+      },
+      "expected_validity": "legal",
+      "required_preconditions": [],
+      "oracle_refs": [],
+      "rationale": "Different databases may support different metric types (L2, IP, COSINE)"
+    },
+    {
+      "case_id": "cap-002-metric-string-variant",
+      "operation": "create_collection",
+      "params": {
+        "collection_name": "cap_metric_variant",
+        "dimension": 128,
+        "metric_type": "IP"
+      },
+      "expected_validity": "legal",
+      "required_preconditions": [],
+      "oracle_refs": [],
+      "rationale": "Databases may accept 'IP' or require 'IP_IP', different string validation"
+    },
+    {
+      "case_id": "cap-003-max-topk-large",
+      "operation": "search",
+      "params": {
+        "collection_name": "diff_test",
+        "vector": "{query_vector}",
+        "top_k": 1000000
+      },
+      "expected_validity": "legal",
+      "required_preconditions": [],
+      "oracle_refs": [],
+      "rationale": "seekdb may have lower top_k limit than Milvus"
+    },
+    {
+      "case_id": "cap-004-max-topk-int-max",
+      "operation": "search",
+      "params": {
+        "collection_name": "diff_test",
+        "vector": "{query_vector}",
+        "top_k": 2147483647
+      },
+      "expected_validity": "legal",
+      "required_preconditions": [],
+      "oracle_refs": [],
+      "rationale": "Databases may handle INT_MAX differently (overflow vs rejection vs cap)"
+    },
+    {
+      "case_id": "cap-005-filter-type-coercion",
+      "operation": "filtered_search",
+      "params": {
+        "collection_name": "diff_test",
+        "vector": "{query_vector}",
+        "top_k": 10,
+        "filter": "id > 'string_value'"
+      },
+      "expected_validity": "legal",
+      "required_preconditions": [],
+      "oracle_refs": [],
+      "rationale": "Databases may differ in type coercion behavior (error vs coercion vs no-match)"
+    },
+    {
+      "case_id": "cap-006-invalid-index-type",
+      "operation": "build_index",
+      "params": {
+        "collection_name": "diff_test",
+        "index_type": "INVALID_INDEX",
+        "metric_type": "L2"
+      },
+      "expected_validity": "legal",
+      "required_preconditions": [],
+      "oracle_refs": [],
+      "rationale": "Different databases support different index types (IVF_FLAT, HNSW, etc.)"
+    }
+  ]
+}

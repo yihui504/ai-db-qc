@@ -1,0 +1,48 @@
+templates:
+  # ========== v3 Phase 2: Precondition-Sensitivity Cases (4 cases) ==========
+  # Prioritizing search-related architectural differences
+
+  # Priority 1: Search without index (has data) - Tests architectural difference
+  - template_id: precond-001-search-no-index-has-data
+    operation: search
+    param_template:
+      collection_name: "no_index_test"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Search on collection that exists with data but no index built"
+    rationale: "Milvus may require index, seekdb may allow search without explicit index"
+    setup: "create_collection_with_data_only"
+
+  # Priority 2: Search without index (no data) - Tests empty collection behavior
+  - template_id: precond-002-search-no-index-no-data
+    operation: search
+    param_template:
+      collection_name: "empty_no_index_test"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Search on collection that exists but has no data and no index"
+    rationale: "Empty result vs error - different philosophies for empty collections"
+    setup: "create_empty_collection_no_index"
+
+  # Priority 3: Search with index but not loaded - Tests Milvus-specific requirement
+  - template_id: precond-003-search-index-not-loaded
+    operation: search
+    param_template:
+      collection_name: "indexed_not_loaded_test"
+      vector: "{query_vector}"
+      top_k: 10
+    description: "Search on collection with index built but not loaded into memory"
+    rationale: "Milvus requires load() before search, seekdb may not"
+    setup: "create_indexed_not_loaded"
+
+  # Priority 4: Filter without scalar fields - Tests filter precondition handling
+  - template_id: precond-004-filter-no-scalar-fields
+    operation: filtered_search
+    param_template:
+      collection_name: "vector_only_test"
+      vector: "{query_vector}"
+      top_k: 10
+      filter: "id > 0"
+    description: "Filtered search on collection with only vector field (no scalar fields)"
+    rationale: "Filter on non-existent scalar field - error handling difference"
+    setup: "create_vector_only_collection"

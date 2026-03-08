@@ -39,7 +39,7 @@ def run_validate(args):
         "loaded_collections": snapshot.get("loaded_collections", []),
         "connected": snapshot.get("connected", True),
         # Derive from profile/adapter if available, otherwise empty set
-        "supported_features": snapshot.get("supported_features", profile.get("supported_features", []))
+        "supported_features": snapshot.get("supported_features", list(profile.supported_features) if profile.supported_features else [])
     }
 
     precond = PreconditionEvaluator(contract, profile, runtime_context)

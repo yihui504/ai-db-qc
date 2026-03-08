@@ -31,6 +31,24 @@ except ImportError as e:
     sys.exit(1)
 
 
+def cleanup_test_collections(adapter, adapter_name: str, prefix: str):
+    """Drop all test collections matching the run prefix."""
+    try:
+        snapshot = adapter.get_runtime_snapshot()
+        dropped = 0
+        for coll in snapshot.get("collections", []):
+            if coll.startswith(prefix.replace("main", "")):
+                result = adapter.execute({
+                    "operation": "drop_collection",
+                    "params": {"collection_name": coll}
+                })
+                if result.get("status") == "success":
+                    dropped += 1
+        print(f"  [{adapter_name}] Cleaned up {dropped} test collections")
+    except Exception as e:
+        print(f"  [{adapter_name}] Cleanup warning: {e}")
+
+
 def run_campaign_on_db(adapter, adapter_name: str, cases: List, run_id: str) -> Dict:
     """Run campaign on a single database."""
     print(f"\n{'='*60}")
@@ -73,7 +91,59 @@ def run_campaign_on_db(adapter, adapter_name: str, cases: List, run_id: str) -> 
     executor = Executor(adapter, precond, oracles)
     triage = Triage()
 
-    # SETUP PHASE: Create test collection for dependent operations
+    # PHASE 2 MULTI-COLLECTION SETUP: Create precondition test collections
+    print(f"  [{adapter_name}] PHASE2 SETUP: Creating precondition test collections...")
+
+    # Collection 1: no_index_test (has data, no index)
+    result = adapter.execute({
+        "operation": "create_collection",
+        "params": {"collection_name": "no_index_test", "dimension": 128, "metric_type": "L2"}
+    })
+    if result.get("status") == "success":
+        adapter.execute({
+            "operation": "insert",
+            "params": {"collection_name": "no_index_test", "vectors": [[0.1] * 128, [0.2] * 128]}
+        })
+        print(f"  [{adapter_name}] PHASE2 SETUP: no_index_test created (with data, no index)")
+
+    # Collection 2: empty_no_index_test (no data, no index)
+    result = adapter.execute({
+        "operation": "create_collection",
+        "params": {"collection_name": "empty_no_index_test", "dimension": 128, "metric_type": "L2"}
+    })
+    if result.get("status") == "success":
+        print(f"  [{adapter_name}] PHASE2 SETUP: empty_no_index_test created (empty, no index)")
+
+    # Collection 3: indexed_not_loaded_test (has data, has index, NOT loaded for Milvus)
+    result = adapter.execute({
+        "operation": "create_collection",
+        "params": {"collection_name": "indexed_not_loaded_test", "dimension": 128, "metric_type": "L2"}
+    })
+    if result.get("status") == "success":
+        adapter.execute({
+            "operation": "insert",
+            "params": {"collection_name": "indexed_not_loaded_test", "vectors": [[0.1] * 128, [0.2] * 128]}
+        })
+        adapter.execute({
+            "operation": "build_index",
+            "params": {"collection_name": "indexed_not_loaded_test", "index_type": "IVF_FLAT", "metric_type": "L2"}
+        })
+        # Intentionally NOT loading this collection
+        print(f"  [{adapter_name}] PHASE2 SETUP: indexed_not_loaded_test created (indexed, not loaded)")
+
+    # Collection 4: vector_only_test (same as no_index_test for basic vector search)
+    result = adapter.execute({
+        "operation": "create_collection",
+        "params": {"collection_name": "vector_only_test", "dimension": 128, "metric_type": "L2"}
+    })
+    if result.get("status") == "success":
+        adapter.execute({
+            "operation": "insert",
+            "params": {"collection_name": "vector_only_test", "vectors": [[0.1] * 128, [0.2] * 128]}
+        })
+        print(f"  [{adapter_name}] PHASE2 SETUP: vector_only_test created (vector-only)")
+
+    # STANDARD SETUP PHASE: Create test collection for dependent operations
     print(f"  [{adapter_name}] SETUP: Creating test collection...")
     setup_request = {
         "operation": "create_collection",
@@ -103,6 +173,36 @@ def run_campaign_on_db(adapter, adapter_name: str, cases: List, run_id: str) -> 
         print(f"  [{adapter_name}] SETUP: Test data inserted")
     else:
         print(f"  [{adapter_name}] SETUP WARNING: Insert failed - {insert_result.get('error', 'Unknown error')[:80]}")
+
+    # SETUP PHASE: Build index (required for search operations)
+    print(f"  [{adapter_name}] SETUP: Building index...")
+    index_request = {
+        "operation": "build_index",
+        "params": {
+            "collection_name": "diff_test",
+            "index_type": "IVF_FLAT",
+            "metric_type": "L2"
+        }
+    }
+    index_result = adapter.execute(index_request)
+    if index_result.get("status") == "success":
+        print(f"  [{adapter_name}] SETUP: Index built")
+    else:
+        print(f"  [{adapter_name}] SETUP WARNING: Index build failed - {index_result.get('error', 'Unknown error')[:80]}")
+
+    # SETUP PHASE: Load collection/index (required for Milvus search)
+    print(f"  [{adapter_name}] SETUP: Loading collection...")
+    load_request = {
+        "operation": "load",
+        "params": {
+            "collection_name": "diff_test"
+        }
+    }
+    load_result = adapter.execute(load_request)
+    if load_result.get("status") == "success":
+        print(f"  [{adapter_name}] SETUP: Collection loaded")
+    else:
+        print(f"  [{adapter_name}] SETUP WARNING: Load failed - {load_result.get('error', 'Unknown error')[:80]}")
 
     # Execute cases
     results = []
@@ -160,7 +260,7 @@ def main():
 
     args = parser.parse_args()
 
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_id = f"differential-{args.run_tag}-{timestamp}"
 
     print("="*60)
@@ -174,14 +274,17 @@ def main():
     templates = load_templates(args.templates)
     print(f"Loaded {len(templates)} templates")
 
+    # Use unique collection names to avoid collisions (underscores only for Milvus compatibility)
+    collection_prefix = f"diff_{timestamp}_"
+
     # Instantiate
     cases = instantiate_all(templates, {
-        "collection": "diff_test",
+        "collection": f"{collection_prefix}main",
         "query_vector": [0.1] * 128,
         "vectors": [[0.1] * 128, [0.2] * 128],
         "k": 10,
         "wrong_dim_vectors": [[0.1] * 64],
-        "empty_collection": "diff_empty"
+        "empty_collection": f"{collection_prefix}empty"
     })
     print(f"Instantiated {len(cases)} cases\n")
 
@@ -272,7 +375,48 @@ def main():
             }, f, indent=2)
 
     print(f"\nResults saved to {output_dir}")
-    print(f"Next: python scripts/analyze_differential_results.py {output_dir}")
+
+    # Cleanup phase - clean up test collections
+    print("\n" + "="*60)
+    print("  Cleanup Phase")
+    print("="*60)
+    collection_prefix = f"diff_{timestamp}_"
+
+    # Recreate adapters for cleanup
+    if not args.skip_seekdb and "seekdb" in campaign_results:
+        try:
+            cleanup_adapter = SeekDBAdapter(
+                api_endpoint=args.seekdb_endpoint,
+                api_key=args.seekdb_api_key,
+                collection="diff_test"
+            )
+            cleanup_test_collections(cleanup_adapter, "seekdb", collection_prefix)
+        except Exception as e:
+            print(f"  seekdb cleanup skipped: {e}")
+
+    if not args.skip_milvus and "milvus" in campaign_results:
+        try:
+            # Parse Milvus endpoint again
+            endpoint = args.milvus_endpoint
+            if "://" in endpoint:
+                endpoint = endpoint.split("://")[-1]
+            if ":" in endpoint:
+                host, port = endpoint.split(":")
+                port = int(port)
+            else:
+                host = endpoint
+                port = 19530
+
+            cleanup_adapter = MilvusAdapter({
+                "host": host,
+                "port": port,
+                "alias": "default"
+            })
+            cleanup_test_collections(cleanup_adapter, "milvus", collection_prefix)
+        except Exception as e:
+            print(f"  milvus cleanup skipped: {e}")
+
+    print(f"\nNext: python scripts/analyze_differential_results.py {output_dir}")
 
     return 0
 
