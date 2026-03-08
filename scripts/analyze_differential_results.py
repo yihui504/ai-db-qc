@@ -258,5 +258,85 @@ def _generate_markdown_report(report: Dict, output_file: Path):
         f.write("\n".join(lines))
 
 
+def compare_outcomes(milvus_result: dict, seekdb_result: dict) -> str:
+    """Compare outcomes between two database results."""
+    milvus_outcome = milvus_result.get("observed_outcome", "unknown")
+    seekdb_outcome = seekdb_result.get("observed_outcome", "unknown")
+
+    if milvus_outcome == "success" and seekdb_outcome == "success":
+        return "same_behavior"
+    if milvus_outcome == "failure" and seekdb_outcome == "failure":
+        return "both_failed"
+    if milvus_outcome == "success" and seekdb_outcome == "failure":
+        return "seekdb_stricter"
+    if milvus_outcome == "failure" and seekdb_outcome == "success":
+        return "milvus_stricter"
+    return "outcome_difference"
+
+
+def label_differences(result1, result2, case) -> str:
+    """Label differences between two results considering oracle and triage.
+
+    This is the strengthened differential analysis that goes beyond simple
+    outcome comparison to consider oracle violations and triage classification.
+
+    Args:
+        result1: First database result (with observed_outcome, triage_result)
+        result2: Second database result (with observed_outcome, triage_result)
+        case: TestCase for context
+
+    Returns:
+        Difference label: 'no_difference', 'db1_stricter', 'db2_stricter',
+        'oracle_difference', or other specific labels
+    """
+    # Extract outcomes
+    outcome1 = result1.observed_outcome.value if hasattr(result1.observed_outcome, 'value') else str(result1.observed_outcome)
+    outcome2 = result2.observed_outcome.value if hasattr(result2.observed_outcome, 'value') else str(result2.observed_outcome)
+
+    # Check triage results for oracle-level differences
+    triage1 = result1.triage_result
+    triage2 = result2.triage_result
+
+    # If both succeeded, no difference
+    if outcome1 == "success" and outcome2 == "success":
+        return "no_difference"
+
+    # If both failed, check if oracle results differ
+    if outcome1 == "failure" and outcome2 == "failure":
+        if triage1 and triage2:
+            type1 = triage1.final_type.value if hasattr(triage1.final_type, 'value') else str(triage1.final_type)
+            type2 = triage2.final_type.value if hasattr(triage2.final_type, 'value') else str(triage2.final_type)
+            if type1 != type2:
+                return "oracle_difference"
+        return "no_difference"
+
+    # One succeeded, one failed - determine stricter
+    if outcome1 == "success" and outcome2 == "failure":
+        return "db2_stricter"
+    if outcome1 == "failure" and outcome2 == "success":
+        return "db1_stricter"
+
+    return "outcome_difference"
+
+
+def identify_stricter_database(milvus_strict_count: int, seekdb_strict_count: int) -> str:
+    """Identify which database is stricter based on rejection counts."""
+    if milvus_strict_count > seekdb_strict_count:
+        return "milvus"
+    elif seekdb_strict_count > milvus_strict_count:
+        return "seekdb"
+    else:
+        return "none"
+
+
 if __name__ == "__main__":
     sys.exit(main())
+
+
+__all__ = [
+    'compare_outcomes',
+    'label_differences',
+    'identify_stricter_database',
+    'DifferentialAnalyzer',
+    'main'
+]

@@ -46,7 +46,8 @@ Documentation: docs/plans/2026-03-08-cli-productization-design.md
         from .workflows.validate import run_validate
         run_validate(args)
     elif args.command == 'compare':
-        print("Compare workflow - Coming in Block 5")
+        from .workflows.compare import run_compare
+        run_compare(args)
     elif args.command == 'export':
         from .workflows.export import run_export
         run_export(args)

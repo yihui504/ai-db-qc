@@ -1,0 +1,10 @@
+name: "Example Comparison"
+tag: "test"
+databases:
+  - type: milvus
+    host: localhost
+    port: 19530
+  - type: seekdb
+    host: localhost
+    port: 2881
+case_pack: packs/example_pack.json
