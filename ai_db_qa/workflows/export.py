@@ -78,37 +78,99 @@ def _export_issue_report(input_paths: List[Path], output_file: Path):
 
 
 def _export_paper_cases(input_paths: List[Path], output_file: Path):
-    """Export paper cases - reuse existing export_case_studies.py."""
+    """Export paper cases - read from validate output artifacts."""
     print(f"[Export] Generating paper cases...")
 
-    runs = []
+    # Load data from validate artifacts (uses metadata.json, triage_results.json)
+    cases_by_type = {}
     for p in input_paths:
         try:
-            runs.append(load_run_data(p))
-            print(f"[Export] Loaded: {p}")
+            # Load metadata
+            metadata_path = p / "metadata.json"
+            triage_path = p / "triage_results.json"
+            results_path = p / "execution_results.jsonl"
+            cases_path = p / "cases.jsonl"
+
+            if not all([metadata_path.exists(), results_path.exists(), cases_path.exists()]):
+                print(f"[Export] Skipped: {p} (missing required artifacts)")
+                continue
+
+            with open(metadata_path, 'r') as f:
+                metadata = json.load(f)
+            with open(cases_path, 'r') as f:
+                cases = [json.loads(line) for line in f]
+
+            # Load triage results if available
+            bugs = []
+            if triage_path.exists():
+                with open(triage_path, 'r') as f:
+                    bugs = json.load(f)
+
+            print(f"[Export] Loaded: {p} ({len(bugs)} bugs found)")
+
+            # Group by bug type for representative cases
+            for bug in bugs:
+                bug_type = bug.get('final_type', 'unknown')
+                if bug_type not in cases_by_type:
+                    cases_by_type[bug_type] = []
+                cases_by_type[bug_type].append({
+                    'metadata': metadata,
+                    'bug': bug,
+                    'case': next((c for c in cases if c.get('case_id') == bug.get('case_id')), None)
+                })
+
         except FileNotFoundError as e:
             print(f"[Export] Skipped: {p} ({e})")
         except (json.JSONDecodeError, KeyError) as e:
             print(f"[Export] Skipped: {p} (invalid data: {e})")
 
-    if not runs:
-        print("[Export] No valid runs found")
+    if not cases_by_type:
+        print("[Export] No bugs found - paper cases require bug findings")
+        # Generate empty report
+        output_file.write_text("# Paper Cases\n\nNo bug candidates found in the provided runs.\n")
+        print(f"[Export] Paper cases: {output_file} (0 cases)")
         return
 
-    cases = find_representative_cases(runs)
-    write_case_studies_markdown(cases, output_file)
-    print(f"[Export] Paper cases: {output_file} ({len(cases)} cases)")
+    # Generate markdown
+    lines = ["# Paper Cases\n\n"]
+    lines.append(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+    lines.append(f"**Total Bug Types**: {len(cases_by_type)}\n\n")
+
+    for bug_type, cases_list in cases_by_type.items():
+        lines.append(f"## {bug_type.upper()}\n\n")
+        for case_data in cases_list[:1]:  # One representative per type
+            bug = case_data['bug']
+            case = case_data['case']
+            lines.append(f"### Case: {bug.get('case_id', 'unknown')}\n\n")
+            lines.append(f"**Rationale**: {bug.get('rationale', 'N/A')}\n\n")
+            if case:
+                lines.append(f"**Operation**: {case.get('operation', 'unknown')}\n")
+                lines.append(f"**Params**: {json.dumps(case.get('params', {}), indent=2)}\n\n")
+            lines.append("---\n\n")
+
+    output_file.write_text(''.join(lines))
+    print(f"[Export] Paper cases: {output_file} ({len(cases_by_type)} types)")
 
 
 def _export_summary(input_paths: List[Path], output_file: Path):
-    """Export summary - reuse existing summarize_runs.py."""
+    """Export summary - read summary.json directly from validate outputs."""
     print(f"[Export] Generating summary...")
 
     summaries = []
     for p in input_paths:
         try:
-            summaries.append(summarize_single_run(p))
-            print(f"[Export] Summarized: {p}")
+            # Try summary.json first (created by validate workflow)
+            summary_path = p / "summary.json"
+            if summary_path.exists():
+                with open(summary_path, 'r') as f:
+                    summary = json.load(f)
+                    summaries.append(summary)
+                    print(f"[Export] Loaded summary: {p}")
+            else:
+                # Fallback to analysis script (expects run_metadata.json)
+                summary = summarize_single_run(p)
+                summaries.append(summary)
+                print(f"[Export] Summarized: {p}")
         except FileNotFoundError as e:
             print(f"[Export] Skipped: {p} ({e})")
         except (json.JSONDecodeError, KeyError) as e:
@@ -118,7 +180,26 @@ def _export_summary(input_paths: List[Path], output_file: Path):
         print("[Export] No valid runs found")
         return
 
-    write_summary_markdown(summaries, output_file)
+    # Generate markdown from summaries
+    lines = ["# Test Summary\n\n"]
+    for summary in summaries:
+        run_id = summary.get("run_id", "unknown")
+        db_type = summary.get("db_type", "unknown")
+        lines.append(f"## {run_id}\n\n")
+        lines.append(f"- **Database**: {db_type}\n")
+        lines.append(f"- **Total Cases**: {summary.get('total_cases', 0)}\n")
+        lines.append(f"- **Total Bugs**: {summary.get('total_bugs', 0)}\n")
+
+        bug_counts = summary.get('bug_candidate_counts_by_type', {})
+        if bug_counts:
+            lines.append(f"- **Bugs by Type**:\n")
+            for bug_type, count in bug_counts.items():
+                lines.append(f"  - {bug_type}: {count}\n")
+
+        lines.append(f"- **Precondition Filtered**: {summary.get('precondition_filtered_count', 0)}\n")
+        lines.append(f"- **Non-Bugs**: {summary.get('non_bug_count', 0)}\n\n")
+
+    output_file.write_text(''.join(lines))
     print(f"[Export] Summary: {output_file} ({len(summaries)} runs)")
 
 
