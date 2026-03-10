@@ -87,6 +87,8 @@ class MilvusAdapter(AdapterBase):
                 return self._get_load_state(params)
             elif operation == "count_entities":
                 return self._count_entities(params)
+            elif operation == "describe_collection":
+                return self._describe_collection(params)
             else:
                 return {
                     "status": "error",
@@ -784,6 +786,95 @@ class MilvusAdapter(AdapterBase):
                 "status": "error",
                 "error": str(e),
                 "operation": "count_entities"
+            }
+
+    def _describe_collection(self, params: Dict) -> Dict[str, Any]:
+        """Describe collection schema and metadata.
+
+        Provides comprehensive schema information including:
+        - Field names, types, and properties
+        - Vector dimension
+        - Entity count
+        - Primary key field
+        - Shard and partition information
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Name of collection to describe
+
+        Returns:
+            Response dict with:
+                - status (str): "success" or "error"
+                - operation (str): "describe_collection"
+                - collection_name (str)
+                - data (dict): {
+                    - fields: List[Dict] with field info
+                    - dimension: int
+                    - entity_count: int
+                    - primary_key: str
+                    - num_shards: int
+                    - consistency_level: int
+                    - auto_id: bool
+                }
+        """
+        collection_name = params.get("collection_name")
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+
+            # Use describe() which returns comprehensive dict
+            description = collection.describe()
+
+            # Build field info from describe()["fields"]
+            fields_info = []
+            dimension = None
+            primary_key = None
+
+            for field in description["fields"]:
+                field_info = {
+                    "name": field["name"],
+                    "type": field["type"].name,  # DataType enum has .name attribute
+                    "is_primary": field.get("is_primary", False),
+                    "field_id": field.get("field_id", None)
+                }
+
+                # Add type-specific params
+                if "params" in field and field["params"]:
+                    field_info["params"] = field["params"]
+                    # Extract dimension for vector fields
+                    if "dim" in field["params"]:
+                        if dimension is None:  # First vector field
+                            dimension = field["params"]["dim"]
+
+                fields_info.append(field_info)
+
+                # Track primary key
+                if field.get("is_primary", False):
+                    primary_key = field["name"]
+
+            return {
+                "status": "success",
+                "operation": "describe_collection",
+                "collection_name": collection_name,
+                "data": [{
+                    "fields": fields_info,
+                    "dimension": dimension,
+                    "entity_count": collection.num_entities,
+                    "primary_key": primary_key,
+                    "num_shards": description.get("num_shards", 1),
+                    "consistency_level": description.get("consistency_level", 2),
+                    "auto_id": description.get("auto_id", False),
+                    "description": description.get("description", ""),
+                    "properties": description.get("properties", {})
+                }]
+            }
+
+        except Exception as e:
+            return {
+                "status": "error",
+                "operation": "describe_collection",
+                "collection_name": collection_name,
+                "error": str(e)
             }
 
     def _flush(self, params: Dict) -> Dict[str, Any]:
