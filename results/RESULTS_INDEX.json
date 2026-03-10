@@ -1,7 +1,21 @@
 {
-  "last_updated": "2026-03-10T17:51:49.775802",
-  "total_runs": 36,
+  "last_updated": "2026-03-10T17:57:17.808836",
+  "total_runs": 37,
   "entries": [
+    {
+      "run_id": "r6a-20260310-175506",
+      "result_file": "results\\r6a_20260310-175506.json",
+      "timestamp": "2026-03-10T17:55:06.218681",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R6A Consistency / Visibility",
+      "total_cases": 2,
+      "classifications": {
+        "OBSERVATION": 2
+      },
+      "file_size_bytes": 4311
+    },
     {
       "run_id": "r6a-20260310-175111",
       "result_file": "results\\r6a_20260310-175111.json",
@@ -586,7 +600,7 @@
       "campaign": null,
       "total_cases": 0,
       "classifications": {},
-      "file_size_bytes": 18930
+      "file_size_bytes": 18009
     }
   ]
 }
