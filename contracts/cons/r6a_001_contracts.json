@@ -1,0 +1,126 @@
+{
+  "contract_family": "CONS",
+  "campaign": "R6A-001",
+  "version": "1.0",
+  "description": "Consistency / Visibility contracts for Milvus v2.6.10",
+  "contracts": [
+    {
+      "contract_id": "CONS-001",
+      "name": "Insert Return vs Storage Visibility",
+      "statement": "insert() returns immediately, but storage_count visibility requires flush",
+      "semantic_area": "insert_visibility",
+      "oracle_strategy": "CONSERVATIVE",
+      "preconditions": [
+        "collection exists",
+        "no prior data"
+      ],
+      "postconditions": [
+        "insert_count equals N",
+        "storage_count requires flush"
+      ],
+      "invariants": [],
+      "framework_level_candidate": false,
+      "milvus_specific": true,
+      "confidence": "MEDIUM"
+    },
+    {
+      "contract_id": "CONS-002",
+      "name": "Flush Effect on Storage vs Search Visibility",
+      "statement": "flush enables storage_count visibility, but search visibility requires index update",
+      "semantic_area": "flush_visibility",
+      "oracle_strategy": "CONSERVATIVE",
+      "preconditions": [
+        "collection exists with index",
+        "no prior data"
+      ],
+      "postconditions": [
+        "flush enables storage_count",
+        "index update enables search"
+      ],
+      "invariants": [],
+      "framework_level_candidate": false,
+      "milvus_specific": true,
+      "confidence": "MEDIUM"
+    },
+    {
+      "contract_id": "CONS-003",
+      "name": "Load State Effect on Search Visibility",
+      "statement": "search requires loaded collection; unloaded collection returns EXPECTED_FAILURE",
+      "semantic_area": "load_visibility",
+      "oracle_strategy": "STRICT",
+      "preconditions": [
+        "collection exists with data and index",
+        "collection is unloaded"
+      ],
+      "postconditions": [
+        "search pre-load fails",
+        "search post-load succeeds"
+      ],
+      "invariants": [
+        "load gate is enforced"
+      ],
+      "framework_level_candidate": true,
+      "milvus_specific": false,
+      "confidence": "HIGH"
+    },
+    {
+      "contract_id": "CONS-004",
+      "name": "Insert-Search Timing Window",
+      "statement": "insert → search without flush has deterministic (non-flush) behavior",
+      "semantic_area": "timing_visibility",
+      "oracle_strategy": "CONSERVATIVE",
+      "preconditions": [
+        "collection exists, loaded, with index",
+        "no prior data"
+      ],
+      "postconditions": [
+        "search without flush returns 0",
+        "wait without flush doesn't enable search"
+      ],
+      "invariants": [],
+      "framework_level_candidate": false,
+      "milvus_specific": true,
+      "confidence": "MEDIUM"
+    },
+    {
+      "contract_id": "CONS-005",
+      "name": "Release Preserves Storage Data",
+      "statement": "release() preserves storage_count; reload restores search visibility",
+      "semantic_area": "release_consistency",
+      "oracle_strategy": "STRICT",
+      "preconditions": [
+        "collection exists with data",
+        "collection is loaded"
+      ],
+      "postconditions": [
+        "num_entities unchanged after release",
+        "search post-reload matches baseline"
+      ],
+      "invariants": [
+        "data preservation across release"
+      ],
+      "framework_level_candidate": true,
+      "milvus_specific": false,
+      "confidence": "HIGH"
+    },
+    {
+      "contract_id": "CONS-006",
+      "name": "Flush Idempotence",
+      "statement": "multiple flush calls are idempotent (no side effects)",
+      "semantic_area": "flush_idempotence",
+      "oracle_strategy": "CONSERVATIVE",
+      "preconditions": [
+        "collection exists with data"
+      ],
+      "postconditions": [
+        "second flush has no effect"
+      ],
+      "invariants": [
+        "flush is idempotent"
+      ],
+      "framework_level_candidate": false,
+      "milvus_specific": false,
+      "confidence": "MEDIUM"
+    }
+  ]
+}

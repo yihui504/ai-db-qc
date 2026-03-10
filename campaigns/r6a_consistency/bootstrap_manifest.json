@@ -1,0 +1,39 @@
+{
+  "campaign_name": "r6a_consistency_visibility",
+  "campaign_id": "R6A-001",
+  "generated_at": "2026-03-10T17:39:33.506602",
+  "input_config": "campaigns\\r6a_consistency\\config.yaml",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "docs\\plans\\R6A-001_PLAN.md"
+    },
+    {
+      "type": "contract_spec",
+      "path": "contracts\\cons\\r6a_001_contracts.json"
+    },
+    {
+      "type": "generator",
+      "path": "casegen\\generators\\r6a_001_generator.py"
+    },
+    {
+      "type": "oracle",
+      "path": "pipeline\\oracles\\r6a_001_oracle.py"
+    },
+    {
+      "type": "smoke_runner",
+      "path": "scripts\\run_r6a_001_smoke.py"
+    },
+    {
+      "type": "report_template",
+      "path": "docs\\reports\\R6A-001_REPORT_TEMPLATE.md"
+    },
+    {
+      "type": "handoff_template",
+      "path": "docs\\handoffs\\R6A-001_HANDOFF_TEMPLATE.md"
+    }
+  ],
+  "mvp_note": "Single contract family supported. Multi-family coming later.",
+  "capability_registry_snapshot": "capabilities/milvus_capabilities.json",
+  "contract_coverage_snapshot": null
+}

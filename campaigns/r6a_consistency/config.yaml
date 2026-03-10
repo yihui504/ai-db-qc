@@ -1,0 +1,43 @@
+# campaigns/r6a_consistency/config.yaml
+# R6A Consistency / Visibility Campaign - First Slice (Milvus-only)
+
+campaign_name: "r6a_consistency_visibility"
+campaign_id: "R6A-001"
+target_db: "Milvus"
+adapter: "milvus_adapter"
+# MVP: One family only
+contract_families:
+  - "CONS"  # New family: Consistency / Visibility contracts
+goal: "Verify write visibility / query visibility / basic consistency semantics in Milvus v2.6.10. First slice focuses on deterministic, observable timing behaviors around insert, flush, load, and search operations."
+mode: "REAL"
+
+constraints:
+  max_cases: 6
+  runtime_budget: "30m"
+  required_operations:
+    - "create_collection"
+    - "insert"
+    - "flush"
+    - "load"
+    - "search"
+    - "count_entities"
+
+preferences:
+  priority_contracts:
+    - "CONS-001"  # Insert immediate return vs storage visibility
+    - "CONS-002"  # Flush effect on storage vs search visibility
+    - "CONS-003"  # Load state effect on search visibility
+    - "CONS-004"  # Timing window between insert and search
+  skip_contracts: []
+
+input_registries:
+  capability_registry: "capabilities/milvus_capabilities.json"
+  contract_coverage: "contracts/CONTRACT_COVERAGE_INDEX.json"
+  validation_matrix: "contracts/VALIDATION_MATRIX.json"
+
+# Campaign context
+scope_note: "Milvus-only, first slice. No distributed testing, no performance benchmarks."
+semantic_domain: "Consistency / Visibility"
+baseline_contracts:
+  - "ILC-009"  # Post-Insert Visibility (INDEX family, already validated)
+  - "ILC-009b"  # Follow-up that confirmed flush requirement
