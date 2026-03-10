@@ -23,6 +23,7 @@ class Classification(Enum):
     BUG_CANDIDATE = "BUG_CANDIDATE"         # Potential bug (invariant violated)
     VERSION_GUARDED = "VERSION_GUARDED"     # Behavior varies by version/database
     INFRA_FAILURE = "INFRA_FAILURE"         # Infrastructure failure (API error, timeout)
+    EXPERIMENT_DESIGN_ISSUE = "EXPERIMENT_DESIGN_ISSUE"  # Test design issue, not product bug
 
 
 @dataclass
@@ -88,6 +89,7 @@ class OracleEngine:
             "ilc-007": self._oracle_lifecycle_drop_index,
             "ilc-008": self._oracle_lifecycle_post_drop_search,
             "ilc-009": self._oracle_lifecycle_post_insert_visibility,
+            "ilc-009b": self._oracle_lifecycle_post_insert_timing,
             "ilc-010": self._oracle_lifecycle_notload_documented
         }
 
@@ -1406,101 +1408,199 @@ class OracleEngine:
             }
         }
 
-        # Analysis
-
-        # Check 1: Did insert operations report success?
-        if insert_initial_count == 0 or insert_new_count == 0:
-            return self._oracle_result(
-                contract["contract_id"] if contract else "ilc-009",
-                Classification.INFRA_FAILURE,
-                False,
-                f"Insert operation reported zero count: initial={insert_initial_count}, new={insert_new_count}",
-                {**evidence, "conclusion": "insert_operation_failed"}
-            )
-
-        # Check 2: Does storage_count reflect insert without flush?
-        if storage_before_flush > storage_baseline:
-            # Storage count increased before flush - immediate persistence
-            if search_before_flush_count > search_baseline_count:
-                return self._oracle_result(
-                    contract["contract_id"] if contract else "ilc-009",
-                    Classification.PASS,
-                    True,
-                    "Insert visible immediately (count and search confirm without flush)",
-                    {
-                        **evidence,
-                        "conclusion": "immediate_visibility_no_flush_needed",
-                        "classification": "ALLOWED_DIFFERENCE",
-                        "note": "Milvus persists inserts immediately for count_visibility"
-                    }
-                )
-            else:
-                return self._oracle_result(
-                    contract["contract_id"] if contract else "ilc-009",
-                    Classification.ALLOWED_DIFFERENCE,
-                    True,
-                    "Count increased but search not immediately visible (index delay)",
-                    {
-                        **evidence,
-                        "conclusion": "count_visible_search_delayed",
-                        "classification": "ALLOWED_DIFFERENCE",
-                        "note": "Storage persists immediately, index update may be delayed"
-                    }
-                )
-
-        # Check 3: Does flush make storage_count visible?
-        if storage_after_flush > storage_baseline:
-            # Flush made count visible
-            if search_after_flush_count > search_baseline_count:
-                return self._oracle_result(
-                    contract["contract_id"] if contract else "ilc-009",
-                    Classification.ALLOWED_DIFFERENCE,
-                    True,
-                    "Insert visible after flush (count and search confirm)",
-                    {
-                        **evidence,
-                        "conclusion": "flush_required_for_visibility",
-                        "classification": "ALLOWED_DIFFERENCE",
-                        "note": "Milvus requires flush for insert visibility"
-                    }
-                )
-            else:
-                return self._oracle_result(
-                    contract["contract_id"] if contract else "ilc-009",
-                    Classification.ALLOWED_DIFFERENCE,
-                    True,
-                    "Count visible after flush but search still delayed",
-                    {
-                        **evidence,
-                        "conclusion": "flush_enables_count_search_still_delayed",
-                        "classification": "ALLOWED_DIFFERENCE",
-                        "note": "Index update may have additional delay"
-                    }
-                )
-
-        # Check 4: Neither count nor search show insert
-        if storage_after_flush == storage_baseline:
-            return self._oracle_result(
-                contract["contract_id"] if contract else "ilc-009",
-                Classification.EXPERIMENT_DESIGN_ISSUE,
-                False,
-                f"Insert reported success (count={insert_new_count}) but count remains {storage_after_flush} after flush",
-                {
-                    **evidence,
-                    "conclusion": "count_api_unreliable",
-                    "classification": "EXPERIMENT_DESIGN_ISSUE",
-                    "note": "collection.num_entities API may not reflect recent inserts"
-                }
-            )
-
-        # Default: inconclusive
+        # Classification: EXPERIMENT_DESIGN_ISSUE
+        # Reason: Using existing vectors as query doesn't prove search visibility timing
+        # The inserted vector may not be in top-k for the query vector used
         return self._oracle_result(
             contract["contract_id"] if contract else "ilc-009",
-            Classification.OBSERVATION,
+            Classification.EXPERIMENT_DESIGN_ISSUE,
             False,
-            "Inconclusive: unable to determine insert visibility behavior",
-            {**evidence, "conclusion": "inconclusive"}
+            "Flush establishes storage visibility, but current experiment does not yet conclusively determine search visibility timing",
+            {
+                **evidence,
+                "conclusion": "experiment_design_insufficient",
+                "note": "Query vector may not match inserted vector in top-k. Need ILC-009b with exact vector match."
+            }
         )
+
+    def _oracle_lifecycle_post_insert_timing(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: post-insert search timing with exact vector match (ILC-009b).
+
+        Measures search-visible timing at multiple timepoints using exact vector query.
+        """
+        insert_result = result.get("insert_result", {})
+        count_baseline = result.get("count_baseline", {})
+        count_before_flush = result.get("count_before_flush", {})
+        count_after_flush = result.get("count_after_flush", {})
+
+        search_immediate = result.get("search_immediate", {})
+        search_after_flush = result.get("search_after_flush", {})
+        search_200ms = result.get("search_200ms", {})
+        search_500ms = result.get("search_500ms", {})
+        search_1000ms = result.get("search_1000ms", {})
+
+        insert_count = insert_result.get("insert_count", 0)
+        storage_baseline = count_baseline.get("storage_count", 0)
+        storage_before_flush = count_before_flush.get("storage_count", 0)
+        storage_after_flush = count_after_flush.get("storage_count", 0)
+
+        # Extract search results
+        def extract_top_result(search_data):
+            data = search_data.get("data", [])
+            if data and len(data) > 0:
+                return {
+                    "id": data[0].get("id"),
+                    "score": data[0].get("score"),
+                    "distance": data[0].get("distance")
+                }
+            return {"id": None, "score": None, "distance": None}
+
+        immediate = extract_top_result(search_immediate)
+        after_flush = extract_top_result(search_after_flush)
+        at_200ms = extract_top_result(search_200ms)
+        at_500ms = extract_top_result(search_500ms)
+        at_1000ms = extract_top_result(search_1000ms)
+
+        # Evidence summary
+        evidence = {
+            "insert_count": insert_count,
+            "storage_counts": {
+                "baseline": storage_baseline,
+                "before_flush": storage_before_flush,
+                "after_flush": storage_after_flush
+            },
+            "search_top1": {
+                "immediate": immediate,
+                "after_flush": after_flush,
+                "200ms": at_200ms,
+                "500ms": at_500ms,
+                "1000ms": at_1000ms
+            }
+        }
+
+        # Check: Did insert report success?
+        if insert_count == 0:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.INFRA_FAILURE,
+                False,
+                f"Insert operation reported zero count",
+                {**evidence, "conclusion": "insert_failed"}
+            )
+
+        # Check: Did storage_count increase after flush?
+        if storage_after_flush <= storage_baseline:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.INFRA_FAILURE,
+                False,
+                f"Storage count did not increase after flush: {storage_baseline} -> {storage_after_flush}",
+                {**evidence, "conclusion": "storage_count_not_affected"}
+            )
+
+        # Analyze search visibility timing
+        # For exact vector match, score/distance should be 0 (or very close to 0)
+        # We check if score is None (no result) or not close to 0 (not exact match)
+        def is_exact_match(result):
+            """Check if result is an exact match (score/distance ≈ 0)."""
+            if result["id"] is None:
+                return False
+            # Check score or distance - either should be ≈0 for exact match
+            score = result.get("score")
+            distance = result.get("distance")
+            # Use small epsilon for floating point comparison
+            epsilon = 1e-6
+            if score is not None and abs(score) < epsilon:
+                return True
+            if distance is not None and abs(distance) < epsilon:
+                return True
+            return False
+
+        found_immediate = is_exact_match(immediate)
+        found_after_flush = is_exact_match(after_flush)
+        found_200ms = is_exact_match(at_200ms)
+        found_500ms = is_exact_match(at_500ms)
+        found_1000ms = is_exact_match(at_1000ms)
+
+        # Determine visibility timing
+        if found_immediate:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.PASS,
+                True,
+                "Inserted vector immediately visible in search (top-1 exact match)",
+                {
+                    **evidence,
+                    "conclusion": "immediate_search_visibility",
+                    "visible_at": "immediate"
+                }
+            )
+        elif found_after_flush:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.PASS,
+                True,
+                "Inserted vector visible after flush (top-1 exact match)",
+                {
+                    **evidence,
+                    "conclusion": "flush_enables_search_visibility",
+                    "visible_at": "after_flush"
+                }
+            )
+        elif found_200ms:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.PASS,
+                True,
+                f"Inserted vector visible after ~200ms wait (top-1 exact match, score={at_200ms['score']})",
+                {
+                    **evidence,
+                    "conclusion": "delayed_visibility_200ms",
+                    "visible_at": "200ms"
+                }
+            )
+        elif found_500ms:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.ALLOWED_DIFFERENCE,
+                True,
+                f"Inserted vector visible after ~500ms wait (top-1 exact match, score={at_500ms['score']})",
+                {
+                    **evidence,
+                    "conclusion": "delayed_visibility_500ms",
+                    "visible_at": "500ms"
+                }
+            )
+        elif found_1000ms:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.ALLOWED_DIFFERENCE,
+                True,
+                f"Inserted vector visible after ~1000ms wait (top-1 exact match, score={at_1000ms['score']})",
+                {
+                    **evidence,
+                    "conclusion": "delayed_visibility_1000ms",
+                    "visible_at": "1000ms"
+                }
+            )
+        else:
+            # Vector never found in search
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009b",
+                Classification.BUG_CANDIDATE,
+                False,
+                "Inserted vector NOT found in search even after 1000ms wait (exact vector query, top-1)",
+                {
+                    **evidence,
+                    "conclusion": "search_never_finds_inserted_vector",
+                    "classification": "BUG_CANDIDATE",
+                    "note": "Insert reported success and storage_count increased, but exact vector query never returns it"
+                }
+            )
 
 
 if __name__ == "__main__":

@@ -57,12 +57,18 @@ class MilvusAdapter(AdapterBase):
                 return self._create_collection(params)
             elif operation == "insert":
                 return self._insert(params)
+            elif operation == "insert_unique":
+                return self._insert(params)  # Same operation, different semantic use
+            elif operation == "search":
+                return self._search(params)
+            elif operation == "search_exact":
+                return self._search(params)  # Same operation, exact vector query
+            elif operation == "wait":
+                return self._wait(params)
             elif operation == "build_index":
                 return self._build_index(params)
             elif operation == "load":
                 return self._load(params)
-            elif operation == "search":
-                return self._search(params)
             elif operation == "filtered_search":
                 return self._filtered_search(params)
             elif operation == "drop_collection":
@@ -820,4 +826,40 @@ class MilvusAdapter(AdapterBase):
                 "status": "error",
                 "error": str(e),
                 "operation": "flush"
+            }
+
+    def _wait(self, params: Dict) -> Dict[str, Any]:
+        """Wait for specified duration (for timing experiments).
+
+        Args:
+            params: Dict with keys:
+                - duration_ms (int): Wait duration in milliseconds
+
+        Returns:
+            Response dict with status and actual wait time
+        """
+        import time
+
+        duration_ms = params.get("duration_ms", 0)
+
+        try:
+            start_time = time.time()
+            time.sleep(duration_ms / 1000.0)
+            elapsed_ms = int((time.time() - start_time) * 1000)
+
+            return {
+                "status": "success",
+                "operation": "wait",
+                "duration_ms_requested": duration_ms,
+                "duration_ms_actual": elapsed_ms,
+                "data": [{
+                    "waited_ms": elapsed_ms,
+                    "requested_ms": duration_ms
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "wait"
             }

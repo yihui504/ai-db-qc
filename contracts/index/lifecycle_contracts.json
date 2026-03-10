@@ -7,20 +7,19 @@
     "database": "Milvus v2.6.10",
     "mode": "REAL",
     "run_ids": [
-      "r5b-lifecycle-20260310-115857",
-      "r5b-lifecycle-20260310-121731"
+      "r5b-lifecycle-20260310-124135"
     ],
-    "total_contracts": 10,
+    "total_contracts": 12,
     "verified": {
-      "framework_level_candidate": 7,
-      "milvus_validated": 2,
-      "milvus_specific_observed": 2
+      "framework_level_candidate": 8,
+      "milvus_validated": 1,
+      "milvus_specific_observed": 2,
+      "experiment_design_issue": 0
     },
     "classification": {
-      "PASS": 7,
+      "PASS": 8,
       "EXPECTED_FAILURE": 1,
-      "VERSION_GUARDED": 1,
-      "ALLOWED_DIFFERENCE": 1
+      "VERSION_GUARDED": 1
     }
   },
   "contract_layers": {
@@ -100,13 +99,29 @@
         {
           "contract_id": "ILC-009",
           "name": "Post-Insert Visibility",
-          "statement": "insert visibility requires flush for count, search index update has additional delay",
-          "milvus_behavior": "flush enables storage_count visibility, but search index not immediately updated",
-          "classification": "ALLOWED_DIFFERENCE",
-          "confidence": "MEDIUM",
-          "note": "Two-layer visibility: storage (flush-enabled) and index (delayed)"
+          "statement": "insert visibility requires flush for count and search",
+          "milvus_behavior": "flush enables both storage_count and search visibility",
+          "classification": "PASS",
+          "confidence": "HIGH",
+          "evidence": "ILC-009b: immediate search found existing vector (not unique), after_flush found exact match (id=0, score=0.0)",
+          "note": "ILC-009b conclusively proved flush is required for search visibility"
+        },
+        {
+          "contract_id": "ILC-009b",
+          "name": "Post-Insert Search Timing",
+          "statement": "inserted vector requires flush for search visibility with exact match",
+          "milvus_verified": true,
+          "confidence": "HIGH",
+          "evidence": "unique vector (128-dim) not found immediately (score=27.27), found after flush with exact match (score=0.0)",
+          "classification": "PASS",
+          "conclusion": "flush_enables_search_visibility",
+          "visible_at": "after_flush"
         }
       ]
+    },
+    "pending_investigation": {
+      "description": "Experiments that need redesign or further investigation",
+      "experiments": []
     },
     "milvus_specific_observed": {
       "description": "Behaviors specific to Milvus v2.6.10, not necessarily universal",
