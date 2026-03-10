@@ -12,9 +12,9 @@
     "round2_complete": true,
     "verified": {
       "strongly_validated": 2,
-      "partially_validated": 3,
+      "partially_validated": 2,
       "observational_only": 1,
-      "still_inconclusive": 0
+      "still_inconclusive": 1
     },
     "classification": {
       "PASS": 3,
@@ -168,13 +168,23 @@
           "oracle_strategy": "CONSERVATIVE",
           "round2_result": "OBSERVATION",
           "round2_case": "R5D-006",
-          "verification_status": "observational_only",
-          "validation_level": "Observational - Filter executes but returns 0 results; effectiveness not confirmed",
+          "verification_status": "still_inconclusive",
+          "validation_level": "Still Inconclusive - Filter path accepted, filter semantics not validated",
           "framework_candidate": false,
           "cross_db_validated": false,
           "universal_candidate": "NO - Evidence insufficient",
-          "universal_note": "Filter executes without error but returns 0 results. Cannot determine if filter actually works. Evidence insufficient to draw conclusion about filter semantics.",
+          "universal_note": "Filter expression syntax is accepted (no error thrown), but effectiveness cannot be determined from 0 results. Only the filter PATH is validated; filter BEHAVIOR itself is NOT yet validated.",
+          "what_was_validated": [
+            "Filter expression syntax is accepted (no error thrown)",
+            "Filter execution path works (query doesn't crash)"
+          ],
+          "what_was_NOT_validated": [
+            "Filter effectiveness (returns 0 results - cannot confirm filtering works)",
+            "Whether filter correctly matches entities",
+            "Whether non-matching entities are excluded"
+          ],
           "re_evaluation": "Closer to EXPERIMENT_DESIGN_ISSUE than true validation. Current evidence is INSUFFICIENT to determine filter semantics.",
+          "follow_up_experiment": "SCH-006b (optional): Direct query to verify data insertion, alternative filter expressions, non-dynamic field comparison",
           "preconditions": [
             "collection_v2 created with scalar field",
             "Data inserted WITH scalar field values"
@@ -274,25 +284,27 @@
     "key_finding": "Multi-collection schema version comparison successfully validates schema evolution semantics without in-place mutation support"
   },
   "final_summary": {
-    "status": "SOLIDIFIED",
+    "status": "PHASE-CLOSED",
     "date": "2026-03-10",
     "total_cases": 6,
     "strongly_validated": 2,
-    "partially_validated": 3,
+    "partially_validated": 2,
     "observational_only": 1,
-    "still_inconclusive": 0,
+    "still_inconclusive": 1,
     "key_conclusions": {
       "cross_collection_isolation": "Strongly validated - Framework-level candidate for cross-db validation",
       "query_compatibility": "Partially validated - Basic vector search stable on Milvus",
       "metadata_accuracy": "Partially validated - Structure accurate, timing behavior documented",
       "null_semantics": "Observational only - Insert/search paths work, null value not observable",
-      "filter_semantics": "Observational only - Filter executes, effectiveness inconclusive"
+      "filter_semantics": "Still inconclusive - Filter path accepted, filter semantics not validated"
     },
     "universal_claims_removed": [
       "SCH-001: Changed from 'YES' to 'Framework-level candidate (NOT Universal)'",
       "SCH-008: Changed from 'YES' to 'Framework-level candidate (NOT Universal)'"
     ],
-    "no_further_expansion": "R5D conclusions solidified. Do not pursue full null/filter semantics validation (low ROI)."
+    "phase_closed": "R5D main campaign phase-closed",
+    "what_remains_open": "SCH-006b optional follow-up (single minimal experiment, not a new campaign)",
+    "no_broad_expansion": "No broad expansion into many new cases. SCH-006b is a single optional follow-up if resources permit."
   },
   "dropped": {
     "description": "Dropped - Operation not supported in SDK",

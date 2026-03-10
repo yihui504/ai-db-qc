@@ -48,13 +48,12 @@
 
 ---
 
-### Partially Validated (3 contracts)
+### Partially Validated (2 contracts)
 
 | Contract | Case | Classification | Limitation |
 |----------|------|----------------|------------|
 | **SCH-002** Query Compatibility | R5D-003 | PASS | Verified on simple queries; complex queries not tested |
 | **SCH-004** Metadata Accuracy | R5D-001 | OBSERVATION | Schema structure accurate; entity count has timing behavior |
-| **SCH-006** Filter Semantics | R5D-006 | OBSERVATION | Filter executes but returns 0 results; effectiveness not confirmed |
 
 **Status**: Milvus-validated behavior with documented limitations
 
@@ -67,6 +66,18 @@
 | **SCH-005** Null Semantics | R5D-005 | Nullable field insert works; null value not observable via search; full semantics not validated |
 
 **Status**: Deterministic behavior observed but null read semantics not conclusively tested
+
+---
+
+### Still Inconclusive (1 contract)
+
+| Contract | Case | Finding |
+|----------|------|---------|
+| **SCH-006** Filter Semantics | R5D-006 | Filter path accepted but filter semantics not validated |
+
+**Status**: Filter expression syntax is accepted (no error), but effectiveness cannot be determined from 0 results. Filter semantics itself is NOT yet validated.
+
+**Note**: Only the filter PATH is validated (syntax accepted). Filter BEHAVIOR (whether it correctly filters) is still inconclusive.
 
 ---
 
@@ -251,22 +262,33 @@
 
 ---
 
-## Recommendation: No Further Expansion
+## Recommendation: R5D Main Campaign Phase-Closed
 
-**Status**: R5D conclusions should be SOLIDIFIED as-is.
+**Status**: R5D main campaign can be PHASE-CLOSED.
 
-**Reasons**:
-1. Core multi-collection isolation strongly validated
-2. Query compatibility partially validated (sufficient for P0)
-3. Field semantics observed but not fully validated (acceptable boundary)
-4. No bugs found requiring investigation
-5. Further expansion would diminish ROI
+**What's Closed**:
+- Core P0 validation (6 cases) complete
+- Multi-collection isolation strongly validated
+- All classifications interpretable
+- No bugs requiring investigation
 
-**Next Steps**:
-- Document current conclusions as R5D final state
-- Use framework-level candidates (SCH-001, SCH-008) for cross-database validation
-- Leave field semantics (SCH-005, SCH-006) as observational findings
-- DO NOT pursue full null/filter semantics validation (low ROI)
+**What Remains Open** (Optional):
+
+**SCH-006b: Minimal Filter Semantics Follow-up**
+
+If resources allow, ONE minimal experiment to determine filter effectiveness:
+- Direct query to verify data was actually inserted correctly
+- Alternative filter expression (e.g., different syntax)
+- Non-dynamic field comparison (as control)
+
+**Scope**: Single focused experiment, NOT a new campaign
+
+**Decision Point**: Only if resources permit and cross-database comparison is needed.
+
+**What NOT to Do**:
+- No broad expansion into many new cases
+- No new campaigns started from R5D
+- No pursuit of full null/filter semantics validation (low ROI)
 
 ---
 
