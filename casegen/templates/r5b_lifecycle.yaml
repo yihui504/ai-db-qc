@@ -362,3 +362,136 @@ templates:
       check: "load_state == NotLoad AND index_metadata_not_exists"
       reasoning: "Documented behavior: newly created collection is NotLoad until explicitly loaded"
     priority: "MEDIUM"
+
+  # ========================================
+  # ILC-008: Post-Drop Search Semantics
+  # ========================================
+  - template_id: ilc-008
+    name: "Post-Drop Search Semantics"
+    contract_id: "ILC-008"
+    initial_state: "INDEX_DROPPED"
+    target_state: "OBSERVE"
+    description: "Verify search behavior after drop_index (exploratory)"
+    exploratory: true
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 5
+        store_as: "search_before_drop"
+      - step: 6
+        operation: release
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 7
+        operation: drop_index
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "drop_result"
+      - step: 8
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 9
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 5
+        store_as: "search_after_drop"
+      - step: 10
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "state_final"
+    oracle_expectation:
+      classification: "VERSION_GUARDED"
+      check: "observe_search_behavior_after_drop"
+      reasoning: "Post-drop search behavior may vary by database version"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-009: Post-Insert Visibility
+  # ========================================
+  - template_id: ilc-009
+    name: "Post-Insert Visibility"
+    contract_id: "ILC-009"
+    initial_state: "INDEX_LOADED"
+    target_state: "INDEX_LOADED"
+    description: "Verify newly inserted vectors are immediately visible"
+    exploratory: true
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: count_entities
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "count_before_insert"
+      - step: 6
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 5
+        store_as: "search_baseline"
+      - step: 7
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{query_vector_128}"
+      - step: 8
+        operation: count_entities
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "count_after_insert"
+      - step: 9
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 5
+        store_as: "search_new_vector"
+    oracle_expectation:
+      classification: "VERSION_GUARDED"
+      check: "post_insert_visibility"
+      reasoning: "Insert visibility may depend on index type and consistency level"
+    priority: "HIGH"

@@ -86,6 +86,8 @@ class OracleEngine:
             "ilc-005": self._oracle_lifecycle_release,
             "ilc-006": self._oracle_lifecycle_reload,
             "ilc-007": self._oracle_lifecycle_drop_index,
+            "ilc-008": self._oracle_lifecycle_post_drop_search,
+            "ilc-009": self._oracle_lifecycle_post_insert_visibility,
             "ilc-010": self._oracle_lifecycle_notload_documented
         }
 
@@ -1268,6 +1270,155 @@ class OracleEngine:
                 {
                     "load_state": load_state,
                     "index_metadata_exists": index_metadata_exists
+                }
+            )
+
+    def _oracle_lifecycle_post_drop_search(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: post-drop search behavior (exploratory).
+
+        ILC-008: Observe what happens when searching after drop_index.
+        """
+        search_before = result.get("search_before_drop", {})
+        search_after = result.get("search_after_drop", {})
+        drop_result = result.get("drop_result", {})
+        state_final = result.get("state_final", {})
+
+        # Check if drop succeeded
+        index_dropped = not drop_result.get("index_exists_after", True)
+
+        # Check search behavior after drop
+        search_before_data = search_before.get("data", [])
+        search_after_error = search_after.get("error")
+        search_after_data = search_after.get("data", [])
+
+        if not index_dropped:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-008",
+                Classification.OBSERVATION,
+                False,
+                "Index not dropped, cannot test post-drop search",
+                {"drop_result": drop_result}
+            )
+
+        if search_after_error:
+            # Search failed after drop (expected for most DBs)
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-008",
+                Classification.VERSION_GUARDED,
+                True,
+                f"Search fails after drop_index: {search_after_error}",
+                {
+                    "behavior": "error_after_drop",
+                    "error": search_after_error,
+                    "load_state": state_final.get("load_state")
+                }
+            )
+        elif len(search_after_data) == 0:
+            # Search returns empty after drop
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-008",
+                Classification.VERSION_GUARDED,
+                True,
+                "Search returns empty results after drop_index (no auto-reindex)",
+                {
+                    "behavior": "empty_after_drop",
+                    "results_before": len(search_before_data),
+                    "results_after": len(search_after_data),
+                    "load_state": state_final.get("load_state")
+                }
+            )
+        else:
+            # Search still works after drop (may use brute force)
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-008",
+                Classification.VERSION_GUARDED,
+                True,
+                f"Search returns results after drop_index (possible brute force fallback): {len(search_after_data)} results",
+                {
+                    "behavior": "fallback_to_brute_force",
+                    "results_before": len(search_before_data),
+                    "results_after": len(search_after_data),
+                    "load_state": state_final.get("load_state"),
+                    "note": "Database may fall back to flat search without index"
+                }
+            )
+
+    def _oracle_lifecycle_post_insert_visibility(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: post-insert visibility (exploratory).
+
+        ILC-009: Verify if newly inserted vectors are immediately visible.
+        """
+        count_before = result.get("count_before_insert", {})
+        count_after = result.get("count_after_insert", {})
+        search_baseline = result.get("search_baseline", {})
+        search_new_vector = result.get("search_new_vector", {})
+
+        storage_count_before = count_before.get("storage_count", 0)
+        storage_count_after = count_after.get("storage_count", 0)
+        search_new_data = search_new_vector.get("data", [])
+        search_new_error = search_new_vector.get("error")
+
+        # Check if storage count increased
+        count_increased = storage_count_after > storage_count_before
+
+        if not count_increased:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009",
+                Classification.INFRA_FAILURE,
+                False,
+                f"Insert did not increase storage count: {storage_count_before} -> {storage_count_after}",
+                {"storage_count_before": storage_count_before, "storage_count_after": storage_count_after}
+            )
+
+        # Check search visibility
+        if search_new_error:
+            # Search failed after insert
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009",
+                Classification.VERSION_GUARDED,
+                True,
+                f"New vector not immediately visible (search error): {search_new_error}",
+                {
+                    "visibility": "delayed_or_error",
+                    "storage_count_increased": True,
+                    "search_error": search_new_error,
+                    "note": "May need index rebuild or wait window"
+                }
+            )
+        elif len(search_new_data) == 0:
+            # Search returns empty for new vector
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009",
+                Classification.VERSION_GUARDED,
+                True,
+                "New vector not immediately visible (empty search results)",
+                {
+                    "visibility": "not_visible",
+                    "storage_count_increased": True,
+                    "search_results": 0,
+                    "note": "May need index refresh or consistency level adjustment"
+                }
+            )
+        else:
+            # New vector found in search
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-009",
+                Classification.PASS,
+                True,
+                f"New vector immediately visible: {len(search_new_data)} results found",
+                {
+                    "visibility": "immediate",
+                    "storage_count_increased": True,
+                    "search_results": len(search_new_data),
+                    "consistency_observed": "strong"
                 }
             )
 
