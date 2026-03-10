@@ -1,7 +1,22 @@
 {
-  "last_updated": "2026-03-10T17:14:22.647066",
-  "total_runs": 38,
+  "last_updated": "2026-03-10T17:51:49.775802",
+  "total_runs": 36,
   "entries": [
+    {
+      "run_id": "r6a-20260310-175111",
+      "result_file": "results\\r6a_20260310-175111.json",
+      "timestamp": "2026-03-10T17:51:11.621816",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R6A Consistency / Visibility",
+      "total_cases": 4,
+      "classifications": {
+        "OBSERVATION": 2,
+        "PASS": 2
+      },
+      "file_size_bytes": 7835
+    },
     {
       "run_id": "sch006b-20260310-171406",
       "result_file": "results\\sch006b_20260310-171406.json",
@@ -15,48 +30,6 @@
         "PASS": 3
       },
       "file_size_bytes": 147260
-    },
-    {
-      "run_id": "sch006b-20260310-171334",
-      "result_file": "results\\sch006b_20260310-171334.json",
-      "timestamp": "2026-03-10T17:13:34.526089",
-      "database_family": "Milvus",
-      "db_version": "v2.6.10",
-      "mode": "REAL",
-      "campaign": "SCH006B Filter Semantics Verification",
-      "total_cases": 3,
-      "classifications": {
-        "EXPERIMENT_DESIGN_ISSUE": 3
-      },
-      "file_size_bytes": 62513
-    },
-    {
-      "run_id": "sch006b-20260310-171225",
-      "result_file": "results\\sch006b_20260310-171225.json",
-      "timestamp": "2026-03-10T17:12:25.020079",
-      "database_family": "Milvus",
-      "db_version": "v2.6.10",
-      "mode": "REAL",
-      "campaign": "SCH006B Filter Semantics Verification",
-      "total_cases": 3,
-      "classifications": {
-        "EXPERIMENT_DESIGN_ISSUE": 3
-      },
-      "file_size_bytes": 31236
-    },
-    {
-      "run_id": "sch006b-20260310-171202",
-      "result_file": "results\\sch006b_20260310-171202.json",
-      "timestamp": "2026-03-10T17:12:02.486829",
-      "database_family": "Milvus",
-      "db_version": "v2.6.10",
-      "mode": "REAL",
-      "campaign": "SCH006B Filter Semantics Verification",
-      "total_cases": 3,
-      "classifications": {
-        "EXPERIMENT_DESIGN_ISSUE": 3
-      },
-      "file_size_bytes": 6456
     },
     {
       "run_id": "r5d-p05-20260310-141433",
@@ -613,7 +586,7 @@
       "campaign": null,
       "total_cases": 0,
       "classifications": {},
-      "file_size_bytes": 16790
+      "file_size_bytes": 18930
     }
   ]
 }
