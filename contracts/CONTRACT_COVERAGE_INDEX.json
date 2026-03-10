@@ -1,12 +1,13 @@
 {
-  "last_updated": "2026-03-10T16:47:58.006943",
-  "total_contracts": 29,
+  "last_updated": "2026-03-10T18:03:00.816059",
+  "total_contracts": 35,
   "summary": {
     "contract_counts_by_family": {
       "ANN": 5,
       "HYBRID": 3,
       "INDEX": 14,
-      "SCHEMA": 7
+      "SCHEMA": 7,
+      "CONS": 6
     },
     "coverage_counts_by_family": {
       "ANN": {
@@ -26,6 +27,10 @@
         "strongly_validated": 3,
         "unvalidated": 1,
         "observational_only": 3
+      },
+      "CONS": {
+        "strongly_validated": 2,
+        "partially_validated": 4
       }
     }
   },
@@ -870,6 +875,120 @@
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
       "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "CONS-001",
+      "family": "CONS",
+      "semantic_area": "insert_visibility",
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R6A Consistency / Visibility"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R6A-001",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Milvus-validated: insert() returns immediate, flush enables storage visibility"
+    },
+    {
+      "contract_id": "CONS-002",
+      "family": "CONS",
+      "semantic_area": "flush_visibility",
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R6A Consistency / Visibility"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R6A-002",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Milvus-validated: Two-stage visibility (flush\u2192storage, load\u2192search)"
+    },
+    {
+      "contract_id": "CONS-003",
+      "family": "CONS",
+      "semantic_area": "load_gate",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R6A Consistency / Visibility"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R6A-003",
+          "classification": "PASS"
+        }
+      ],
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Framework-level candidate, Milvus-validated: Load gate enforced, reload restores search"
+    },
+    {
+      "contract_id": "CONS-004",
+      "family": "CONS",
+      "semantic_area": "timing_visibility",
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R6A Consistency / Visibility"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R6A-004",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Milvus-validated, tested path only: Within 1s window, wait alone insufficient, flush required"
+    },
+    {
+      "contract_id": "CONS-005",
+      "family": "CONS",
+      "semantic_area": "release_consistency",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R6A Consistency / Visibility"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R6A-005",
+          "classification": "PASS"
+        }
+      ],
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Framework-level candidate, Milvus-validated: Release preserves storage, reload restores search"
+    },
+    {
+      "contract_id": "CONS-006",
+      "family": "CONS",
+      "semantic_area": "flush_stability",
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R6A Consistency / Visibility"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R6A-006",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Milvus-validated, tested path only: Repeated flush stable, no regressions"
     }
   ],
   "_generated_from": [

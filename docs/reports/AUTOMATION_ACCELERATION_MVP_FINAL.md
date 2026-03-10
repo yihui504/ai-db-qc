@@ -274,6 +274,51 @@ The automation foundation isn't just for scaffolding—it enabled a complete fol
 
 ---
 
+## Real-World Validation: R6A Consistency/Visibility Campaign
+
+**Campaign**: R6A-001 Consistency / Visibility
+**Date**: 2026-03-10
+**Status**: COMPLETE
+
+### Challenge
+Establish a new contract family (CONS) for consistency/visibility semantics on Milvus v2.6.10.
+
+### Automation Foundation Usage
+
+| Component | How It Helped | Time Saved |
+|-----------|---------------|------------|
+| **P1: Capability Registry** | Confirmed all 6 required operations validated | ~10 min |
+| **P2: Coverage Map** | Identified CONS family as new semantic domain | ~15 min |
+| **P3: Bootstrap Scaffold** | Generated 7 artifacts + 1 manifest in seconds | ~60-90 min |
+| **P4: Results Index** | Auto-indexed all R6A results for future comparison | ~10 min |
+
+### Outcome
+
+**Round 1 Core (4 cases)**: 2 OBSERVATION, 2 PASS
+**Round 2 Extended (2 cases)**: 2 OBSERVATION
+
+**Contract Validation**:
+- **PASS (2)**: CONS-003 (Load Gate), CONS-005 (Release Preserves) - Framework-level candidates
+- **OBSERVATION (4)**: CONS-001, CONS-002, CONS-004, CONS-006 - Milvus-validated behaviors
+
+**Key Finding**: New contract family (CONS) established with 6 interpretable results.
+
+**Files Generated/Used**:
+- `campaigns/r6a_consistency/config.yaml` - Campaign definition
+- `contracts/cons/r6a_001_contracts.json` - 6 contract definitions
+- `casegen/generators/r6a_001_generator.py` - Generator (implemented)
+- `pipeline/oracles/r6a_001_oracle.py` - Oracle (implemented)
+- `scripts/run_r6a_001_smoke.py` - Smoke runner (round1_core + round2_extended)
+- `results/r6a_20260310-175111.json` - Round 1 results
+- `results/r6a_20260310-175506.json` - Round 2 results
+
+**Total Time**: ~15 minutes execution (6 cases)
+**Bootstrap Time**: ~5 minutes (vs ~4-6 hours manual)
+
+**Foundation ROI**: R6A demonstrated that P1-P4 enables not just follow-up experiments, but entirely new contract families with complete campaign lifecycle.
+
+---
+
 ## Validation Summary
 
 ### P1 Validation
@@ -290,10 +335,10 @@ The automation foundation isn't just for scaffolding—it enabled a complete fol
 - Python-safe naming works (EXA-001 → exa_001)
 
 ### P4 Validation
-- 38 runs indexed (R5B: 14, R5D: 9, SCH006B: 4, other: 11)
+- 39 runs indexed (R5B: 14, R5D: 9, SCH006B: 4, R6A: 2, other: 10)
 - Diff works correctly for both R5B and R5D runs
 - Index-based lookup eliminates glob pattern matching
-- SCH-006b results auto-indexed after execution
+- SCH-006b and R6A results auto-indexed after execution
 
 ---
 

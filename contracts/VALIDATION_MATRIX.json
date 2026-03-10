@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-10T16:47:43.004045",
+  "last_updated": "2026-03-10T18:03:20.302195",
   "validations": [
     {
       "database_family": "unknown",
@@ -1188,6 +1188,78 @@
       "report_ref": null,
       "campaign": "HYBRID_PILOT",
       "timestamp": "2026-03-10T00:41:55.648731"
+    },
+    {
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "contract_id": "CONS-001",
+      "status_scope": "case_level",
+      "classification": "OBSERVATION",
+      "case_id": "R6A-001",
+      "result_file": "results/r6a_20260310-175111.json",
+      "report_ref": "docs/reports/R6A_FINAL_SUMMARY.md",
+      "campaign": "R6A Consistency / Visibility",
+      "timestamp": "2026-03-10T17:51:11"
+    },
+    {
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "contract_id": "CONS-002",
+      "status_scope": "case_level",
+      "classification": "OBSERVATION",
+      "case_id": "R6A-002",
+      "result_file": "results/r6a_20260310-175111.json",
+      "report_ref": "docs/reports/R6A_FINAL_SUMMARY.md",
+      "campaign": "R6A Consistency / Visibility",
+      "timestamp": "2026-03-10T17:51:11"
+    },
+    {
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "contract_id": "CONS-003",
+      "status_scope": "case_level",
+      "classification": "PASS",
+      "case_id": "R6A-003",
+      "result_file": "results/r6a_20260310-175111.json",
+      "report_ref": "docs/reports/R6A_FINAL_SUMMARY.md",
+      "campaign": "R6A Consistency / Visibility",
+      "timestamp": "2026-03-10T17:51:11"
+    },
+    {
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "contract_id": "CONS-004",
+      "status_scope": "case_level",
+      "classification": "OBSERVATION",
+      "case_id": "R6A-004",
+      "result_file": "results/r6a_20260310-175506.json",
+      "report_ref": "docs/reports/R6A_FINAL_SUMMARY.md",
+      "campaign": "R6A Consistency / Visibility",
+      "timestamp": "2026-03-10T17:55:06"
+    },
+    {
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "contract_id": "CONS-005",
+      "status_scope": "case_level",
+      "classification": "PASS",
+      "case_id": "R6A-005",
+      "result_file": "results/r6a_20260310-175111.json",
+      "report_ref": "docs/reports/R6A_FINAL_SUMMARY.md",
+      "campaign": "R6A Consistency / Visibility",
+      "timestamp": "2026-03-10T17:51:11"
+    },
+    {
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "contract_id": "CONS-006",
+      "status_scope": "case_level",
+      "classification": "OBSERVATION",
+      "case_id": "R6A-006",
+      "result_file": "results/r6a_20260310-175506.json",
+      "report_ref": "docs/reports/R6A_FINAL_SUMMARY.md",
+      "campaign": "R6A Consistency / Visibility",
+      "timestamp": "2026-03-10T17:55:06"
     }
   ]
 }
