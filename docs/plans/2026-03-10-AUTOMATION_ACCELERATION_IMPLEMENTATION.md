@@ -6,34 +6,37 @@
 
 **Architecture:** Four-component system:
 - P1: Declarative capability registry (static scan + manual tuning)
-- P2: Contract coverage index (immutable contracts + dynamic status)
+- P2: Contract coverage index (immutable contracts + dynamic status, auto-generated)
 - P3: Campaign bootstrap scaffold (YAML config → 8 artifacts)
 - P4: Results index/diff (manual, explicit comparison)
 
 **Tech Stack:** Python 3.10+, JSON schemas, argparse, pathlib
 
+**Commit Strategy:** Per-component commits (P1, P2, P3, P4), not per-task
+
 ---
 
-## Task 1: Create P1 Capability Registry Structure
+# Phase P1: Capability Audit Registry
+
+## P1.1: Create Directory Structure
 
 **Files:**
 - Create: `capabilities/README.md`
 - Create: `capabilities/.gitkeep`
-- Create: `scripts/bootstrap_capability_registry.py`
 
-**Step 1: Create capabilities directory structure**
+**Step 1: Create capabilities directory**
 
 ```bash
 mkdir -p capabilities
 touch capabilities/.gitkeep
 ```
 
-**Step 2: Create capabilities README**
+**Step 2: Create README**
 
 ```markdown
 # Capability Registry
 
-This directory contains capability declarations for each database adapter.
+Declarative capability declarations for each database adapter.
 
 ## Files
 
@@ -48,38 +51,47 @@ See `docs/plans/2026-03-10-AUTOMATION_ACCELERATION_MVP.md` for full schema.
 
 ## Updating
 
-Run `python scripts/bootstrap_capability_registry.py` to regenerate from adapter code.
-```
-
-**Step 3: Commit**
-
-```bash
-git add capabilities/ capabilities/README.md capabilities/.gitkeep
-git commit -m "feat(automation): create capability registry directory structure"
+Run `python scripts/bootstrap_capability_registry.py --adapter <name>` to regenerate from adapter code.
+Manual review required for: support_status, confidence, known_constraints, notes.
 ```
 
 ---
 
-## Task 2: Implement Capability Registry Bootstrap Script
+## P1.2: Implement Capability Scanner with Dispatch Mapping
 
 **Files:**
 - Create: `scripts/bootstrap_capability_registry.py`
 
-**Step 1: Write bootstrap script skeleton**
+**Key Design Changes:**
+1. **Priority**: Scan adapter `execute()` method dispatch mapping first
+2. **Fallback**: Scan for `_operation()` helper methods
+3. **Distinguish**: Core operations vs helper methods
+4. **Filter**: Exclude pure helpers (_connect, _format_output, etc.)
+
+**Step 1: Write improved scanner**
 
 ```python
 #!/usr/bin/env python3
 """Bootstrap capability registry from adapter code.
 
-Scans adapter implementations to extract supported operations.
-Generates initial capability JSON files for manual review.
+Priority: Scan execute() dispatch mapping first
+Fallback: Scan _operation() methods
+Filter: Exclude pure helper methods
 """
 
 import argparse
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Set
+
+
+# Known helper methods to exclude (not operations)
+HELPER_METHODS = {
+    "_connect", "_format_output", "_parse_response", "_validate_params",
+    "_build_schema", "_get_collection", "health_check", "close",
+    "get_runtime_snapshot", "__init__"
+}
 
 
 class CapabilityScanner:
@@ -88,25 +100,73 @@ class CapabilityScanner:
     def __init__(self, adapter_path: Path):
         self.adapter_path = adapter_path
 
+    def scan_execute_dispatch(self, content: str) -> Set[str]:
+        """Extract operations from execute() method's if/elif chain.
+
+        Priority method: Most adapters explicitly map operation names.
+        """
+        operations = set()
+
+        # Find execute method body
+        execute_match = re.search(
+            r'def execute\(self[^)]*\):(.*?)(?=\n    def |\nclass |\Z)',
+            content,
+            re.DOTALL
+        )
+
+        if execute_match:
+            execute_body = execute_match.group(1)
+            # Find operation == "xxx" patterns
+            op_patterns = [
+                r'operation\s*==\s*["\'](\w+)["\']',
+                r'elif\s+operation\s*==\s*["\'](\w+)["\']:',
+                r'if\s+operation\s*==\s*["\'](\w+)["\']:',
+            ]
+            for pattern in op_patterns:
+                matches = re.findall(pattern, execute_body)
+                operations.update(matches)
+
+        return operations
+
+    def scan_private_methods(self, content: str) -> Set[str]:
+        """Fallback: Extract from _operation() methods.
+
+        Filters out known helper methods.
+        """
+        operations = set()
+
+        # Find all _method definitions
+        for match in re.finditer(r'def (_\w+)\(', content):
+            method_name = match.group(1)
+            if method_name not in HELPER_METHODS:
+                operations.add(method_name.lstrip("_"))
+
+        return operations
+
     def scan(self) -> List[Dict[str, Any]]:
-        """Scan adapter file for operation methods.
+        """Scan adapter file for operations.
 
         Returns:
-            List of operation dicts with name and implementation_path
+            List of operation dicts
         """
-        operations = []
         content = self.adapter_path.read_text()
 
-        # Find _operation methods (e.g., _create_collection, _insert, _search)
-        pattern = r'def (_\w+)\(self[^)]*\):'
-        for match in re.finditer(pattern, content):
-            method_name = match.group(1)
-            operations.append({
-                "operation": method_name.lstrip("_"),
+        # Priority 1: Scan execute() dispatch
+        operations = self.scan_execute_dispatch(content)
+
+        # Priority 2: Fallback to _operation methods
+        if not operations:
+            operations = self.scan_private_methods(content)
+
+        # Build operation list
+        result = []
+        for op_name in sorted(operations):
+            result.append({
+                "operation": op_name,
                 "support_status": "unknown",
                 "support_level": "static_only",
                 "confidence": "low",
-                "implementation_path": f"{self.adapter_path.stem}Adapter.{method_name}",
+                "implementation_path": f"{self.adapter_path.stem}Adapter._{op_name if not op_name.startswith('_') else op_name}",
                 "verification_path": None,
                 "known_constraints": [],
                 "evidence_source": "static_scan",
@@ -114,16 +174,16 @@ class CapabilityScanner:
                 "notes": "TODO: Manual review required"
             })
 
-        return operations
+        return result
 
 
 def main():
     parser = argparse.ArgumentParser(description="Bootstrap capability registry")
-    parser.add_argument("--adapter", required=True, help="Adapter name (milvus, qdrant, seekdb, mock)")
+    parser.add_argument("--adapter", required=True,
+                        help="Adapter name (milvus, qdrant, seekdb, mock)")
     parser.add_argument("--output", default="capabilities", help="Output directory")
     args = parser.parse_args()
 
-    # Map adapter name to file path
     adapter_files = {
         "milvus": "adapters/milvus_adapter.py",
         "qdrant": "adapters/qdrant_adapter.py",
@@ -145,11 +205,18 @@ def main():
     scanner = CapabilityScanner(adapter_path)
     operations = scanner.scan()
 
+    # Extract SDK version from imports
+    content = adapter_path.read_text()
+    sdk_version = "TODO"
+    version_match = re.search(r'pymilvus\s*==\s*([\d.]+)', content)
+    if version_match:
+        sdk_version = f"pymilvus v{version_match.group(1)}"
+
     # Build registry
     registry = {
         "adapter_name": f"{args.adapter}_adapter",
         "db_family": args.adapter.capitalize(),
-        "sdk_version": "TODO",
+        "sdk_version": sdk_version,
         "validated_db_version": "TODO",
         "last_updated": "2026-03-10",
         "operations": operations
@@ -160,7 +227,13 @@ def main():
     output_path.write_text(json.dumps(registry, indent=2))
     print(f"Generated: {output_path}")
     print(f"Found {len(operations)} operations")
-    print("Please review and update: support_status, confidence, notes")
+    print("Please review and update:")
+    print("  - sdk_version")
+    print("  - support_status (supported/unsupported/partially_supported)")
+    print("  - confidence (high/medium/low)")
+    print("  - known_constraints")
+    print("  - validated_in_campaigns")
+    print("  - notes")
 
     return 0
 
@@ -169,87 +242,94 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-**Step 2: Commit**
-
-```bash
-git add scripts/bootstrap_capability_registry.py
-git commit -m "feat(automation): add capability registry bootstrap script"
-```
-
 ---
 
-## Task 3: Generate Initial Capability Registries
+## P1.3: Generate and Review Capability Registries
 
-**Files:**
-- Create: `capabilities/milvus_capabilities.json`
-- Create: `capabilities/qdrant_capabilities.json`
-- Create: `capabilities/seekdb_capabilities.json`
-- Create: `capabilities/mock_capabilities.json`
-
-**Step 1: Generate Milvus capabilities**
+**Step 1: Generate all 4 registries**
 
 ```bash
 python scripts/bootstrap_capability_registry.py --adapter milvus
-```
-
-**Step 2: Generate Qdrant capabilities**
-
-```bash
 python scripts/bootstrap_capability_registry.py --adapter qdrant
-```
-
-**Step 3: Generate SeekDB capabilities**
-
-```bash
 python scripts/bootstrap_capability_registry.py --adapter seekdb
-```
-
-**Step 4: Generate Mock capabilities**
-
-```bash
 python scripts/bootstrap_capability_registry.py --adapter mock
 ```
 
-**Step 5: Review and update key fields**
+**Step 2: Manual review required for each file**
 
-Edit each file to update:
-- `sdk_version`: Check actual version
+Edit each `capabilities/*_capabilities.json`:
+- `sdk_version`: Verify actual version
+- `validated_db_version`: Add tested DB version
 - `support_status`: Change unknown → supported/unsupported/partially_supported
-- `confidence`: Set high/medium/low
+- `confidence`: Set high/medium/low based on evidence
 - `known_constraints`: Add known limitations
 - `validated_in_campaigns`: Add campaign names if validated
 - `notes`: Add context
 
-**Step 6: Commit**
+---
+
+## P1.4: Commit P1 Component
 
 ```bash
-git add capabilities/*.json
-git commit -m "feat(automation): add initial capability registries for all adapters"
+git add capabilities/ scripts/bootstrap_capability_registry.py
+git commit -m "feat(automation): P1 capability registry with dispatch-first scanning
+
+- Add bootstrap_capability_registry.py with execute() dispatch priority
+- Generate initial capability registries for all adapters
+- Filter out helper methods, focus on core operations
+- Manual review required for support_status, confidence, constraints
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
 
 ---
 
-## Task 4: Create P2 Contract Coverage Index Structure
+# Phase P2: Contract Coverage Index (Auto-Generated)
+
+## P2.1: Create Contract Scanner
 
 **Files:**
-- Create: `contracts/CONTRACT_COVERAGE_INDEX.json`
-- Create: `contracts/VALIDATION_MATRIX.json`
+- Create: `scripts/generate_contract_coverage.py`
 
-**Step 1: Create initial coverage index template**
+**Key Design Changes:**
+1. **VALIDATION_MATRIX.json** is source of truth for validation status
+2. **CONTRACT_COVERAGE_INDEX.json** is auto-generated from:
+   - Contract definitions (static metadata)
+   - Validation matrix (dynamic status)
+3. **Manual input**: Only stable_metadata (framework_level_candidate, notes)
+
+**Step 1: Write coverage generator**
 
 ```python
 #!/usr/bin/env python3
-"""Generate contract coverage index from existing contracts and results."""
+"""Generate contract coverage index from contracts + validation matrix.
+
+Source of truth:
+- Contract definitions: stable metadata (contract_id, family, statement)
+- VALIDATION_MATRIX.json: dynamic validation status
+
+Output:
+- CONTRACT_COVERAGE_INDEX.json: Auto-generated merge
+
+Manual input only:
+- framework_level_candidate (in contract files)
+- notes (in contract files)
+"""
 
 import json
 from pathlib import Path
 from typing import Dict, List, Any
+from collections import defaultdict
+from datetime import datetime
 
 
-def scan_contracts() -> List[Dict[str, Any]]:
-    """Scan all contract directories."""
-    contracts = []
+def load_contract_definitions() -> Dict[str, Dict[str, Any]]:
+    """Load all contract definitions.
 
+    Returns:
+        Dict mapping contract_id to contract definition
+    """
+    contracts = {}
     contract_dirs = ["ann", "hybrid", "index", "schema"]
 
     for family in contract_dirs:
@@ -260,121 +340,174 @@ def scan_contracts() -> List[Dict[str, Any]]:
         for contract_file in family_path.glob("*.json"):
             try:
                 data = json.loads(contract_file.read_text())
-                contracts.append({
-                    "contract_id": data.get("contract_id"),
-                    "family": data.get("family", family.upper()),
-                    "semantic_area": data.get("scope", {}).get("semantic_area", "unknown"),
-                    "coverage_status": "unvalidated",
-                    "validation_level": "static_only",
-                    "validated_in_campaigns": [],
-                    "result_file": None,
-                    "case_evidence": [],
-                    "report_ref": None,
-                    "db_matrix_ref": "VALIDATION_MATRIX.json",
-                    "framework_level_candidate": False,
-                    "notes": "TODO: Update from campaign results"
-                })
+                contract_id = data.get("contract_id")
+                if contract_id:
+                    contracts[contract_id] = {
+                        "contract_id": contract_id,
+                        "family": data.get("family", family.upper()),
+                        "statement": data.get("statement", ""),
+                        "semantic_area": data.get("scope", {}).get("semantic_area", "unknown"),
+                        "stable_metadata": {
+                            "maturity": data.get("metadata", {}).get("confidence", "unknown"),
+                            "intended_scope": data.get("scope", {}).get("databases", ["all"]),
+                            "framework_level_candidate": False  # Default, can be set in contract file
+                        }
+                    }
             except Exception as e:
                 print(f"Warning: Could not parse {contract_file}: {e}")
 
     return contracts
 
 
-def main():
-    contracts = scan_contracts()
+def load_validation_matrix() -> List[Dict[str, Any]]:
+    """Load validation matrix (source of truth for validation status)."""
+    matrix_path = Path("contracts/VALIDATION_MATRIX.json")
+    if not matrix_path.exists():
+        return []
 
-    # Build summary by family
-    summary_by_family: Dict[str, Dict[str, int]] = {}
-    for c in contracts:
-        family = c["family"]
-        if family not in summary_by_family:
-            summary_by_family[family] = {"unvalidated": 0}
-        summary_by_family[family]["unvalidated"] += 1
+    data = json.loads(matrix_path.read_text())
+    return data.get("validations", [])
 
-    # Build index
-    index = {
-        "last_updated": "2026-03-10",
-        "total_contracts": len(contracts),
-        "summary": {
-            "contract_counts_by_family": {
-                k: sum(v.values()) for k, v in summary_by_family.items()
-            },
-            "coverage_counts_by_family": summary_by_family
-        },
-        "contracts": contracts
+
+def compute_coverage_status(
+    validations: List[Dict[str, Any]]
+) -> tuple[str, str]:
+    """Compute coverage_status and validation_level from validations.
+
+    Args:
+        validations: List of validation entries for a contract
+
+    Returns:
+        (coverage_status, validation_level)
+    """
+    if not validations:
+        return "unvalidated", "static_only"
+
+    # Check classifications
+    classifications = [v.get("classification") for v in validations]
+
+    # Strong: All PASS
+    if all(c == "PASS" for c in classifications):
+        return "strongly_validated", "campaign_validated"
+
+    # Inconclusive: Has EXPERIMENT_DESIGN_ISSUE
+    if "EXPERIMENT_DESIGN_ISSUE" in classifications:
+        return "inconclusive", "campaign_validated"
+
+    # Observational: Has OBSERVATION but no bugs
+    if any(c in ["OBSERVATION", "EXPECTED_FAILURE"] for c in classifications):
+        return "observational_only", "campaign_validated"
+
+    # Partial: Mix of PASS/OBSERVATION
+    if "PASS" in classifications:
+        return "partially_validated", "campaign_validated"
+
+    # Default
+    return "unvalidated", "static_only"
+
+
+def generate_coverage_index():
+    """Generate CONTRACT_COVERAGE_INDEX.json from contracts + validation matrix."""
+    # Load sources
+    contracts = load_contract_definitions()
+    validations = load_validation_matrix()
+
+    # Group validations by contract
+    validations_by_contract: Dict[str, List[Dict]] = defaultdict(list)
+    campaigns_by_contract: Dict[str, set] = defaultdict(set)
+    case_evidence_by_contract: Dict[str, List[Dict]] = defaultdict(list)
+
+    for v in validations:
+        contract_id = v.get("contract_id")
+        validations_by_contract[contract_id].append(v)
+        campaigns_by_contract[contract_id].add(v.get("campaign"))
+        case_evidence_by_contract[contract_id].append({
+            "case_id": v.get("case_id"),
+            "classification": v.get("classification")
+        })
+
+    # Build coverage index
+    coverage_contracts = []
+    summary_by_family: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+
+    for contract_id, contract_def in contracts.items():
+        validations = validations_by_contract.get(contract_id, [])
+        coverage_status, validation_level = compute_coverage_status(validations)
+
+        entry = {
+            "contract_id": contract_id,
+            "family": contract_def["family"],
+            "semantic_area": contract_def["semantic_area"],
+            "coverage_status": coverage_status,
+            "validation_level": validation_level,
+            "validated_in_campaigns": sorted(campaigns_by_contract.get(contract_id, set())),
+            "case_evidence": case_evidence_by_contract.get(contract_id, []),
+            "report_ref": None,  # TODO: Auto-detect from docs/reports/
+            "db_matrix_ref": "VALIDATION_MATRIX.json",
+            "framework_level_candidate": contract_def["stable_metadata"].get("framework_level_candidate", False),
+            "notes": "Auto-generated from validation matrix"
+        }
+        coverage_contracts.append(entry)
+
+        # Update summary
+        family = entry["family"]
+        summary_by_family[family][coverage_status] += 1
+
+    # Build summary
+    contract_counts_by_family = {
+        k: sum(v.values()) for k, v in summary_by_family.items()
     }
 
     # Write output
+    index = {
+        "last_updated": datetime.now().isoformat(),
+        "total_contracts": len(coverage_contracts),
+        "summary": {
+            "contract_counts_by_family": contract_counts_by_family,
+            "coverage_counts_by_family": {k: dict(v) for k, v in summary_by_family.items()}
+        },
+        "contracts": coverage_contracts,
+        "_generated_from": ["contract_definitions", "VALIDATION_MATRIX.json"]
+    }
+
     output_path = Path("contracts/CONTRACT_COVERAGE_INDEX.json")
     output_path.write_text(json.dumps(index, indent=2))
     print(f"Generated: {output_path}")
-    print(f"Total contracts: {len(contracts)}")
+    print(f"Total contracts: {len(coverage_contracts)}")
 
     return 0
 
 
 if __name__ == "__main__":
-    exit(main())
-```
-
-**Step 2: Run coverage index generation**
-
-```bash
-python scripts/generate_coverage_index.py
-```
-
-**Step 3: Create initial validation matrix (empty)**
-
-```json
-{
-  "last_updated": "2026-03-10",
-  "validations": []
-}
-```
-
-**Step 4: Commit**
-
-```bash
-git add contracts/CONTRACT_COVERAGE_INDEX.json contracts/VALIDATION_MATRIX.json
-git commit -m "feat(automation): add contract coverage index and validation matrix"
+    exit(generate_coverage_index())
 ```
 
 ---
 
-## Task 5: Update Coverage Index from R5B/R5D Results
+## P2.2: Create Validation Matrix Populator
 
 **Files:**
-- Modify: `contracts/CONTRACT_COVERAGE_INDEX.json`
-- Modify: `contracts/VALIDATION_MATRIX.json`
+- Create: `scripts/populate_validation_matrix.py`
 
-**Step 1: Create result parser script**
+**Step 1: Write matrix populator**
 
 ```python
 #!/usr/bin/env python3
-"""Update contract coverage from existing result files."""
+"""Populate VALIDATION_MATRIX.json from existing result files.
+
+VALIDATION_MATRIX.json is the source of truth for:
+- What contract was tested on which database/version
+- What classification was achieved
+- Link to result file and case
+"""
 
 import json
 from pathlib import Path
 from datetime import datetime
 
 
-def parse_result_file(result_path: Path) -> Dict[str, Any]:
-    """Parse a result file and extract contract validations."""
-    data = json.loads(result_path.read_text())
-
-    return {
-        "run_id": data.get("run_id"),
-        "campaign": data.get("campaign"),
-        "campaign_id": data.get("campaign_id"),
-        "database_family": data.get("database", "").split()[0],
-        "db_version": data.get("database", ""),
-        "timestamp": data.get("timestamp"),
-        "results": data.get("results", [])
-    }
-
-
 def main():
-    # Parse R5B and R5D results
+    # Result files to process
     result_files = [
         "results/r5b_lifecycle_20260310-124135.json",
         "results/r5d_p0_20260310-140345.json",
@@ -382,7 +515,6 @@ def main():
     ]
 
     validations = []
-    coverage_updates = {}
 
     for result_file in result_files:
         result_path = Path(result_file)
@@ -390,38 +522,29 @@ def main():
             print(f"Warning: {result_file} not found, skipping")
             continue
 
-        result = parse_result_file(result_path)
+        data = json.loads(result_path.read_text())
 
-        for case_result in result["results"]:
-            contract_id = case_result.get("contract_id")
-            classification = case_result.get("oracle", {}).get("classification")
-            case_id = case_result.get("case_id")
+        # Extract database info
+        database_str = data.get("database", "")
+        if " " in database_str:
+            db_family, db_version = database_str.split(" ", 1)
+        else:
+            db_family = database_str
+            db_version = "unknown"
 
-            # Add to validation matrix
+        # Process each result
+        for case_result in data.get("results", []):
             validations.append({
-                "database_family": result["database_family"],
-                "db_version": result["db_version"],
-                "contract_id": contract_id,
+                "database_family": db_family,
+                "db_version": db_version,
+                "contract_id": case_result.get("contract_id"),
                 "status_scope": "case_level",
-                "classification": classification,
-                "case_id": case_id,
+                "classification": case_result.get("oracle", {}).get("classification"),
+                "case_id": case_result.get("case_id"),
                 "result_file": result_file,
-                "report_ref": None,  # TODO: Map to actual report
-                "campaign": result["campaign"],
-                "timestamp": result["timestamp"]
-            })
-
-            # Track coverage updates
-            if contract_id not in coverage_updates:
-                coverage_updates[contract_id] = {
-                    "validated_in_campaigns": set(),
-                    "case_evidence": [],
-                    "latest_status": classification
-                }
-            coverage_updates[contract_id]["validated_in_campaigns"].add(result["campaign"])
-            coverage_updates[contract_id]["case_evidence"].append({
-                "case_id": case_id,
-                "classification": classification
+                "report_ref": None,  # TODO: Auto-detect
+                "campaign": data.get("campaign"),
+                "timestamp": data.get("timestamp")
             })
 
     # Write validation matrix
@@ -429,8 +552,11 @@ def main():
         "last_updated": datetime.now().isoformat(),
         "validations": validations
     }
-    Path("contracts/VALIDATION_MATRIX.json").write_text(json.dumps(matrix, indent=2))
-    print(f"Updated VALIDATION_MATRIX.json with {len(validations)} validations")
+
+    output_path = Path("contracts/VALIDATION_MATRIX.json")
+    output_path.write_text(json.dumps(matrix, indent=2))
+    print(f"Generated: {output_path}")
+    print(f"Total validations: {len(validations)}")
 
     return 0
 
@@ -439,33 +565,58 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-**Step 2: Run result parser**
+---
+
+## P2.3: Initialize and Run P2
+
+**Step 1: Create empty validation matrix**
 
 ```bash
-python scripts/update_coverage_from_results.py
+echo '{"last_updated": "2026-03-10", "validations": []}' > contracts/VALIDATION_MATRIX.json
 ```
 
-**Step 3: Manually update coverage index based on validation matrix**
-
-Edit `CONTRACT_COVERAGE_INDEX.json`:
-- Update `coverage_status` based on validation matrix
-- Update `validated_in_campaigns`
-- Add `case_evidence`
-- Update `summary` counts
-
-**Step 4: Commit**
+**Step 2: Populate validation matrix from results**
 
 ```bash
-git add contracts/CONTRACT_COVERAGE_INDEX.json contracts/VALIDATION_MATRIX.json
-git commit -m "feat(automation): update contract coverage from R5B/R5D results"
+python scripts/populate_validation_matrix.py
+```
+
+**Step 3: Generate contract coverage index**
+
+```bash
+python scripts/generate_contract_coverage.py
 ```
 
 ---
 
-## Task 6: Create P3 Campaign Bootstrap Scaffold
+## P2.4: Commit P2 Component
+
+```bash
+git add contracts/CONTRACT_COVERAGE_INDEX.json contracts/VALIDATION_MATRIX.json
+git add scripts/generate_contract_coverage.py scripts/populate_validation_matrix.py
+git commit -m "feat(automation): P2 contract coverage with auto-generation
+
+- VALIDATION_MATRIX.json as source of truth for validation status
+- CONTRACT_COVERAGE_INDEX.json auto-generated from contracts + matrix
+- Manual input only for stable_metadata (framework_level_candidate, notes)
+- Coverage status computed from validation matrix classifications
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+```
+
+---
+
+# Phase P3: Campaign Bootstrap Scaffold
+
+## P3.1: Create Bootstrap Script with Fixes
 
 **Files:**
 - Create: `scripts/bootstrap_campaign.py`
+
+**Key Fixes:**
+1. Fix `required_objects` → `required_operations` in PLAN_TEMPLATE
+2. Use python-safe slug for file names (convert hyphens to underscores)
+3. MVP: Support one primary contract_family only
 
 **Step 1: Write bootstrap script**
 
@@ -474,19 +625,33 @@ git commit -m "feat(automation): update contract coverage from R5B/R5D results"
 """Bootstrap a new campaign from YAML config.
 
 Generates 8 skeleton artifacts for campaign development.
+
+MVP: Supports one primary contract_family only.
+File naming: Python-safe slugs (underscores, no hyphens).
 """
 
 import argparse
 import json
+import re
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Any
 import yaml
 
 
-# Templates for each artifact
+def to_python_slug(name: str) -> str:
+    """Convert campaign_id to python-safe slug.
+
+    Example: R6A-001 → r6a_001
+    """
+    return name.lower().replace("-", "_")
+
+
+# Templates
 PLAN_TEMPLATE = """# {campaign_id} Campaign Plan
 
 **Campaign ID**: {campaign_id}
+**Campaign Name**: {campaign_name}
 **Target Database**: {target_db}
 **Date**: {date}
 **Status**: PLANNING
@@ -499,9 +664,9 @@ PLAN_TEMPLATE = """# {campaign_id} Campaign Plan
 
 ---
 
-## Contract Families
+## Contract Family
 
-{contract_families}
+**Primary Family**: {contract_family}
 
 ---
 
@@ -530,7 +695,7 @@ CONTRACT_TEMPLATE = """{{
   "description": "Contract definitions for {campaign_id}",
   "contracts": [
     {{
-      "contract_id": "TODO-001",
+      "contract_id": "{family}-001",
       "name": "TODO: Contract name",
       "statement": "TODO: Contract statement",
       "preconditions": [],
@@ -547,7 +712,7 @@ from pathlib import Path
 from typing import Dict, List, Any
 
 
-class {campaign_class}Generator:
+class {class_name}Generator:
     """Generate test cases for {campaign_id}."""
 
     def __init__(self, config: Dict[str, Any]):
@@ -568,10 +733,10 @@ class {campaign_class}Generator:
 
 ORACLE_TEMPLATE = '''"""Oracle for {campaign_id}."""
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 
-class {campaign_class}Oracle:
+class {class_name}Oracle:
     """Oracle for evaluating {campaign_id} test results."""
 
     def evaluate(self, result: Dict[str, Any], contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -594,9 +759,8 @@ class {campaign_class}Oracle:
 SMOKE_TEMPLATE = '''"""Smoke test runner for {campaign_id}."""
 
 import argparse
-import json
 from pathlib import Path
-from adapters.{adapter} import {adapter_class}
+from adapters.{adapter_module} import {adapter_class}
 
 
 def main():
@@ -669,7 +833,7 @@ TODO: Campaign summary
 ## Artifacts
 
 - Plan: `docs/plans/{campaign_id}_PLAN.md`
-- Contracts: `contracts/{family}/{campaign_id}_contracts.json`
+- Contracts: `contracts/{family}/{campaign_slug}_contracts.json`
 - Results: `results/{run_id}.json`
 
 ---
@@ -690,60 +854,77 @@ def load_config(config_path: Path) -> Dict[str, Any]:
 def generate_artifacts(config: Dict[str, Any], input_dir: Path) -> List[Dict[str, Any]]:
     """Generate all campaign artifacts."""
     artifacts = []
+
     campaign_id = config["campaign_id"]
-    campaign_class = campaign_id.replace("-", "_")
+    campaign_slug = to_python_slug(campaign_id)
+    class_name = "".join(w.capitalize() for w in campaign_slug.split("_"))
+
+    # MVP: Support one primary family only
+    families = config.get("contract_families", [])
+    if not families:
+        primary_family = "TODO"
+    elif len(families) > 1:
+        print(f"Warning: MVP supports one family only. Using: {families[0]}")
+        primary_family = families[0].upper()
+    else:
+        primary_family = families[0].upper()
+
+    family_dir = primary_family.lower()
 
     # 1. Plan skeleton
     plan_path = Path(f"docs/plans/{campaign_id}_PLAN.md")
     plan_path.parent.mkdir(parents=True, exist_ok=True)
     plan_path.write_text(PLAN_TEMPLATE.format(
         campaign_id=campaign_id,
+        campaign_name=config.get("campaign_name", campaign_id),
         target_db=config["target_db"],
         date=datetime.now().strftime("%Y-%m-%d"),
         goal=config["goal"],
-        contract_families=", ".join(config["contract_families"]),
+        contract_family=primary_family,
         mode=config["mode"],
         max_cases=config["constraints"].get("max_cases", "TODO"),
         runtime_budget=config["constraints"].get("runtime_budget", "TODO"),
-        required_objects="\n".join(f"- {op}" for op in config["constraints"].get("required_operations", []))
+        required_operations="\n".join(
+            f"- {op}" for op in config["constraints"].get("required_operations", [])
+        )
     ))
     artifacts.append({"type": "plan", "path": str(plan_path)})
 
-    # 2. Contract spec skeleton (first family only)
-    family = config["contract_families"][0].lower() if config["contract_families"] else "TODO"
-    contract_path = Path(f"contracts/{family}/{campaign_id}_contracts.json")
+    # 2. Contract spec skeleton
+    contract_path = Path(f"contracts/{family_dir}/{campaign_slug}_contracts.json")
     contract_path.parent.mkdir(parents=True, exist_ok=True)
     contract_path.write_text(CONTRACT_TEMPLATE.format(
-        family=family.upper(),
+        family=primary_family,
         campaign_id=campaign_id
     ))
     artifacts.append({"type": "contract_spec", "path": str(contract_path)})
 
-    # 3. Generator skeleton
-    gen_path = Path(f"casegen/generators/{campaign_id}_generator.py")
+    # 3. Generator skeleton (python-safe filename)
+    gen_path = Path(f"casegen/generators/{campaign_slug}_generator.py")
     gen_path.parent.mkdir(parents=True, exist_ok=True)
     gen_path.write_text(GENERATOR_TEMPLATE.format(
         campaign_id=campaign_id,
-        campaign_class=campaign_class
+        class_name=class_name
     ))
     artifacts.append({"type": "generator", "path": str(gen_path)})
 
-    # 4. Oracle skeleton
-    oracle_path = Path(f"pipeline/oracles/{campaign_id}_oracle.py")
+    # 4. Oracle skeleton (python-safe filename)
+    oracle_path = Path(f"pipeline/oracles/{campaign_slug}_oracle.py")
     oracle_path.parent.mkdir(parents=True, exist_ok=True)
     oracle_path.write_text(ORACLE_TEMPLATE.format(
         campaign_id=campaign_id,
-        campaign_class=campaign_class
+        class_name=class_name
     ))
     artifacts.append({"type": "oracle", "path": str(oracle_path)})
 
-    # 5. Smoke runner skeleton
+    # 5. Smoke runner skeleton (python-safe filename)
     adapter = config.get("adapter", "milvus_adapter")
-    adapter_class = "".join(w.capitalize() for w in adapter.replace("_adapter", "").split("_")) + "Adapter"
-    smoke_path = Path(f"scripts/run_{campaign_id}_smoke.py")
+    adapter_module = adapter.replace("_adapter", "")
+    adapter_class = "".join(w.capitalize() for w in adapter_module.split("_")) + "Adapter"
+    smoke_path = Path(f"scripts/run_{campaign_slug}_smoke.py")
     smoke_path.write_text(SMOKE_TEMPLATE.format(
         campaign_id=campaign_id,
-        adapter=adapter.replace("_adapter", ""),
+        adapter_module=adapter_module,
         adapter_class=adapter_class
     ))
     artifacts.append({"type": "smoke_runner", "path": str(smoke_path)})
@@ -762,7 +943,8 @@ def generate_artifacts(config: Dict[str, Any], input_dir: Path) -> List[Dict[str
     handoff_path.parent.mkdir(parents=True, exist_ok=True)
     handoff_path.write_text(HANDOFF_TEMPLATE.format(
         campaign_id=campaign_id,
-        family=family.upper(),
+        family=primary_family,
+        campaign_slug=campaign_slug,
         date=datetime.now().strftime("%Y-%m-%d")
     ))
     artifacts.append({"type": "handoff_template", "path": str(handoff_path)})
@@ -780,7 +962,6 @@ def main():
         print(f"Error: Config file not found: {config_path}")
         return 1
 
-    # Load config
     config = load_config(config_path)
 
     # Generate artifacts
@@ -788,11 +969,12 @@ def main():
 
     # Write manifest
     manifest = {
-        "campaign_name": config["campaign_name"],
+        "campaign_name": config.get("campaign_name", config["campaign_id"]),
         "campaign_id": config["campaign_id"],
         "generated_at": datetime.now().isoformat(),
         "input_config": str(config_path),
         "artifacts": artifacts,
+        "mvp_note": "Single contract family supported. Multi-family coming later.",
         "capability_registry_snapshot": config.get("input_registries", {}).get("capability_registry"),
         "contract_coverage_snapshot": config.get("input_registries", {}).get("contract_coverage")
     }
@@ -812,21 +994,14 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-**Step 2: Commit**
-
-```bash
-git add scripts/bootstrap_campaign.py
-git commit -m "feat(automation): add campaign bootstrap script"
-```
-
 ---
 
-## Task 7: Create Campaign Config Example
+## P3.2: Create Example Campaign Config
 
 **Files:**
 - Create: `campaigns/example/config.yaml`
 
-**Step 1: Create example campaign config**
+**Step 1: Create directory and config**
 
 ```bash
 mkdir -p campaigns/example
@@ -838,9 +1013,9 @@ campaign_name: "example_campaign"
 campaign_id: "EXA-001"
 target_db: "Milvus"
 adapter: "milvus_adapter"
+# MVP: One family only
 contract_families:
   - "ANN"
-  - "INDEX"
 goal: "Example campaign to demonstrate bootstrap scaffolding"
 mode: "REAL"
 
@@ -863,62 +1038,78 @@ input_registries:
   validation_matrix: "contracts/VALIDATION_MATRIX.json"
 ```
 
-**Step 2: Test bootstrap script**
+---
+
+## P3.3: Test Bootstrap
+
+**Step 1: Run bootstrap**
 
 ```bash
 python scripts/bootstrap_campaign.py campaigns/example/config.yaml
 ```
 
-**Step 3: Verify generated artifacts**
+**Step 2: Verify generated artifacts**
 
-Check that 8 files were created:
+Check 8 files created:
 - `docs/plans/EXA-001_PLAN.md`
-- `contracts/ann/EXA-001_contracts.json`
-- `casegen/generators/exa-001_generator.py`
-- `pipeline/oracles/exa-001_oracle.py`
-- `scripts/run_exa-001_smoke.py`
+- `contracts/ann/exa_001_contracts.json` (python-safe slug)
+- `casegen/generators/exa_001_generator.py` (python-safe slug)
+- `pipeline/oracles/exa_001_oracle.py` (python-safe slug)
+- `scripts/run_exa_001_smoke.py` (python-safe slug)
 - `docs/reports/EXA-001_REPORT_TEMPLATE.md`
 - `docs/handoffs/EXA-001_HANDOFF_TEMPLATE.md`
 - `campaigns/example/bootstrap_manifest.json`
 
-**Step 4: Commit**
+---
+
+## P3.4: Commit P3 Component
 
 ```bash
-git add campaigns/example/
+git add scripts/bootstrap_campaign.py campaigns/example/
 git add docs/plans/EXA-001_PLAN.md
-git add contracts/ann/EXA-001_contracts.json
-git add casegen/generators/exa-001_generator.py
-git add pipeline/oracles/exa-001_oracle.py
-git add scripts/run_exa-001_smoke.py
+git add contracts/ann/exa_001_contracts.json
+git add casegen/generators/exa_001_generator.py
+git add pipeline/oracles/exa_001_oracle.py
+git add scripts/run_exa_001_smoke.py
 git add docs/reports/EXA-001_REPORT_TEMPLATE.md
 git add docs/handoffs/EXA-001_HANDOFF_TEMPLATE.md
-git commit -m "feat(automation): add example campaign bootstrap test"
+git commit -m "feat(automation): P3 campaign bootstrap with MVP single-family support
+
+- Generate 8 skeleton artifacts from YAML config
+- Fixed: required_operations (not required_objects) in plan template
+- Fixed: Python-safe slugs for file names (underscores, not hyphens)
+- MVP: Single contract_family support (multi-family future work)
+- Added bootstrap_manifest.json for tracking
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
 
 ---
 
-## Task 8: Create P4 Results Index Script
+# Phase P4: Results Index and Diff
+
+## P4.1: Create Results Index Script
 
 **Files:**
 - Create: `scripts/index_results.py`
 
-**Step 1: Write results index script**
+**Step 1: Write index script**
 
 ```python
 #!/usr/bin/env python3
 """Index all result files in results/ directory.
 
-Generates RESULTS_INDEX.json (machine-readable) and RESULTS_INDEX.md (optional view).
+Generates RESULTS_INDEX.json (machine-readable).
 """
 
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, List
 from collections import defaultdict
 
 
-def parse_result_file(result_path: Path) -> Dict[str, Any]:
+def parse_result_file(result_path: Path) -> Dict[str, Any] | None:
     """Parse a single result file."""
     try:
         data = json.loads(result_path.read_text())
@@ -953,8 +1144,8 @@ def parse_result_file(result_path: Path) -> Dict[str, Any]:
             },
             "linked_contracts": list(set(r.get("contract_id") for r in results)),
             "case_count": len(results),
-            "report_ref": None,  # TODO: Auto-detect from docs/reports/
-            "handoff_ref": None  # TODO: Auto-detect from docs/handoffs/
+            "report_ref": None,  # TODO: Auto-detect
+            "handoff_ref": None
         }
     except Exception as e:
         print(f"Warning: Could not parse {result_path}: {e}")
@@ -969,8 +1160,7 @@ def main():
 
     # Scan for JSON result files
     result_files = list(results_dir.glob("*.json"))
-    # Exclude index files
-    result_files = [f for f in result_files if "INDEX" not in f.name]
+    result_files = [f for f in result_files if "INDEX" not in f.name and "diff_" not in f.name]
 
     runs = []
     summary_by_campaign = defaultdict(int)
@@ -998,7 +1188,7 @@ def main():
         "runs": runs
     }
 
-    # Write JSON index
+    # Write output
     output_path = results_dir / "RESULTS_INDEX.json"
     output_path.write_text(json.dumps(index, indent=2))
     print(f"Generated: {output_path}")
@@ -1011,66 +1201,62 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-**Step 2: Run index script**
-
-```bash
-python scripts/index_results.py
-```
-
-**Step 3: Commit**
-
-```bash
-git add scripts/index_results.py results/RESULTS_INDEX.json
-git commit -m "feat(automation): add results index script"
-```
-
 ---
 
-## Task 9: Create P4 Diff Script
+## P4.2: Create Diff Script (Index-Based)
 
 **Files:**
 - Create: `scripts/diff_results.py`
+
+**Key Fix:**
+- Read RESULTS_INDEX.json first
+- Use run_id to locate result_file
+- Then load full result data
 
 **Step 1: Write diff script**
 
 ```python
 #!/usr/bin/env python3
-"""Compare two result runs and show differences."""
+"""Compare two result runs and show differences.
+
+Reads RESULTS_INDEX.json to locate result files by run_id.
+"""
 
 import argparse
 import json
 import sys
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
-def load_run(run_id: str, results_dir: Path) -> Dict[str, Any]:
-    """Load a result file by run_id."""
-    # Try to find the result file
-    result_files = list(results_dir.glob(f"*{run_id}*.json"))
-    result_files = [f for f in result_files if "INDEX" not in f.name]
-
-    if not result_files:
-        print(f"Error: Could not find result file for run_id '{run_id}'")
+def load_results_index() -> Dict[str, Any]:
+    """Load RESULTS_INDEX.json."""
+    index_path = Path("results/RESULTS_INDEX.json")
+    if not index_path.exists():
+        print(f"Error: RESULTS_INDEX.json not found. Run index_results.py first.")
         sys.exit(1)
+    return json.loads(index_path.read_text())
 
-    if len(result_files) > 1:
-        print(f"Warning: Multiple files found for '{run_id}', using first")
 
-    result_path = result_files[0]
+def find_result_file(run_id: str, index: Dict[str, Any]) -> str:
+    """Find result file path by run_id from index."""
+    for run in index.get("runs", []):
+        if run.get("run_id") == run_id:
+            return run.get("result_file")
+
+    print(f"Error: run_id '{run_id}' not found in RESULTS_INDEX.json")
+    print(f"Available run_ids: {[r['run_id'] for r in index.get('runs', [])]}")
+    sys.exit(1)
+
+
+def load_run(run_id: str, result_file: str) -> Dict[str, Any]:
+    """Load a result file."""
+    result_path = Path(result_file)
+    if not result_path.exists():
+        print(f"Error: Result file not found: {result_file}")
+        sys.exit(1)
     return json.loads(result_path.read_text())
-
-
-def get_cases_by_contract(run: Dict[str, Any]) -> Dict[str, List[Dict]]:
-    """Group cases by contract_id."""
-    by_contract = {}
-    for result in run.get("results", []):
-        contract_id = result.get("contract_id")
-        if contract_id not in by_contract:
-            by_contract[contract_id] = []
-        by_contract[contract_id].append(result)
-    return by_contract
 
 
 def main():
@@ -1079,15 +1265,25 @@ def main():
     parser.add_argument("run2", help="Second run_id (e.g., r5d-p05-20260310-141433)")
     args = parser.parse_args()
 
-    results_dir = Path("results")
+    # Load index
+    index = load_results_index()
+
+    # Find result files
+    result_file1 = find_result_file(args.run1, index)
+    result_file2 = find_result_file(args.run2, index)
+
+    print(f"Loading {args.run1} from {result_file1}")
+    print(f"Loading {args.run2} from {result_file2}")
 
     # Load runs
-    run1 = load_run(args.run1, results_dir)
-    run2 = load_run(args.run2, results_dir)
+    run1 = load_run(args.run1, result_file1)
+    run2 = load_run(args.run2, result_file2)
 
-    # Group cases by contract
-    cases1 = get_cases_by_contract(run1)
-    cases2 = get_cases_by_contract(run2)
+    # Group cases
+    cases_by_id1 = {r.get("case_id"): r for r in run1.get("results", [])}
+    cases_by_id2 = {r.get("case_id"): r for r in run2.get("results", [])}
+
+    all_case_ids = set(cases_by_id1.keys()) | set(cases_by_id2.keys())
 
     # Compute diff
     delta = {
@@ -1100,35 +1296,17 @@ def main():
         "summary_delta": {}
     }
 
-    # Find added/removed cases
-    all_case_ids = set()
-    cases_by_id1 = {}
-    cases_by_id2 = {}
-
-    for result in run1.get("results", []):
-        case_id = result.get("case_id")
-        all_case_ids.add(case_id)
-        cases_by_id1[case_id] = result
-
-    for result in run2.get("results", []):
-        case_id = result.get("case_id")
-        all_case_ids.add(case_id)
-        cases_by_id2[case_id] = result
-
-    # Cases added in run2
-    for case_id, result in cases_by_id2.items():
-        if case_id not in cases_by_id1:
+    # Cases added/removed
+    for case_id in all_case_ids:
+        if case_id in cases_by_id2 and case_id not in cases_by_id1:
             delta["cases_added"].append({
                 "case_id": case_id,
-                "contract_id": result.get("contract_id")
+                "contract_id": cases_by_id2[case_id].get("contract_id")
             })
-
-    # Cases removed in run2
-    for case_id, result in cases_by_id1.items():
-        if case_id not in cases_by_id2:
+        elif case_id in cases_by_id1 and case_id not in cases_by_id2:
             delta["cases_removed"].append({
                 "case_id": case_id,
-                "contract_id": result.get("contract_id")
+                "contract_id": cases_by_id1[case_id].get("contract_id")
             })
 
     # Classification changes
@@ -1144,7 +1322,6 @@ def main():
                     "to": class2
                 })
 
-                # Track bug candidates
                 if class2 == "BUG_CANDIDATE":
                     delta["bug_candidates"]["introduced"].append({"case_id": case_id})
                 if class1 == "BUG_CANDIDATE" and class2 != "BUG_CANDIDATE":
@@ -1170,7 +1347,7 @@ def main():
         "to": summary2.get("total", 0)
     }
 
-    # Build diff output
+    # Build output
     diff_output = {
         "diff_id": f"{args.run1}-vs-{args.run2}",
         "comparison_scope": "run_to_run",
@@ -1181,9 +1358,10 @@ def main():
     }
 
     # Write output
+    results_dir = Path("results")
     output_path = results_dir / f"diff_{args.run1}_vs_{args.run2}.json"
     output_path.write_text(json.dumps(diff_output, indent=2))
-    print(f"Generated: {output_path}")
+    print(f"\nGenerated: {output_path}")
 
     # Print summary
     print(f"\nDiff: {args.run1} → {args.run2}")
@@ -1200,27 +1378,49 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-**Step 2: Test diff script**
+---
+
+## P4.3: Initialize Index and Test Diff
+
+**Step 1: Generate initial index**
+
+```bash
+python scripts/index_results.py
+```
+
+**Step 2: Test diff**
 
 ```bash
 python scripts/diff_results.py r5d-p0-20260310-140340 r5d-p05-20260310-141433
 ```
 
-**Step 3: Commit**
+---
+
+## P4.4: Commit P4 Component
 
 ```bash
-git add scripts/diff_results.py results/diff_*.json
-git commit -m "feat(automation): add results diff script"
+git add scripts/index_results.py scripts/diff_results.py
+git add results/RESULTS_INDEX.json results/diff_*.json
+git commit -m "feat(automation): P4 results index and diff with index-based lookup
+
+- index_results.py: Scan results/ → RESULTS_INDEX.json
+- diff_results.py: Read index first, locate result files by run_id
+- No glob/file search - uses RESULTS_INDEX.json as source of truth
+- Supports explicit two-run comparison
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
 
 ---
 
-## Task 10: Create Documentation README
+# Phase Docs: Documentation
+
+## Docs.1: Create Quick Start Guide
 
 **Files:**
 - Create: `docs/AUTOMATION_README.md`
 
-**Step 1: Write automation README**
+**Step 1: Write README**
 
 ```markdown
 # Automation Acceleration
@@ -1238,7 +1438,9 @@ campaign_name: "my_campaign"
 campaign_id: "R7A-001"
 target_db: "Milvus"
 adapter: "milvus_adapter"
-contract_families: ["ANN"]
+# MVP: One family only
+contract_families:
+  - "ANN"
 goal: "Test ANN properties"
 mode: "REAL"
 ```
@@ -1268,15 +1470,26 @@ python scripts/diff_results.py r5d-p0-20260310-140340 r5d-p05-20260310-141433
 python scripts/bootstrap_capability_registry.py --adapter milvus
 ```
 
+### Update Contract Coverage
+
+```bash
+# 1. Update VALIDATION_MATRIX.json from new results
+python scripts/populate_validation_matrix.py
+
+# 2. Regenerate CONTRACT_COVERAGE_INDEX.json
+python scripts/generate_contract_coverage.py
+```
+
 ## Components
 
-| Component | Script | Purpose |
-|-----------|--------|---------|
-| P1 | `bootstrap_capability_registry.py` | Scan adapter for operations |
-| P2 | (manual) | Update contract coverage from results |
-| P3 | `bootstrap_campaign.py` | Generate campaign skeletons |
-| P4 | `index_results.py` | Index all result files |
-| P4 | `diff_results.py` | Compare two runs |
+| Component | Script | Purpose | Input | Output |
+|-----------|--------|---------|-------|--------|
+| P1 | `bootstrap_capability_registry.py` | Scan adapter for operations | adapter code | `capabilities/*_capabilities.json` |
+| P2 | `populate_validation_matrix.py` | Extract validations from results | result files | `VALIDATION_MATRIX.json` |
+| P2 | `generate_contract_coverage.py` | Build coverage index | contracts + matrix | `CONTRACT_COVERAGE_INDEX.json` |
+| P3 | `bootstrap_campaign.py` | Generate campaign skeletons | config.yaml | 8 artifacts |
+| P4 | `index_results.py` | Index all result files | results/ | `RESULTS_INDEX.json` |
+| P4 | `diff_results.py` | Compare two runs | RESULTS_INDEX + run_ids | diff_*.json |
 
 ## File Structure
 
@@ -1284,18 +1497,20 @@ python scripts/bootstrap_capability_registry.py --adapter milvus
 capabilities/              # P1: Capability registries
 ├── *_capabilities.json
 contracts/
-├── CONTRACT_COVERAGE_INDEX.json  # P2: Coverage status
-├── VALIDATION_MATRIX.json        # P2: Cross-DB matrix
+├── CONTRACT_COVERAGE_INDEX.json  # P2: Auto-generated coverage
+├── VALIDATION_MATRIX.json        # P2: Source of truth for validations
 campaigns/                 # P3: Campaign configs
 └── {name}/
     ├── config.yaml
     └── bootstrap_manifest.json
 results/
-├── RESULTS_INDEX.json     # P4: Results index
+├── RESULTS_INDEX.json     # P4: Results index (source of truth)
 └── diff_*.json            # P4: Diff outputs
 scripts/
 ├── bootstrap_capability_registry.py
 ├── bootstrap_campaign.py
+├── populate_validation_matrix.py
+├── generate_contract_coverage.py
 ├── index_results.py
 └── diff_results.py
 ```
@@ -1305,33 +1520,53 @@ scripts/
 See `docs/plans/2026-03-10-AUTOMATION_ACCELERATION_MVP.md` for full design.
 ```
 
-**Step 2: Commit**
+---
+
+## Docs.2: Commit Documentation
 
 ```bash
 git add docs/AUTOMATION_README.md
-git commit -m "docs(automation): add automation quick start guide"
+git commit -m "docs(automation): add automation quick start guide
+
+- Quick start for all 4 components
+- Component reference table
+- Update workflows for registries and coverage
+- File structure overview
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
 
 ---
 
-## Summary
+# Summary
 
-**Total Tasks**: 10
-**Estimated Time**: 2-3 hours
-**Deliverables**:
-- P1: 4 capability registries + bootstrap script
-- P2: Contract coverage index + validation matrix
-- P3: Campaign bootstrap script (8 artifacts)
-- P4: Results index + diff scripts
-- Documentation
+## Components Delivered
 
-**Success Criteria**:
-- New campaign can be bootstrapped with single command
-- Results are indexable and comparable
+| Component | Deliverables | Commit Strategy |
+|-----------|--------------|-----------------|
+| **P1** | Capability registries + bootstrap script | Single commit per component |
+| **P2** | Coverage index + validation matrix + generators | Single commit per component |
+| **P3** | Campaign bootstrap + 8 artifacts | Single commit per component |
+| **P4** | Index + diff scripts | Single commit per component |
+| **Docs** | Quick start guide | Single commit |
+
+## Key Fixes Applied
+
+1. **Commit granularity**: Per-component, not per-task
+2. **P2 automation**: VALIDATION_MATRIX as source of truth, auto-generate coverage
+3. **P3 fixes**: required_operations, python-safe slugs, single-family MVP
+4. **P4 diff**: Index-based lookup, not glob search
+5. **P1 scan**: Execute dispatch priority, filter helpers
+
+## Success Criteria
+
+- New campaign bootstrapped with single command
+- Results indexable and comparable
+- Coverage auto-generated from validation matrix
 - Campaign startup time reduced by 50-70%
 
 ---
 
-**Plan Version**: 1.0
+**Plan Version**: 2.0 (Corrected)
 **Date**: 2026-03-10
 **Status**: READY FOR EXECUTION
