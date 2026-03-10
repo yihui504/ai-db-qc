@@ -1,7 +1,63 @@
 {
-  "last_updated": "2026-03-10T17:00:30.512309",
-  "total_runs": 33,
+  "last_updated": "2026-03-10T17:14:22.647066",
+  "total_runs": 38,
   "entries": [
+    {
+      "run_id": "sch006b-20260310-171406",
+      "result_file": "results\\sch006b_20260310-171406.json",
+      "timestamp": "2026-03-10T17:14:06.455627",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "SCH006B Filter Semantics Verification",
+      "total_cases": 3,
+      "classifications": {
+        "PASS": 3
+      },
+      "file_size_bytes": 147260
+    },
+    {
+      "run_id": "sch006b-20260310-171334",
+      "result_file": "results\\sch006b_20260310-171334.json",
+      "timestamp": "2026-03-10T17:13:34.526089",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "SCH006B Filter Semantics Verification",
+      "total_cases": 3,
+      "classifications": {
+        "EXPERIMENT_DESIGN_ISSUE": 3
+      },
+      "file_size_bytes": 62513
+    },
+    {
+      "run_id": "sch006b-20260310-171225",
+      "result_file": "results\\sch006b_20260310-171225.json",
+      "timestamp": "2026-03-10T17:12:25.020079",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "SCH006B Filter Semantics Verification",
+      "total_cases": 3,
+      "classifications": {
+        "EXPERIMENT_DESIGN_ISSUE": 3
+      },
+      "file_size_bytes": 31236
+    },
+    {
+      "run_id": "sch006b-20260310-171202",
+      "result_file": "results\\sch006b_20260310-171202.json",
+      "timestamp": "2026-03-10T17:12:02.486829",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "SCH006B Filter Semantics Verification",
+      "total_cases": 3,
+      "classifications": {
+        "EXPERIMENT_DESIGN_ISSUE": 3
+      },
+      "file_size_bytes": 6456
+    },
     {
       "run_id": "r5d-p05-20260310-141433",
       "result_file": "results\\r5d_p05_20260310-141439.json",
@@ -546,6 +602,18 @@
         "OBSERVATION": 10
       },
       "file_size_bytes": 30636
+    },
+    {
+      "run_id": "RESULTS_INDEX",
+      "result_file": "results\\RESULTS_INDEX.json",
+      "timestamp": null,
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 0,
+      "classifications": {},
+      "file_size_bytes": 16790
     }
   ]
 }

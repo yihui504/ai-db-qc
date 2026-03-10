@@ -1,7 +1,7 @@
 {
   "campaign_name": "example_consistency",
   "campaign_id": "EXA-001",
-  "generated_at": "2026-03-10T16:51:54.179659",
+  "generated_at": "2026-03-10T17:01:24.950418",
   "input_config": "campaigns\\example_consistency\\config.yaml",
   "artifacts": [
     {
