@@ -1,0 +1,140 @@
+{
+  "contract_family": "SCHEMA_EVOLUTION",
+  "version": "1.0",
+  "description": "Schema evolution contracts - multi-collection version comparison (NOT in-place mutation)",
+  "verification_summary": {
+    "date": "2026-03-10",
+    "database": "Milvus v2.6.10",
+    "mode": "REAL",
+    "run_ids": [],
+    "total_contracts": 4,
+    "verified": {},
+    "classification": {}
+  },
+  "scope_note": "P0 evaluates schema evolution semantics via multi-collection version comparison, NOT in-place schema mutation. Milvus SDK v2.6.10 does not support alter_collection, add_field, drop_field, rename_field operations.",
+  "contract_layers": {
+    "layer_1_foundation": {
+      "description": "Foundation (Metadata) - STRICT oracle (PASS/BUG_CANDIDATE only)",
+      "contracts": [
+        {
+          "contract_id": "SCH-004",
+          "name": "Metadata Accuracy",
+          "statement": "Collection metadata must accurately reflect actual schema",
+          "layer": "LAYER_1_FOUNDATION",
+          "oracle_strategy": "STRICT",
+          "preconditions": [
+            "collection created with known schema"
+          ],
+          "postconditions": [
+            "metadata.fields == actual fields",
+            "metadata.dimension == actual dimension",
+            "metadata.primary_key == actual primary key"
+          ],
+          "invariants": [
+            "Metadata consistency"
+          ],
+          "milvus_verified": false,
+          "confidence": "HIGH"
+        },
+        {
+          "contract_id": "SCH-008",
+          "name": "Metadata Reflection After Change",
+          "statement": "After creating collection_v2, collection_v1 metadata must remain accurate and unchanged",
+          "layer": "LAYER_1_FOUNDATION",
+          "oracle_strategy": "STRICT",
+          "preconditions": [
+            "collection_v1 exists with known schema",
+            "collection_v2 created with different schema"
+          ],
+          "postconditions": [
+            "v1 metadata unchanged",
+            "v1 metadata still accurate"
+          ],
+          "invariants": [
+            "Metadata isolation"
+          ],
+          "milvus_verified": false,
+          "confidence": "HIGH"
+        }
+      ]
+    },
+    "layer_3_data_integrity": {
+      "description": "Data Integrity (Critical) - STRICT oracle (BUG_CANDIDATE if data loss)",
+      "contracts": [
+        {
+          "contract_id": "SCH-001",
+          "name": "Data Preservation After Allowed Schema Change",
+          "statement": "Creating collection_v2 with extended schema must not affect data in collection_v1",
+          "layer": "LAYER_3_DATA_INTEGRITY",
+          "oracle_strategy": "STRICT",
+          "preconditions": [
+            "collection_v1 exists with N entities",
+            "collection_v2 created with additional scalar field"
+          ],
+          "postconditions": [
+            "collection_v1 entity count == N (unchanged)",
+            "collection_v1 entity data unchanged",
+            "collection_v2 has its own entities"
+          ],
+          "invariants": [
+            "Cross-collection data isolation"
+          ],
+          "milvus_verified": false,
+          "confidence": "HIGH"
+        }
+      ]
+    },
+    "layer_4_query_behavior": {
+      "description": "Query Behavior (Compatibility) - CONSERVATIVE oracle (PASS/OBSERVATION/ALLOWED_DIFFERENCE)",
+      "contracts": [
+        {
+          "contract_id": "SCH-002",
+          "name": "Backward Query Compatibility",
+          "statement": "Queries on collection_v1 must continue working after collection_v2 with different schema is created",
+          "layer": "LAYER_4_QUERY_BEHAVIOR",
+          "oracle_strategy": "CONSERVATIVE",
+          "preconditions": [
+            "query works on collection_v1",
+            "collection_v2 created with different schema"
+          ],
+          "postconditions": [
+            "query on collection_v1 still succeeds",
+            "query returns same results (semantically)"
+          ],
+          "invariants": [
+            "Query stability"
+          ],
+          "milvus_verified": false,
+          "confidence": "HIGH"
+        }
+      ]
+    }
+  },
+  "round2_deferred": {
+    "description": "Deferred to Round 2 (P0.5) - Field Semantics",
+    "contracts": [
+      {
+        "contract_id": "SCH-005",
+        "name": "Nullable/Default Field Read Semantics",
+        "layer": "LAYER_5_FIELD_SEMANTICS",
+        "reason": "Secondary priority - behavioral documentation"
+      },
+      {
+        "contract_id": "SCH-006",
+        "name": "Post-Change Filter Semantics",
+        "layer": "LAYER_4_QUERY_BEHAVIOR",
+        "reason": "Depends on filter support validation"
+      }
+    ]
+  },
+  "dropped": {
+    "description": "Dropped - Operation not supported in SDK",
+    "contracts": [
+      {
+        "contract_id": "SCH-007",
+        "name": "Forbidden Schema Change Gate",
+        "reason": "alter_collection operation not supported in pymilvus SDK v2.6.10"
+      }
+    ]
+  }
+}
