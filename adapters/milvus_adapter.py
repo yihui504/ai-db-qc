@@ -75,6 +75,8 @@ class MilvusAdapter(AdapterBase):
                 return self._reload(params)
             elif operation == "drop_index":
                 return self._drop_index(params)
+            elif operation == "flush":
+                return self._flush(params)
             elif operation == "get_load_state":
                 return self._get_load_state(params)
             elif operation == "count_entities":
@@ -776,4 +778,46 @@ class MilvusAdapter(AdapterBase):
                 "status": "error",
                 "error": str(e),
                 "operation": "count_entities"
+            }
+
+    def _flush(self, params: Dict) -> Dict[str, Any]:
+        """Flush inserted data to persistent storage.
+
+        Ensures data inserted via insert() is persisted and visible to
+        subsequent queries and count operations.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+                - async (bool): Whether to flush asynchronously (default False)
+
+        Returns:
+            Response dict with status and flush operation result
+        """
+        collection_name = params.get("collection_name")
+        async_flush = params.get("async", False)
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+
+            # Execute flush
+            collection.flush(async_flush=async_flush)
+
+            return {
+                "status": "success",
+                "operation": "flush",
+                "collection_name": collection_name,
+                "async": async_flush,
+                "data": [{
+                    "collection_name": collection_name,
+                    "flushed": True,
+                    "async": async_flush,
+                    "note": "Data flushed to persistent storage"
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "flush"
             }

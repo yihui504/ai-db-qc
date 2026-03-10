@@ -432,15 +432,15 @@ templates:
     priority: "HIGH"
 
   # ========================================
-  # ILC-009: Post-Insert Visibility
+  # ILC-009: Post-Insert Visibility Investigation
   # ========================================
   - template_id: ilc-009
-    name: "Post-Insert Visibility"
+    name: "Post-Insert Visibility Investigation"
     contract_id: "ILC-009"
     initial_state: "INDEX_LOADED"
-    target_state: "INDEX_LOADED"
-    description: "Verify newly inserted vectors are immediately visible"
-    exploratory: true
+    target_state: "OBSERVE"
+    description: "Investigate post-insert visibility with flush and wait window analysis"
+    investigation: true
     sequence:
       - step: 1
         operation: create_collection
@@ -452,46 +452,72 @@ templates:
         param_template:
           collection_name: "{collection_name}"
           vectors: "{vectors_128}"
+        store_as: "insert_initial_result"
       - step: 3
         operation: build_index
         param_template:
           collection_name: "{collection_name}"
           index_type: "HNSW"
       - step: 4
+        operation: flush
+        param_template:
+          collection_name: "{collection_name}"
+          async: false
+        store_as: "flush_after_initial"
+      - step: 5
         operation: load
         param_template:
           collection_name: "{collection_name}"
-      - step: 5
+      - step: 6
         operation: count_entities
         param_template:
           collection_name: "{collection_name}"
-        store_as: "count_before_insert"
-      - step: 6
+        store_as: "count_baseline"
+      - step: 7
         operation: search
         param_template:
           collection_name: "{collection_name}"
           vector: "{query_vector_128}"
           top_k: 5
         store_as: "search_baseline"
-      - step: 7
+      - step: 8
         operation: insert
         param_template:
           collection_name: "{collection_name}"
           vectors: "{query_vector_128}"
-      - step: 8
+        store_as: "insert_new_vector_result"
+      - step: 9
         operation: count_entities
         param_template:
           collection_name: "{collection_name}"
-        store_as: "count_after_insert"
-      - step: 9
+        store_as: "count_before_flush"
+      - step: 10
         operation: search
         param_template:
           collection_name: "{collection_name}"
           vector: "{query_vector_128}"
           top_k: 5
-        store_as: "search_new_vector"
+        store_as: "search_before_flush"
+      - step: 11
+        operation: flush
+        param_template:
+          collection_name: "{collection_name}"
+          async: false
+        store_as: "flush_after_insert"
+      - step: 12
+        operation: count_entities
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "count_after_flush"
+      - step: 13
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 5
+        store_as: "search_after_flush"
     oracle_expectation:
-      classification: "VERSION_GUARDED"
-      check: "post_insert_visibility"
-      reasoning: "Insert visibility may depend on index type and consistency level"
+      classification: "OBSERVATION"
+      investigation_focus: "insert_visibility_with_flush"
+      reasoning: "Investigate insert visibility before and after flush operation"
     priority: "HIGH"

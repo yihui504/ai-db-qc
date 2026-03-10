@@ -1352,75 +1352,155 @@ class OracleEngine:
         result: Dict[str, Any],
         contract: Optional[Dict[str, Any]]
     ) -> OracleResult:
-        """Oracle: post-insert visibility (exploratory).
+        """Oracle: post-insert visibility investigation (ILC-009).
 
-        ILC-009: Verify if newly inserted vectors are immediately visible.
+        Investigates insert visibility with flush and wait window analysis.
+
+        Evidence collection:
+        A. Insert operation raw return (insert_count)
+        B. Immediate storage_count
+        C. Flush operation result
+        D. Post-flush storage_count
+        E. Search visibility before/after flush
         """
-        count_before = result.get("count_before_insert", {})
-        count_after = result.get("count_after_insert", {})
+        # Extract insert results
+        insert_initial = result.get("insert_initial_result", {})
+        insert_new = result.get("insert_new_vector_result", {})
+
+        insert_initial_count = insert_initial.get("insert_count", 0)
+        insert_new_count = insert_new.get("insert_count", 0)
+
+        # Extract count results at different timepoints
+        count_baseline = result.get("count_baseline", {})
+        count_before_flush = result.get("count_before_flush", {})
+        count_after_flush = result.get("count_after_flush", {})
+
+        storage_baseline = count_baseline.get("storage_count", 0)
+        storage_before_flush = count_before_flush.get("storage_count", 0)
+        storage_after_flush = count_after_flush.get("storage_count", 0)
+
+        # Extract search results
         search_baseline = result.get("search_baseline", {})
-        search_new_vector = result.get("search_new_vector", {})
+        search_before_flush = result.get("search_before_flush", {})
+        search_after_flush = result.get("search_after_flush", {})
 
-        storage_count_before = count_before.get("storage_count", 0)
-        storage_count_after = count_after.get("storage_count", 0)
-        search_new_data = search_new_vector.get("data", [])
-        search_new_error = search_new_vector.get("error")
+        search_baseline_count = len(search_baseline.get("data", []))
+        search_before_flush_count = len(search_before_flush.get("data", []))
+        search_after_flush_count = len(search_after_flush.get("data", []))
 
-        # Check if storage count increased
-        count_increased = storage_count_after > storage_count_before
+        # Evidence summary
+        evidence = {
+            "insert_counts": {
+                "initial": insert_initial_count,
+                "new": insert_new_count
+            },
+            "storage_counts": {
+                "baseline": storage_baseline,
+                "before_flush": storage_before_flush,
+                "after_flush": storage_after_flush
+            },
+            "search_results": {
+                "baseline": search_baseline_count,
+                "before_flush": search_before_flush_count,
+                "after_flush": search_after_flush_count
+            }
+        }
 
-        if not count_increased:
+        # Analysis
+
+        # Check 1: Did insert operations report success?
+        if insert_initial_count == 0 or insert_new_count == 0:
             return self._oracle_result(
                 contract["contract_id"] if contract else "ilc-009",
                 Classification.INFRA_FAILURE,
                 False,
-                f"Insert did not increase storage count: {storage_count_before} -> {storage_count_after}",
-                {"storage_count_before": storage_count_before, "storage_count_after": storage_count_after}
+                f"Insert operation reported zero count: initial={insert_initial_count}, new={insert_new_count}",
+                {**evidence, "conclusion": "insert_operation_failed"}
             )
 
-        # Check search visibility
-        if search_new_error:
-            # Search failed after insert
+        # Check 2: Does storage_count reflect insert without flush?
+        if storage_before_flush > storage_baseline:
+            # Storage count increased before flush - immediate persistence
+            if search_before_flush_count > search_baseline_count:
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-009",
+                    Classification.PASS,
+                    True,
+                    "Insert visible immediately (count and search confirm without flush)",
+                    {
+                        **evidence,
+                        "conclusion": "immediate_visibility_no_flush_needed",
+                        "classification": "ALLOWED_DIFFERENCE",
+                        "note": "Milvus persists inserts immediately for count_visibility"
+                    }
+                )
+            else:
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-009",
+                    Classification.ALLOWED_DIFFERENCE,
+                    True,
+                    "Count increased but search not immediately visible (index delay)",
+                    {
+                        **evidence,
+                        "conclusion": "count_visible_search_delayed",
+                        "classification": "ALLOWED_DIFFERENCE",
+                        "note": "Storage persists immediately, index update may be delayed"
+                    }
+                )
+
+        # Check 3: Does flush make storage_count visible?
+        if storage_after_flush > storage_baseline:
+            # Flush made count visible
+            if search_after_flush_count > search_baseline_count:
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-009",
+                    Classification.ALLOWED_DIFFERENCE,
+                    True,
+                    "Insert visible after flush (count and search confirm)",
+                    {
+                        **evidence,
+                        "conclusion": "flush_required_for_visibility",
+                        "classification": "ALLOWED_DIFFERENCE",
+                        "note": "Milvus requires flush for insert visibility"
+                    }
+                )
+            else:
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-009",
+                    Classification.ALLOWED_DIFFERENCE,
+                    True,
+                    "Count visible after flush but search still delayed",
+                    {
+                        **evidence,
+                        "conclusion": "flush_enables_count_search_still_delayed",
+                        "classification": "ALLOWED_DIFFERENCE",
+                        "note": "Index update may have additional delay"
+                    }
+                )
+
+        # Check 4: Neither count nor search show insert
+        if storage_after_flush == storage_baseline:
             return self._oracle_result(
                 contract["contract_id"] if contract else "ilc-009",
-                Classification.VERSION_GUARDED,
-                True,
-                f"New vector not immediately visible (search error): {search_new_error}",
+                Classification.EXPERIMENT_DESIGN_ISSUE,
+                False,
+                f"Insert reported success (count={insert_new_count}) but count remains {storage_after_flush} after flush",
                 {
-                    "visibility": "delayed_or_error",
-                    "storage_count_increased": True,
-                    "search_error": search_new_error,
-                    "note": "May need index rebuild or wait window"
+                    **evidence,
+                    "conclusion": "count_api_unreliable",
+                    "classification": "EXPERIMENT_DESIGN_ISSUE",
+                    "note": "collection.num_entities API may not reflect recent inserts"
                 }
             )
-        elif len(search_new_data) == 0:
-            # Search returns empty for new vector
-            return self._oracle_result(
-                contract["contract_id"] if contract else "ilc-009",
-                Classification.VERSION_GUARDED,
-                True,
-                "New vector not immediately visible (empty search results)",
-                {
-                    "visibility": "not_visible",
-                    "storage_count_increased": True,
-                    "search_results": 0,
-                    "note": "May need index refresh or consistency level adjustment"
-                }
-            )
-        else:
-            # New vector found in search
-            return self._oracle_result(
-                contract["contract_id"] if contract else "ilc-009",
-                Classification.PASS,
-                True,
-                f"New vector immediately visible: {len(search_new_data)} results found",
-                {
-                    "visibility": "immediate",
-                    "storage_count_increased": True,
-                    "search_results": len(search_new_data),
-                    "consistency_observed": "strong"
-                }
-            )
+
+        # Default: inconclusive
+        return self._oracle_result(
+            contract["contract_id"] if contract else "ilc-009",
+            Classification.OBSERVATION,
+            False,
+            "Inconclusive: unable to determine insert visibility behavior",
+            {**evidence, "conclusion": "inconclusive"}
+        )
 
 
 if __name__ == "__main__":
