@@ -1,0 +1,54 @@
+{
+  "contract_id": "HYB-002",
+  "name": "Filter-Result Consistency",
+  "family": "HYBRID",
+  "type": "universal",
+  "statement": "Filtered search results must match unfiltered search after applying filter",
+  "rationale": "Filtering should not change ranking logic within matching entities",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["filter_expression_provided"]
+  },
+  "preconditions": [
+    "collection_with_scalar_fields",
+    "same_query_vector_and_filter"
+  ],
+  "postconditions": [
+    "filtered_results == filter(unfiltered_results)"
+  ],
+  "invariants": [
+    "Filtering is semantically neutral for matching entities"
+  ],
+  "violation_criteria": {
+    "condition": "filtered_results != filter(unfiltered_results)",
+    "severity": "high"
+  },
+  "test_generation": {
+    "strategy": "combinatorial",
+    "cases": [
+      {
+        "name": "Compare filtered and unfiltered",
+        "sequence": [
+          "search without filter → results_unfiltered",
+          "search with filter → results_filtered",
+          "verify results_filtered == filter(results_unfiltered)"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "filtered_equals_manual_filter(unfiltered)",
+    "verification": "assert set(filtered_ids) == set([id for id in unfiltered_ids if satisfies_filter(id)])",
+    "classification": {
+      "violation": "BUG (inconsistent_filtering)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["HYB-001"],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

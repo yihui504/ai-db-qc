@@ -1,0 +1,14 @@
+{
+  "case_id": "r4_006",
+  "property": "Empty Collection Handling",
+  "category": "EXPLORATORY",
+  "property_number": 6,
+  "oracle_rule": "Rule 5 (Empty Collection)",
+  "description": "Search behavior on empty collection",
+  "classification": {
+    "result": "ALLOWED_DIFFERENCE",
+    "category": "ALLOWED",
+    "reasoning": "Different empty collection handling: Milvus=fails, Qdrant=succeeds (EDGE CASE - OBSERVATION)"
+  },
+  "test_step": 2
+}

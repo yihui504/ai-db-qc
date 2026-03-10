@@ -1,0 +1,57 @@
+{
+  "contract_id": "IDX-004",
+  "name": "Multiple Index Behavior",
+  "family": "INDEX",
+  "type": "database_specific",
+  "statement": "Multiple indexes on same collection must have deterministic behavior",
+  "rationale": "Databases must handle multiple indexes consistently",
+  "scope": {
+    "databases": ["milvus", "qdrant"],
+    "operations": ["create_index", "search"],
+    "conditions": ["database_supports_multiple_indexes"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "database_supports_multiple_indexes"
+  ],
+  "postconditions": [
+    "search_uses_designated_index OR search_uses_all_indexes OR error_raised"
+  ],
+  "invariants": [
+    "Index selection is deterministic"
+  ],
+  "violation_criteria": {
+    "condition": "non_deterministic_index_selection",
+    "severity": "medium"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Create multiple indexes, then search",
+        "sequence": [
+          "insert data",
+          "create index type HNSW",
+          "create index type IVF",
+          "search",
+          "verify which index used"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "index_selection_is_deterministic",
+    "verification": "execute_multiple_times(); assert same_index_used",
+    "classification": {
+      "violation": "BUG (non-deterministic)",
+      "compliant": "PASS",
+      "allowed_difference": "different_index_selection_strategies"
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": [],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

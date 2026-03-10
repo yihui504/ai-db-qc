@@ -1,0 +1,19 @@
+{
+  "run_id": "r3-sequence-r3-real-execution-20260309-193200",
+  "run_tag": "r3-real-execution",
+  "timestamp": "2026-03-09T19:32:07.178435",
+  "phase": "R3",
+  "adapter_requested": "milvus",
+  "adapter_actual": "milvus",
+  "is_real_database_run": true,
+  "require_real_flag": true,
+  "templates": "casegen/templates/r3_sequence_state.yaml",
+  "case_count": 11,
+  "minimum_success_met": true,
+  "classifications": {
+    "issue_ready": 0,
+    "observation": 6,
+    "calibration": 3,
+    "exploratory": 2
+  }
+}

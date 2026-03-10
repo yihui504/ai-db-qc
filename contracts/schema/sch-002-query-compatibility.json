@@ -1,0 +1,58 @@
+{
+  "contract_id": "SCH-002",
+  "name": "Query Compatibility Across Schema Updates",
+  "family": "SCHEMA",
+  "type": "universal",
+  "statement": "Queries on existing fields must continue working after schema additions",
+  "rationale": "Schema additions should not break existing queries",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search", "alter_collection"],
+    "conditions": ["new_field_added"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "query_works_before_schema_change",
+    "new_field_added"
+  ],
+  "postconditions": [
+    "query_still_valid",
+    "query_returns_expected_results"
+  ],
+  "invariants": [
+    "Backward query compatibility"
+  ],
+  "violation_criteria": {
+    "condition": "previously_working_query_fails OR returns_different_results",
+    "severity": "high"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Query compatibility after field addition",
+        "sequence": [
+          "execute query → results_before",
+          "add new field",
+          "execute same query → results_after",
+          "verify compatibility"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "query_succeeds AND results_semantically_equivalent",
+    "verification": "assert query_executes(); assert results_match(results_before)",
+    "classification": {
+      "violation": "BUG (breaking_change)",
+      "compliant": "PASS",
+      "allowed_difference": "slight_result_variance"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["SCH-001"],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

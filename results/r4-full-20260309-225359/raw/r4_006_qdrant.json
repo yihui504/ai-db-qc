@@ -1,0 +1,32 @@
+{
+  "database": "qdrant",
+  "case_id": "r4_006",
+  "property": "Empty Collection Handling",
+  "property_number": 6,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_006",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "search",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_006",
+        "results": [],
+        "count": 0
+      },
+      "error": null,
+      "error_type": null
+    }
+  ]
+}

@@ -131,19 +131,71 @@ class MilvusAdapter(AdapterBase):
         except Exception:
             pass
 
+    def _parse_vectors(self, vectors: Any) -> list:
+        """Parse vectors from string or list format.
+
+        Handles cases where vectors are passed as strings (from template substitution)
+        or as actual Python lists.
+
+        Args:
+            vectors: Either a list of lists, a string representation like "[[0.1, 0.2], ...]",
+                     or a flat list like "[0.1, 0.2, ...]"
+
+        Returns:
+            List of vector lists (always nested)
+        """
+        import ast
+
+        if isinstance(vectors, str):
+            try:
+                # Parse string representation of list
+                parsed = ast.literal_eval(vectors)
+                if isinstance(parsed, list):
+                    # Check if it's a flat list or nested list
+                    if parsed and isinstance(parsed[0], (int, float)):
+                        # Flat list - wrap in another list
+                        return [parsed]
+                    elif parsed and isinstance(parsed[0], list):
+                        # Already nested list
+                        return parsed
+                    else:
+                        # Empty list
+                        return []
+                return [parsed]
+            except (ValueError, SyntaxError):
+                # If parsing fails, return as single-item list
+                return [[vectors]]
+        elif isinstance(vectors, list):
+            # Already a list, ensure it's nested
+            if vectors and isinstance(vectors[0], (int, float)):
+                return [vectors]
+            return vectors
+        else:
+            return [[vectors]]
+
     # Private operation methods
 
     def _create_collection(self, params: Dict) -> Dict[str, Any]:
-        """Create a new collection."""
+        """Create a new collection with optional scalar fields."""
         collection_name = params.get("collection_name")
         dimension = params.get("dimension", 128)
         metric_type = params.get("metric_type", "L2")
+        scalar_fields = params.get("scalar_fields", [])
 
         # Define schema with proper DataType enums
         fields = [
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True),
             FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dimension)
         ]
+
+        # Add scalar fields if specified
+        for field_name in scalar_fields:
+            # For simplicity, treat all scalar fields as VARCHAR (string)
+            # In production, you'd want to infer types from the data
+            fields.append(
+                FieldSchema(name=field_name, dtype=DataType.VARCHAR, max_length=256)
+            )
+
         schema = CollectionSchema(fields, f"Auto generated schema for {collection_name}")
 
         # Create collection
@@ -157,16 +209,33 @@ class MilvusAdapter(AdapterBase):
         }
 
     def _insert(self, params: Dict) -> Dict[str, Any]:
-        """Insert vectors into collection."""
+        """Insert vectors with optional scalar data into collection."""
         collection_name = params.get("collection_name")
         vectors = params.get("vectors", [])
+        scalar_data = params.get("scalar_data", [])
+
+        # Parse vector strings if needed (instantiator substitutes strings)
+        vectors = self._parse_vectors(vectors)
 
         collection = Collection(collection_name, using=self.alias)
 
-        # Prepare data
-        data = []
-        for i, vec in enumerate(vectors):
-            data.append({"id": i, "vector": vec})
+        # Prepare data - need to handle scalar fields
+        if scalar_data:
+            # Merge scalar data with vectors
+            # scalar_data format: [{'id': 1, 'color': 'red', 'status': 'active'}, ...]
+            data = []
+            for i, vec in enumerate(vectors):
+                entity = {"id": scalar_data[i].get("id", i), "vector": vec}
+                # Add scalar fields
+                for key, value in scalar_data[i].items():
+                    if key != "id":
+                        entity[key] = value
+                data.append(entity)
+        else:
+            # No scalar data - just vectors
+            data = []
+            for i, vec in enumerate(vectors):
+                data.append({"id": i, "vector": vec})
 
         result = collection.insert(data)
 
@@ -175,7 +244,7 @@ class MilvusAdapter(AdapterBase):
             "operation": "insert",
             "collection_name": collection_name,
             "insert_count": result.insert_count,
-            "data": [{"id": i, "vector": vec} for i, vec in enumerate(vectors)]
+            "data": data
         }
 
     def _build_index(self, params: Dict) -> Dict[str, Any]:
@@ -220,12 +289,26 @@ class MilvusAdapter(AdapterBase):
         }
 
     def _search(self, params: Dict) -> Dict[str, Any]:
-        """Search for similar vectors."""
+        """Search for similar vectors, returning scalar fields if present."""
         collection_name = params.get("collection_name")
         vector = params.get("vector", [])
         top_k = params.get("top_k", 10)
 
+        # Parse vector string if needed
+        if isinstance(vector, str):
+            vector = self._parse_vectors(vector)[0]
+
         collection = Collection(collection_name, using=self.alias)
+
+        # Get output fields to return (all fields if collection has scalars)
+        output_fields = ["id", "vector"]
+        try:
+            schema = collection.schema
+            for field in schema.fields:
+                if field.name not in ["id", "vector"]:
+                    output_fields.append(field.name)
+        except Exception:
+            pass  # Use default fields
 
         # Search parameters
         search_params = {"metric_type": "L2", "params": {"nprobe": 10}}
@@ -235,17 +318,27 @@ class MilvusAdapter(AdapterBase):
             anns_field="vector",
             param=search_params,
             limit=top_k,
-            expr=None
+            expr=None,
+            output_fields=output_fields
         )
 
-        # Format results
+        # Format results with scalar fields
         formatted_results = []
         for hit in results[0]:
-            formatted_results.append({
+            result_entry = {
                 "id": hit.id,
                 "score": hit.score,
-                "distance": hit.distance
-            })
+                "distance": hit.distance,
+                "scalar_fields": {}
+            }
+            # Add scalar fields if present
+            for field in output_fields:
+                if field not in ["id", "vector"] and hasattr(hit, field):
+                    result_entry["scalar_fields"][field] = getattr(hit, field)
+                elif field not in ["id", "vector"] and hasattr(hit, 'entity'):
+                    result_entry["scalar_fields"][field] = hit.entity.get(field)
+
+            formatted_results.append(result_entry)
 
         return {
             "status": "success",
@@ -255,33 +348,71 @@ class MilvusAdapter(AdapterBase):
         }
 
     def _filtered_search(self, params: Dict) -> Dict[str, Any]:
-        """Search with filter expression."""
+        """Search with filter expression, returning scalar fields."""
         collection_name = params.get("collection_name")
         vector = params.get("vector", [])
         top_k = params.get("top_k", 10)
         filter_expr = params.get("filter", "")
 
+        # Parse vector string if needed
+        if isinstance(vector, str):
+            vector = self._parse_vectors(vector)[0]
+
         collection = Collection(collection_name, using=self.alias)
+
+        # Get output fields to return (all fields if collection has scalars)
+        output_fields = ["id", "vector"]
+        try:
+            schema = collection.schema
+            for field in schema.fields:
+                if field.name not in ["id", "vector"]:
+                    output_fields.append(field.name)
+        except Exception:
+            pass  # Use default fields
 
         # Search parameters
         search_params = {"metric_type": "L2", "params": {"nprobe": 10}}
+
+        # Convert filter dict to expression string if needed
+        if isinstance(filter_expr, dict):
+            expr_parts = []
+            for key, value in filter_expr.items():
+                if value is None:
+                    expr_parts.append(f"{key} is null")
+                elif isinstance(value, (list, set)):
+                    # IN clause
+                    value_str = ', '.join(f"'{v}'" for v in value)
+                    expr_parts.append(f"{key} in [{value_str}]")
+                else:
+                    expr_parts.append(f"{key} == '{value}'")
+            filter_expr = " and ".join(expr_parts) if expr_parts else ""
 
         results = collection.search(
             data=[vector],
             anns_field="vector",
             param=search_params,
             limit=top_k,
-            expr=filter_expr
+            expr=filter_expr if filter_expr else None,
+            output_fields=output_fields
         )
 
-        # Format results
+        # Format results with scalar fields
         formatted_results = []
         for hit in results[0]:
-            formatted_results.append({
+            result_entry = {
                 "id": hit.id,
                 "score": hit.score,
-                "distance": hit.distance
-            })
+                "distance": hit.distance,
+                "scalar_fields": {}
+            }
+            # Add scalar fields if present
+            for field in output_fields:
+                if field not in ["id", "vector"] and hasattr(hit, field):
+                    result_entry["scalar_fields"][field] = getattr(hit, field)
+                elif field not in ["id", "vector"] and hasattr(hit, 'entity'):
+                    result_entry["scalar_fields"][field] = hit.entity.get(field)
+
+            formatted_results.append(result_entry)
 
         return {
             "status": "success",

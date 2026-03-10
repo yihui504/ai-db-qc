@@ -1,0 +1,28 @@
+{
+  "database": "qdrant",
+  "case_id": "r4_008",
+  "property": "Collection Creation Idempotency",
+  "property_number": 8,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_008",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "create_collection",
+      "status": "error",
+      "data": {},
+      "error": "Unexpected Response: 409 (Conflict)\nRaw response content:\nb'{\"status\":{\"error\":\"Wrong input: Collection `r4_008` already exists!\"},\"time\":0.000039939}'",
+      "error_type": "UnexpectedResponse"
+    }
+  ]
+}

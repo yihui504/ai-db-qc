@@ -1,0 +1,84 @@
+{
+  "database": "qdrant",
+  "case_id": "r4_003",
+  "property": "Delete Idempotency",
+  "property_number": 3,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_003",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "insert",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_003",
+        "inserted_count": 1,
+        "ids": [
+          100
+        ]
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 3,
+      "operation": "build_index",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-creates HNSW index",
+        "operation": "no-op"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 4,
+      "operation": "load",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-loads collections",
+        "operation": "no-op"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 5,
+      "operation": "delete",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_003",
+        "deleted_ids": [
+          100
+        ],
+        "deleted_count": 1
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 6,
+      "operation": "delete",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_003",
+        "deleted_ids": [
+          100
+        ],
+        "deleted_count": 1
+      },
+      "error": null,
+      "error_type": null
+    }
+  ]
+}

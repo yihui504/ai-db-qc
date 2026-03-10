@@ -1,0 +1,28 @@
+{
+  "database": "milvus",
+  "case_id": "r4_007",
+  "property": "Non-Existent Delete Tolerance",
+  "property_number": 7,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": [
+        {
+          "id": "r4_007"
+        }
+      ],
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "delete",
+      "status": "success",
+      "data": [],
+      "error": null,
+      "error_type": null
+    }
+  ]
+}

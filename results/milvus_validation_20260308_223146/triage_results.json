@@ -1,0 +1,47 @@
+[
+  {
+    "case_id": "cb-bound-002",
+    "run_id": "validation_20260308_223146",
+    "final_type": "type-2",
+    "input_validity": "illegal",
+    "observed_outcome": "failure",
+    "precondition_pass": false,
+    "rationale": "Illegal input with poor diagnostic"
+  },
+  {
+    "case_id": "cb-bound-003",
+    "run_id": "validation_20260308_223146",
+    "final_type": "type-2",
+    "input_validity": "illegal",
+    "observed_outcome": "failure",
+    "precondition_pass": false,
+    "rationale": "Illegal input with poor diagnostic"
+  },
+  {
+    "case_id": "cb-bound-005",
+    "run_id": "validation_20260308_223146",
+    "final_type": "type-1",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": true,
+    "rationale": "Illegal operation succeeded"
+  },
+  {
+    "case_id": "cb-bound-006",
+    "run_id": "validation_20260308_223146",
+    "final_type": "type-1",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": true,
+    "rationale": "Illegal operation succeeded"
+  },
+  {
+    "case_id": "exp-002",
+    "run_id": "validation_20260308_223146",
+    "final_type": "type-2",
+    "input_validity": "illegal",
+    "observed_outcome": "failure",
+    "precondition_pass": false,
+    "rationale": "Illegal input with poor diagnostic"
+  }
+]

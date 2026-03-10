@@ -1,0 +1,92 @@
+{
+  "database": "qdrant",
+  "case_id": "pilot_001",
+  "property": "Post-Drop Rejection",
+  "property_number": 1,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_001_qdrant",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null
+    },
+    {
+      "step": 2,
+      "operation": "insert",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_001_qdrant",
+        "inserted_count": 2,
+        "ids": [
+          1,
+          2
+        ]
+      },
+      "error": null
+    },
+    {
+      "step": 3,
+      "operation": "build_index",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-creates HNSW index",
+        "operation": "no-op"
+      },
+      "error": null
+    },
+    {
+      "step": 4,
+      "operation": "load",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-loads collections",
+        "operation": "no-op"
+      },
+      "error": null
+    },
+    {
+      "step": 5,
+      "operation": "search",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_001_qdrant",
+        "results": [
+          {
+            "id": 2,
+            "score": 0.99999994,
+            "payload": {}
+          },
+          {
+            "id": 1,
+            "score": 0.99999994,
+            "payload": {}
+          }
+        ],
+        "count": 2
+      },
+      "error": null
+    },
+    {
+      "step": 6,
+      "operation": "drop_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_001_qdrant",
+        "deleted": true
+      },
+      "error": null
+    },
+    {
+      "step": 7,
+      "operation": "search",
+      "status": "error",
+      "data": {},
+      "error": "Unexpected Response: 404 (Not Found)\nRaw response content:\nb'{\"status\":{\"error\":\"Not found: Collection `test_pilot_001_qdrant` doesn\\'t exist!\"},\"time\":1.747e-6}'"
+    }
+  ]
+}

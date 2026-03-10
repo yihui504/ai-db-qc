@@ -1,0 +1,32 @@
+{
+  "database": "milvus",
+  "case_id": "r4_008",
+  "property": "Collection Creation Idempotency",
+  "property_number": 8,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": [
+        {
+          "id": "r4_008"
+        }
+      ],
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "create_collection",
+      "status": "success",
+      "data": [
+        {
+          "id": "r4_008"
+        }
+      ],
+      "error": null,
+      "error_type": null
+    }
+  ]
+}

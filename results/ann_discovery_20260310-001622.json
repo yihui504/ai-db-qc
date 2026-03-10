@@ -1,0 +1,2835 @@
+{
+  "run_id": "ann-discovery-20260310-001622",
+  "timestamp": "2026-03-10T00:16:22.045841",
+  "total_tests": 44,
+  "is_real_database": true,
+  "results": [
+    {
+      "test_id": "ann_discovery_001",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_all_zeros_1",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_zeros",
+      "execution": {
+        "test_id": "ann_discovery_001",
+        "contract_id": "ANN-001",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:42.066620",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 1",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:14:44.468030"
+    },
+    {
+      "test_id": "ann_discovery_002",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_1",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_002",
+        "contract_id": "ANN-001",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:44.468030",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:14:46.733882"
+    },
+    {
+      "test_id": "ann_discovery_003",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_2",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_003",
+        "contract_id": "ANN-002",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:46.733882",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:14:49.017700"
+    },
+    {
+      "test_id": "ann_discovery_004",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=100, metric=IP",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=100",
+      "execution": {
+        "test_id": "ann_discovery_004",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:49.017700",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:14:51.596470"
+    },
+    {
+      "test_id": "ann_discovery_005",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=1, metric=L2",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "execution": {
+        "test_id": "ann_discovery_005",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:51.597992",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 1,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:14:53.823420"
+    },
+    {
+      "test_id": "ann_discovery_006",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_alternating_3",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: alternating",
+      "execution": {
+        "test_id": "ann_discovery_006",
+        "contract_id": "ANN-002",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:53.823420",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 3",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:14:56.457709"
+    },
+    {
+      "test_id": "ann_discovery_007",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_3",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_007",
+        "contract_id": "ANN-001",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:56.457709",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:14:58.672866"
+    },
+    {
+      "test_id": "ann_discovery_008",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_1",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_008",
+        "contract_id": "ANN-002",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:14:58.672866",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:00.747179"
+    },
+    {
+      "test_id": "ann_discovery_009",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_4",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_009",
+        "contract_id": "ANN-001",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:00.747179",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:02.973084"
+    },
+    {
+      "test_id": "ann_discovery_010",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_two",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium",
+      "dataset_type": "edge_case",
+      "dataset_description": "Two vector collection (edge case)",
+      "execution": {
+        "test_id": "ann_discovery_010",
+        "contract_id": "ANN-001",
+        "strategy": "size_edge_cases",
+        "dataset_type": "edge_case",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:02.973591",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 20.13857078552246,
+              "distance": 20.13857078552246
+            }
+          ],
+          "top_k": 2,
+          "dataset_description": "Two vector collection (edge case)",
+          "dataset_type": "edge_case"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:05.568284"
+    },
+    {
+      "test_id": "ann_discovery_011",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=10, metric=IP",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "execution": {
+        "test_id": "ann_discovery_011",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:05.568284",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:07.113086"
+    },
+    {
+      "test_id": "ann_discovery_012",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=10, metric=L2",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "execution": {
+        "test_id": "ann_discovery_012",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:07.113086",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 1,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:09.356207"
+    },
+    {
+      "test_id": "ann_discovery_013",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_negative_values_5",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: negative_values",
+      "execution": {
+        "test_id": "ann_discovery_013",
+        "contract_id": "ANN-001",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:09.356207",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 5",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:11.568551"
+    },
+    {
+      "test_id": "ann_discovery_014",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=10, metric=IP",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "execution": {
+        "test_id": "ann_discovery_014",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:11.568551",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 1,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:13.600120"
+    },
+    {
+      "test_id": "ann_discovery_015",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_alternating_3",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: alternating",
+      "execution": {
+        "test_id": "ann_discovery_015",
+        "contract_id": "ANN-001",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:13.600120",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 3",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:15.861848"
+    },
+    {
+      "test_id": "ann_discovery_016",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_all_ones_2",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_ones",
+      "execution": {
+        "test_id": "ann_discovery_016",
+        "contract_id": "ANN-002",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:15.861848",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 2",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:18.502769"
+    },
+    {
+      "test_id": "ann_discovery_017",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=1, metric=IP",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "execution": {
+        "test_id": "ann_discovery_017",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:18.502769",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:20.662156"
+    },
+    {
+      "test_id": "ann_discovery_018",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_all_ones_2",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_ones",
+      "execution": {
+        "test_id": "ann_discovery_018",
+        "contract_id": "ANN-001",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:20.662156",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 2",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:22.813620"
+    },
+    {
+      "test_id": "ann_discovery_019",
+      "contract_id": "ANN-002",
+      "name": "Index stress test: IVF_FLAT_nlist_1024",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=1)",
+      "execution": {
+        "test_id": "ann_discovery_019",
+        "contract_id": "ANN-002",
+        "strategy": "index_stress",
+        "dataset_type": "random",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:22.813620",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:25.302547"
+    },
+    {
+      "test_id": "ann_discovery_020",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_single",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium",
+      "dataset_type": "edge_case",
+      "dataset_description": "Single vector collection (edge case)",
+      "execution": {
+        "test_id": "ann_discovery_020",
+        "contract_id": "ANN-001",
+        "strategy": "size_edge_cases",
+        "dataset_type": "edge_case",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:25.303050",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 1,
+          "dataset_description": "Single vector collection (edge case)",
+          "dataset_type": "edge_case"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:27.747541"
+    },
+    {
+      "test_id": "ann_discovery_021",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: size_edge_single",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium",
+      "dataset_type": "edge_case",
+      "dataset_description": "Single vector collection (edge case)",
+      "execution": {
+        "test_id": "ann_discovery_021",
+        "contract_id": "ANN-002",
+        "strategy": "size_edge_cases",
+        "dataset_type": "edge_case",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:27.747541",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 1,
+          "dataset_description": "Single vector collection (edge case)",
+          "dataset_type": "edge_case"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:30.423056"
+    },
+    {
+      "test_id": "ann_discovery_022",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=1, metric=L2",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "execution": {
+        "test_id": "ann_discovery_022",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:30.423056",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:33.067560"
+    },
+    {
+      "test_id": "ann_discovery_023",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_L2_search_IP",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=1)",
+      "execution": {
+        "test_id": "ann_discovery_023",
+        "contract_id": "ANN-004",
+        "strategy": "cross_metric",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:33.067560",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Incomplete metric consistency data",
+        "evidence": {
+          "provided_fields": {
+            "metric_type": null,
+            "result_distance": null,
+            "result_vector": false,
+            "query_vector": false
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:15:35.267568"
+    },
+    {
+      "test_id": "ann_discovery_024",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_2",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_024",
+        "contract_id": "ANN-001",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:35.268089",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:37.929635"
+    },
+    {
+      "test_id": "ann_discovery_025",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=10, metric=L2",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "execution": {
+        "test_id": "ann_discovery_025",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:37.929635",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:40.215340"
+    },
+    {
+      "test_id": "ann_discovery_026",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: size_edge_empty",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium",
+      "dataset_type": "edge_case",
+      "dataset_description": "Empty collection (edge case)",
+      "execution": {
+        "test_id": "ann_discovery_026",
+        "contract_id": "ANN-002",
+        "strategy": "size_edge_cases",
+        "dataset_type": "edge_case",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:40.215340",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Empty collection (edge case)",
+          "dataset_type": "edge_case",
+          "collection_empty": true
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 5
+        }
+      },
+      "timestamp": "2026-03-10T00:15:40.323588"
+    },
+    {
+      "test_id": "ann_discovery_027",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_empty",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium",
+      "dataset_type": "edge_case",
+      "dataset_description": "Empty collection (edge case)",
+      "execution": {
+        "test_id": "ann_discovery_027",
+        "contract_id": "ANN-001",
+        "strategy": "size_edge_cases",
+        "dataset_type": "edge_case",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:40.323588",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Empty collection (edge case)",
+          "dataset_type": "edge_case",
+          "collection_empty": true
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 5, top_k: 10",
+        "evidence": {
+          "result_count": 5,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:40.433067"
+    },
+    {
+      "test_id": "ann_discovery_028",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_3",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_028",
+        "contract_id": "ANN-002",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:40.433067",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:42.688252"
+    },
+    {
+      "test_id": "ann_discovery_029",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_all_zeros_1",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_zeros",
+      "execution": {
+        "test_id": "ann_discovery_029",
+        "contract_id": "ANN-002",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:42.688755",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 1",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:44.944028"
+    },
+    {
+      "test_id": "ann_discovery_030",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_4",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high",
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "execution": {
+        "test_id": "ann_discovery_030",
+        "contract_id": "ANN-002",
+        "strategy": "extreme_values",
+        "dataset_type": "extreme",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:44.944028",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+          "dataset_type": "extreme"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:47.148659"
+    },
+    {
+      "test_id": "ann_discovery_031",
+      "contract_id": "ANN-001",
+      "name": "Index stress test: IVF_FLAT_nlist_1024",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=1)",
+      "execution": {
+        "test_id": "ann_discovery_031",
+        "contract_id": "ANN-001",
+        "strategy": "index_stress",
+        "dataset_type": "random",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:47.148659",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:49.823294"
+    },
+    {
+      "test_id": "ann_discovery_032",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=1, metric=IP",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "execution": {
+        "test_id": "ann_discovery_032",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:49.823294",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 1,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:15:52.448065"
+    },
+    {
+      "test_id": "ann_discovery_033",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_L2_search_L2",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=0)",
+      "execution": {
+        "test_id": "ann_discovery_033",
+        "contract_id": "ANN-004",
+        "strategy": "cross_metric",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:52.448065",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Incomplete metric consistency data",
+        "evidence": {
+          "provided_fields": {
+            "metric_type": null,
+            "result_distance": null,
+            "result_vector": false,
+            "query_vector": false
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:15:54.645986"
+    },
+    {
+      "test_id": "ann_discovery_034",
+      "contract_id": "ANN-002",
+      "name": "Index stress test: IVF_FLAT_nlist_128",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=0)",
+      "execution": {
+        "test_id": "ann_discovery_034",
+        "contract_id": "ANN-002",
+        "strategy": "index_stress",
+        "dataset_type": "random",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:54.646360",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:15:56.935210"
+    },
+    {
+      "test_id": "ann_discovery_035",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_IP_search_IP",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=2)",
+      "execution": {
+        "test_id": "ann_discovery_035",
+        "contract_id": "ANN-004",
+        "strategy": "cross_metric",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:15:56.935210",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Incomplete metric consistency data",
+        "evidence": {
+          "provided_fields": {
+            "metric_type": null,
+            "result_distance": null,
+            "result_vector": false,
+            "query_vector": false
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:15:58.952925"
+    },
+    {
+      "test_id": "ann_discovery_036",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: duplicates_1",
+      "discovery_strategy": "duplicate_datasets",
+      "bug_yield_potential": "medium",
+      "dataset_type": "duplicates",
+      "dataset_description": "Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+      "execution": {
+        "test_id": "ann_discovery_036",
+        "contract_id": "ANN-001",
+        "strategy": "duplicate_datasets",
+        "dataset_type": "duplicates",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:15:58.952925",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 17.202054977416992,
+              "distance": 17.202054977416992
+            },
+            {
+              "id": 59,
+              "score": 17.202054977416992,
+              "distance": 17.202054977416992
+            },
+            {
+              "id": 92,
+              "score": 17.202054977416992,
+              "distance": 17.202054977416992
+            },
+            {
+              "id": 83,
+              "score": 18.17776870727539,
+              "distance": 18.17776870727539
+            },
+            {
+              "id": 23,
+              "score": 18.402618408203125,
+              "distance": 18.402618408203125
+            },
+            {
+              "id": 33,
+              "score": 19.148784637451172,
+              "distance": 19.148784637451172
+            },
+            {
+              "id": 99,
+              "score": 19.284526824951172,
+              "distance": 19.284526824951172
+            },
+            {
+              "id": 67,
+              "score": 19.361515045166016,
+              "distance": 19.361515045166016
+            },
+            {
+              "id": 75,
+              "score": 19.361515045166016,
+              "distance": 19.361515045166016
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+          "dataset_type": "duplicates"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:16:01.168259"
+    },
+    {
+      "test_id": "ann_discovery_037",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_single_nonzero_4",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: single_nonzero",
+      "execution": {
+        "test_id": "ann_discovery_037",
+        "contract_id": "ANN-002",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:16:01.168259",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 4",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:16:03.887542"
+    },
+    {
+      "test_id": "ann_discovery_038",
+      "contract_id": "ANN-001",
+      "name": "Index stress test: IVF_FLAT_nlist_128",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=0)",
+      "execution": {
+        "test_id": "ann_discovery_038",
+        "contract_id": "ANN-001",
+        "strategy": "index_stress",
+        "dataset_type": "random",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:16:03.887542",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:16:06.559705"
+    },
+    {
+      "test_id": "ann_discovery_039",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_COSINE_search_COSINE",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=3)",
+      "execution": {
+        "test_id": "ann_discovery_039",
+        "contract_id": "ANN-004",
+        "strategy": "cross_metric",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:16:06.559705",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 86,
+              "score": 16.63154411315918,
+              "distance": 16.63154411315918
+            },
+            {
+              "id": 27,
+              "score": 17.60120391845703,
+              "distance": 17.60120391845703
+            },
+            {
+              "id": 34,
+              "score": 18.056713104248047,
+              "distance": 18.056713104248047
+            },
+            {
+              "id": 5,
+              "score": 18.294010162353516,
+              "distance": 18.294010162353516
+            },
+            {
+              "id": 87,
+              "score": 18.635496139526367,
+              "distance": 18.635496139526367
+            },
+            {
+              "id": 11,
+              "score": 18.726482391357422,
+              "distance": 18.726482391357422
+            },
+            {
+              "id": 29,
+              "score": 18.744091033935547,
+              "distance": 18.744091033935547
+            },
+            {
+              "id": 26,
+              "score": 18.8391056060791,
+              "distance": 18.8391056060791
+            },
+            {
+              "id": 3,
+              "score": 18.985767364501953,
+              "distance": 18.985767364501953
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Incomplete metric consistency data",
+        "evidence": {
+          "provided_fields": {
+            "metric_type": null,
+            "result_distance": null,
+            "result_vector": false,
+            "query_vector": false
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:16:09.205749"
+    },
+    {
+      "test_id": "ann_discovery_040",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=100, metric=L2",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high",
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=100",
+      "execution": {
+        "test_id": "ann_discovery_040",
+        "contract_id": "ANN-001",
+        "strategy": "combinatorial_params",
+        "dataset_type": "random",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:16:09.205749",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 0,
+          "dataset_description": "Dataset with 100 random vectors (seed=42)",
+          "dataset_type": "random"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:16:11.404644"
+    },
+    {
+      "test_id": "ann_discovery_041",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: duplicates_1",
+      "discovery_strategy": "duplicate_datasets",
+      "bug_yield_potential": "medium",
+      "dataset_type": "duplicates",
+      "dataset_description": "Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+      "execution": {
+        "test_id": "ann_discovery_041",
+        "contract_id": "ANN-002",
+        "strategy": "duplicate_datasets",
+        "dataset_type": "duplicates",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:16:11.404644",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 17.202054977416992,
+              "distance": 17.202054977416992
+            },
+            {
+              "id": 59,
+              "score": 17.202054977416992,
+              "distance": 17.202054977416992
+            },
+            {
+              "id": 92,
+              "score": 17.202054977416992,
+              "distance": 17.202054977416992
+            },
+            {
+              "id": 83,
+              "score": 18.17776870727539,
+              "distance": 18.17776870727539
+            },
+            {
+              "id": 23,
+              "score": 18.402618408203125,
+              "distance": 18.402618408203125
+            },
+            {
+              "id": 33,
+              "score": 19.148784637451172,
+              "distance": 19.148784637451172
+            },
+            {
+              "id": 99,
+              "score": 19.284526824951172,
+              "distance": 19.284526824951172
+            },
+            {
+              "id": 67,
+              "score": 19.361515045166016,
+              "distance": 19.361515045166016
+            },
+            {
+              "id": 75,
+              "score": 19.361515045166016,
+              "distance": 19.361515045166016
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+          "dataset_type": "duplicates"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:16:14.094565"
+    },
+    {
+      "test_id": "ann_discovery_042",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_negative_values_5",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: negative_values",
+      "execution": {
+        "test_id": "ann_discovery_042",
+        "contract_id": "ANN-002",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:16:14.094565",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 5",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Results correctly sorted",
+        "evidence": {
+          "violations": [],
+          "total_results": 4
+        }
+      },
+      "timestamp": "2026-03-10T00:16:16.744347"
+    },
+    {
+      "test_id": "ann_discovery_043",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_small",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium",
+      "dataset_type": "edge_case",
+      "dataset_description": "Small collection (10 vectors)",
+      "execution": {
+        "test_id": "ann_discovery_043",
+        "contract_id": "ANN-001",
+        "strategy": "size_edge_cases",
+        "dataset_type": "edge_case",
+        "bug_yield_potential": "medium",
+        "timestamp": "2026-03-10T00:16:16.744347",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 21.339412689208984,
+              "distance": 21.339412689208984
+            },
+            {
+              "id": 9,
+              "score": 21.87532615661621,
+              "distance": 21.87532615661621
+            },
+            {
+              "id": 1,
+              "score": 22.957626342773438,
+              "distance": 22.957626342773438
+            },
+            {
+              "id": 3,
+              "score": 23.060874938964844,
+              "distance": 23.060874938964844
+            },
+            {
+              "id": 6,
+              "score": 23.584964752197266,
+              "distance": 23.584964752197266
+            },
+            {
+              "id": 4,
+              "score": 24.324329376220703,
+              "distance": 24.324329376220703
+            },
+            {
+              "id": 5,
+              "score": 24.537273406982422,
+              "distance": 24.537273406982422
+            },
+            {
+              "id": 2,
+              "score": 25.098434448242188,
+              "distance": 25.098434448242188
+            },
+            {
+              "id": 8,
+              "score": 25.808727264404297,
+              "distance": 25.808727264404297
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Small collection (10 vectors)",
+          "dataset_type": "edge_case"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:16:19.369696"
+    },
+    {
+      "test_id": "ann_discovery_044",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_single_nonzero_4",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high",
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: single_nonzero",
+      "execution": {
+        "test_id": "ann_discovery_044",
+        "contract_id": "ANN-001",
+        "strategy": "degenerate_vectors",
+        "dataset_type": "degenerate",
+        "bug_yield_potential": "high",
+        "timestamp": "2026-03-10T00:16:19.369696",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 0,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 2,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 3,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 4,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 5,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 6,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 7,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 8,
+              "score": 0.0,
+              "distance": 0.0
+            },
+            {
+              "id": 9,
+              "score": 0.0,
+              "distance": 0.0
+            }
+          ],
+          "top_k": 10,
+          "dataset_description": "Degenerate dataset: 4",
+          "dataset_type": "degenerate"
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Result count: 4, top_k: 10",
+        "evidence": {
+          "result_count": 4,
+          "top_k": 10
+        }
+      },
+      "timestamp": "2026-03-10T00:16:22.045242"
+    }
+  ],
+  "summary": {
+    "total": 44,
+    "by_classification": {
+      "PASS": 40,
+      "OBSERVATION": 4
+    },
+    "by_contract": {
+      "ANN-001": {
+        "passed": 26,
+        "failed": 0,
+        "total": 26
+      },
+      "ANN-002": {
+        "passed": 14,
+        "failed": 0,
+        "total": 14
+      },
+      "ANN-004": {
+        "passed": 0,
+        "failed": 4,
+        "total": 4
+      }
+    },
+    "by_strategy": {
+      "degenerate_vectors": {
+        "PASS": 10
+      },
+      "extreme_values": {
+        "PASS": 8
+      },
+      "combinatorial_params": {
+        "PASS": 10
+      },
+      "size_edge_cases": {
+        "PASS": 6
+      },
+      "index_stress": {
+        "PASS": 4
+      },
+      "cross_metric": {
+        "OBSERVATION": 4
+      },
+      "duplicate_datasets": {
+        "PASS": 2
+      }
+    },
+    "by_potential": {
+      "high": {
+        "PASS": 28,
+        "OBSERVATION": 4
+      },
+      "medium": {
+        "PASS": 12
+      }
+    },
+    "issue_candidates": [],
+    "passed": 40,
+    "failed": 4
+  }
+}

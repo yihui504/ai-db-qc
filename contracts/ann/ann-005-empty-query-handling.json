@@ -1,0 +1,52 @@
+{
+  "contract_id": "ANN-005",
+  "name": "Empty Query Handling",
+  "family": "ANN",
+  "type": "universal",
+  "statement": "Search on empty collection must return empty results or error (consistently)",
+  "rationale": "Edge case behavior should be predictable",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["collection_empty"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "collection_empty"
+  ],
+  "postconditions": [
+    "returns_empty_results OR returns_error_consistently"
+  ],
+  "invariants": [
+    "Behavior is consistent across multiple executions"
+  ],
+  "violation_criteria": {
+    "condition": "behavior_is_inconsistent (sometimes error, sometimes results)",
+    "severity": "medium"
+  },
+  "test_generation": {
+    "strategy": "boundary",
+    "cases": [
+      {
+        "name": "Search empty collection",
+        "params": {"collection_empty": true},
+        "verification": "check outcome consistency"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "behavior_is_consistent OR returns_empty_or_error",
+    "verification": "execute_multiple_times(); assert all_outcomes_same",
+    "classification": {
+      "violation": "BUG (inconsistent)",
+      "compliant": "PASS",
+      "allowed_difference": "different_empty_handling_strategies"
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

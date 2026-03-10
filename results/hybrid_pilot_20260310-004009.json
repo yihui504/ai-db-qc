@@ -1,0 +1,566 @@
+{
+  "run_id": "hybrid-pilot-20260310-004009",
+  "timestamp": "2026-03-10T00:40:09.033607",
+  "total_tests": 14,
+  "is_real_database": true,
+  "results": [
+    {
+      "test_id": "hyb-001_exclusion_001",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Basic",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "All results must have color=red, no blue entities",
+      "execution": {
+        "test_id": "hyb-001_exclusion_001",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Basic",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:40:08.966933",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-001_exclusion_001",
+          "contract_id": "HYB-001",
+          "name": "Filter Exclusion - Basic",
+          "dataset_name": "dataset_1_vector_trap",
+          "bug_yield_potential": "CRITICAL",
+          "timestamp": "2026-03-10T00:40:08.966933",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.016112"
+    },
+    {
+      "test_id": "hyb-001_exclusion_002",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Similarity Trap",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "Entity 2 (blue) with near-identical vector must be excluded",
+      "execution": {
+        "test_id": "hyb-001_exclusion_002",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Similarity Trap",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:40:09.016112",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-001_exclusion_002",
+          "contract_id": "HYB-001",
+          "name": "Filter Exclusion - Similarity Trap",
+          "dataset_name": "dataset_1_vector_trap",
+          "bug_yield_potential": "CRITICAL",
+          "timestamp": "2026-03-10T00:40:09.016112",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.018118"
+    },
+    {
+      "test_id": "hyb-001_exclusion_003",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Multiple Conditions",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "All results must have color=red AND status=active",
+      "execution": {
+        "test_id": "hyb-001_exclusion_003",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Multiple Conditions",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:40:09.018118",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-001_exclusion_003",
+          "contract_id": "HYB-001",
+          "name": "Filter Exclusion - Multiple Conditions",
+          "dataset_name": "dataset_1_vector_trap",
+          "bug_yield_potential": "CRITICAL",
+          "timestamp": "2026-03-10T00:40:09.018118",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.018940"
+    },
+    {
+      "test_id": "hyb-001_exclusion_004",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Set Membership",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "HIGH",
+      "expected_behavior": "All results must have color IN [red, green]",
+      "execution": {
+        "test_id": "hyb-001_exclusion_004",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Set Membership",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "HIGH",
+        "timestamp": "2026-03-10T00:40:09.018940",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-001_exclusion_004",
+          "contract_id": "HYB-001",
+          "name": "Filter Exclusion - Set Membership",
+          "dataset_name": "dataset_1_vector_trap",
+          "bug_yield_potential": "HIGH",
+          "timestamp": "2026-03-10T00:40:09.018940",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.018940"
+    },
+    {
+      "test_id": "hyb-001_exclusion_005",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Null Handling",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Results must have status=NULL (should be empty or handle gracefully)",
+      "execution": {
+        "test_id": "hyb-001_exclusion_005",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Null Handling",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:40:09.018940",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-001_exclusion_005",
+          "contract_id": "HYB-001",
+          "name": "Filter Exclusion - Null Handling",
+          "dataset_name": "dataset_1_vector_trap",
+          "bug_yield_potential": "MEDIUM",
+          "timestamp": "2026-03-10T00:40:09.018940",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.020945"
+    },
+    {
+      "test_id": "hyb-001_truncation_001",
+      "contract_id": "HYB-001",
+      "name": "Top-K Truncation - Full Filtered Subset",
+      "dataset_name": "dataset_3_top_k_truncation",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "Return all 3 red entities (not 10 with 7 blue)",
+      "execution": {
+        "test_id": "hyb-001_truncation_001",
+        "contract_id": "HYB-001",
+        "name": "Top-K Truncation - Full Filtered Subset",
+        "dataset_name": "dataset_3_top_k_truncation",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:40:09.020945",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-001_truncation_001",
+          "contract_id": "HYB-001",
+          "name": "Top-K Truncation - Full Filtered Subset",
+          "dataset_name": "dataset_3_top_k_truncation",
+          "bug_yield_potential": "CRITICAL",
+          "timestamp": "2026-03-10T00:40:09.020945",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.022947"
+    },
+    {
+      "test_id": "hyb-002_consistency_001",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Filter Satisfaction",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "HIGH",
+      "expected_behavior": "All results satisfy color=red",
+      "execution": {
+        "test_id": "hyb-002_consistency_001",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Filter Satisfaction",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "HIGH",
+        "timestamp": "2026-03-10T00:40:09.022947",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-002_consistency_001",
+          "contract_id": "HYB-002",
+          "name": "Consistency - Filter Satisfaction",
+          "dataset_name": "dataset_2_controlled_axis",
+          "bug_yield_potential": "HIGH",
+          "timestamp": "2026-03-10T00:40:09.022947",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.024449"
+    },
+    {
+      "test_id": "hyb-002_consistency_002",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Distance Monotonicity",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "HIGH",
+      "expected_behavior": "Distances are monotonically increasing within filtered entities",
+      "execution": {
+        "test_id": "hyb-002_consistency_002",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Distance Monotonicity",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "HIGH",
+        "timestamp": "2026-03-10T00:40:09.024449",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-002_consistency_002",
+          "contract_id": "HYB-002",
+          "name": "Consistency - Distance Monotonicity",
+          "dataset_name": "dataset_2_controlled_axis",
+          "bug_yield_potential": "HIGH",
+          "timestamp": "2026-03-10T00:40:09.024449",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.026089"
+    },
+    {
+      "test_id": "hyb-002_consistency_003",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Different Top-K Values",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Filter satisfaction and monotonicity with top_k=3",
+      "execution": {
+        "test_id": "hyb-002_consistency_003",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Different Top-K Values",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:40:09.026089",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-002_consistency_003",
+          "contract_id": "HYB-002",
+          "name": "Consistency - Different Top-K Values",
+          "dataset_name": "dataset_2_controlled_axis",
+          "bug_yield_potential": "MEDIUM",
+          "timestamp": "2026-03-10T00:40:09.026089",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.027164"
+    },
+    {
+      "test_id": "hyb-002_consistency_004",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Exact Reference Comparison",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Compare with exact ground truth (ALLOWED_DIFFERENCE for ANN)",
+      "execution": {
+        "test_id": "hyb-002_consistency_004",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Exact Reference Comparison",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:40:09.027164",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-002_consistency_004",
+          "contract_id": "HYB-002",
+          "name": "Consistency - Exact Reference Comparison",
+          "dataset_name": "dataset_2_controlled_axis",
+          "bug_yield_potential": "MEDIUM",
+          "timestamp": "2026-03-10T00:40:09.027164",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.028270"
+    },
+    {
+      "test_id": "hyb-003_empty_001",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Impossible Condition",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Empty results (all entities are red)",
+      "execution": {
+        "test_id": "hyb-003_empty_001",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Impossible Condition",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:40:09.028270",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-003_empty_001",
+          "contract_id": "HYB-003",
+          "name": "Empty Filter - Impossible Condition",
+          "dataset_name": "dataset_4_impossible_filter",
+          "bug_yield_potential": "MEDIUM",
+          "timestamp": "2026-03-10T00:40:09.028270",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.028894"
+    },
+    {
+      "test_id": "hyb-003_empty_002",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Empty Collection",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Empty results (collection is empty)",
+      "execution": {
+        "test_id": "hyb-003_empty_002",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Empty Collection",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:40:09.028894",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-003_empty_002",
+          "contract_id": "HYB-003",
+          "name": "Empty Filter - Empty Collection",
+          "dataset_name": "dataset_4_impossible_filter",
+          "bug_yield_potential": "MEDIUM",
+          "timestamp": "2026-03-10T00:40:09.028894",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.030900"
+    },
+    {
+      "test_id": "hyb-003_empty_003",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Null Field Filter",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "LOW",
+      "expected_behavior": "Empty results or consistent error handling",
+      "execution": {
+        "test_id": "hyb-003_empty_003",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Null Field Filter",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "LOW",
+        "timestamp": "2026-03-10T00:40:09.030900",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-003_empty_003",
+          "contract_id": "HYB-003",
+          "name": "Empty Filter - Null Field Filter",
+          "dataset_name": "dataset_4_impossible_filter",
+          "bug_yield_potential": "LOW",
+          "timestamp": "2026-03-10T00:40:09.030900",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.032017"
+    },
+    {
+      "test_id": "hyb-003_empty_004",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Contradictory Condition",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "LOW",
+      "expected_behavior": "Empty results or consistent error handling",
+      "execution": {
+        "test_id": "hyb-003_empty_004",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Contradictory Condition",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "LOW",
+        "timestamp": "2026-03-10T00:40:09.032017",
+        "is_real_database": true,
+        "status": "error",
+        "results": null,
+        "error": "'str' object has no attribute 'query_vector'"
+      },
+      "oracle": {
+        "classification": "OBSERVATION",
+        "passed": false,
+        "reasoning": "Execution failed or returned no results: 'str' object has no attribute 'query_vector'",
+        "evidence": {
+          "test_id": "hyb-003_empty_004",
+          "contract_id": "HYB-003",
+          "name": "Empty Filter - Contradictory Condition",
+          "dataset_name": "dataset_4_impossible_filter",
+          "bug_yield_potential": "LOW",
+          "timestamp": "2026-03-10T00:40:09.032017",
+          "is_real_database": true,
+          "status": "error",
+          "results": null,
+          "error": "'str' object has no attribute 'query_vector'"
+        }
+      },
+      "timestamp": "2026-03-10T00:40:09.033035"
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "by_classification": {
+      "OBSERVATION": 14
+    },
+    "by_contract": {
+      "HYB-001": {
+        "passed": 0,
+        "failed": 6,
+        "total": 6
+      },
+      "HYB-002": {
+        "passed": 0,
+        "failed": 4,
+        "total": 4
+      },
+      "HYB-003": {
+        "passed": 0,
+        "failed": 4,
+        "total": 4
+      }
+    },
+    "issue_candidates": [],
+    "passed": 0,
+    "failed": 14
+  }
+}

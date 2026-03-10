@@ -1,0 +1,32 @@
+{
+  "database": "qdrant",
+  "case_id": "pilot_003",
+  "property": "Non-Existent Delete Tolerance",
+  "property_number": 7,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_003_qdrant",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null
+    },
+    {
+      "step": 2,
+      "operation": "delete",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_003_qdrant",
+        "deleted_ids": [
+          999
+        ],
+        "deleted_count": 1
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "case_id": "pilot_001",
+  "property": "Post-Drop Rejection",
+  "property_number": 1,
+  "oracle_rule": "Rule 1 (Search After Drop)",
+  "description": "Both databases must fail search on dropped collection",
+  "classification": {
+    "result": "CONSISTENT",
+    "reasoning": "Both databases correctly fail search on dropped collection",
+    "category": "PASS"
+  },
+  "test_step": 7
+}

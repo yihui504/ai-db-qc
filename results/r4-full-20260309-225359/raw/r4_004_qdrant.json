@@ -1,0 +1,58 @@
+{
+  "database": "qdrant",
+  "case_id": "r4_004",
+  "property": "Index-Independent Search",
+  "property_number": 4,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_004",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "insert",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_004",
+        "inserted_count": 2,
+        "ids": [
+          0,
+          1
+        ]
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 3,
+      "operation": "search",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_004",
+        "results": [
+          {
+            "id": 0,
+            "score": 0.99999994,
+            "payload": {}
+          },
+          {
+            "id": 1,
+            "score": 0.99999994,
+            "payload": {}
+          }
+        ],
+        "count": 2
+      },
+      "error": null,
+      "error_type": null
+    }
+  ]
+}

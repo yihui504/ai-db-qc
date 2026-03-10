@@ -1,0 +1,14 @@
+{
+  "case_id": "r4_001",
+  "property": "Post-Drop Rejection",
+  "category": "PRIMARY",
+  "property_number": 1,
+  "oracle_rule": "Rule 1 (Search After Drop)",
+  "description": "Both databases must fail search on dropped collection",
+  "classification": {
+    "result": "CONSISTENT",
+    "category": "PASS",
+    "reasoning": "Both databases correctly fail search on dropped collection"
+  },
+  "test_step": 7
+}

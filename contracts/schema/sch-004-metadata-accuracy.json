@@ -1,0 +1,54 @@
+{
+  "contract_id": "SCH-004",
+  "name": "Metadata Accuracy",
+  "family": "SCHEMA",
+  "type": "universal",
+  "statement": "Collection metadata must accurately reflect actual collection state",
+  "rationale": "Metadata is used for decision-making; accuracy is critical",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["describe_collection", "get_collection_info"],
+    "conditions": ["collection_exists"]
+  },
+  "preconditions": [
+    "collection_exists"
+  ],
+  "postconditions": [
+    "metadata.count == actual_count",
+    "metadata.dimension == actual_dimension"
+  ],
+  "invariants": [
+    "Metadata is always consistent with reality"
+  ],
+  "violation_criteria": {
+    "condition": "metadata != actual_state",
+    "severity": "medium"
+  },
+  "test_generation": {
+    "strategy": "legal",
+    "cases": [
+      {
+        "name": "Count accuracy",
+        "sequence": ["insert N entities", "get metadata.count", "verify count == N"]
+      },
+      {
+        "name": "Dimension accuracy",
+        "sequence": ["create collection dim=D", "get metadata.dimension", "verify dim == D"]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "metadata_matches_actual",
+    "verification": "assert collection.count() == actual_count(); assert collection.dimension == created_dimension",
+    "classification": {
+      "violation": "BUG (metadata_inaccuracy)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

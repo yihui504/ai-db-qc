@@ -1,0 +1,194 @@
+{
+  "run_id": "hybrid-pilot-20260310-004054",
+  "timestamp": "2026-03-10T00:40:54.206394",
+  "total_tests": 14,
+  "tests": [
+    {
+      "test_id": "hyb-001_exclusion_001",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Basic",
+      "dataset_name": "dataset_1_vector_trap",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 10,
+      "expected_behavior": "All results must have color=red, no blue entities",
+      "oracle_check": "all_results_satisfy_filter",
+      "bug_yield_potential": "CRITICAL"
+    },
+    {
+      "test_id": "hyb-001_exclusion_002",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Similarity Trap",
+      "dataset_name": "dataset_1_vector_trap",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 10,
+      "expected_behavior": "Entity 2 (blue) with near-identical vector must be excluded",
+      "oracle_check": "all_results_satisfy_filter",
+      "bug_yield_potential": "CRITICAL"
+    },
+    {
+      "test_id": "hyb-001_exclusion_003",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Multiple Conditions",
+      "dataset_name": "dataset_1_vector_trap",
+      "filter_criteria": {
+        "color": "red",
+        "status": "active"
+      },
+      "top_k": 10,
+      "expected_behavior": "All results must have color=red AND status=active",
+      "oracle_check": "all_results_satisfy_filter",
+      "bug_yield_potential": "CRITICAL"
+    },
+    {
+      "test_id": "hyb-001_exclusion_004",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Set Membership",
+      "dataset_name": "dataset_1_vector_trap",
+      "filter_criteria": {
+        "color": [
+          "red",
+          "green"
+        ]
+      },
+      "top_k": 10,
+      "expected_behavior": "All results must have color IN [red, green]",
+      "oracle_check": "all_results_satisfy_filter",
+      "bug_yield_potential": "HIGH"
+    },
+    {
+      "test_id": "hyb-001_exclusion_005",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Null Handling",
+      "dataset_name": "dataset_1_vector_trap",
+      "filter_criteria": {
+        "status": null
+      },
+      "top_k": 10,
+      "expected_behavior": "Results must have status=NULL (should be empty or handle gracefully)",
+      "oracle_check": "all_results_satisfy_filter",
+      "bug_yield_potential": "MEDIUM"
+    },
+    {
+      "test_id": "hyb-001_truncation_001",
+      "contract_id": "HYB-001",
+      "name": "Top-K Truncation - Full Filtered Subset",
+      "dataset_name": "dataset_3_top_k_truncation",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 10,
+      "expected_behavior": "Return all 3 red entities (not 10 with 7 blue)",
+      "oracle_check": "all_results_satisfy_filter",
+      "bug_yield_potential": "CRITICAL"
+    },
+    {
+      "test_id": "hyb-002_consistency_001",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Filter Satisfaction",
+      "dataset_name": "dataset_2_controlled_axis",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 5,
+      "expected_behavior": "All results satisfy color=red",
+      "oracle_check": "filter_satisfaction_and_monotonicity",
+      "bug_yield_potential": "HIGH"
+    },
+    {
+      "test_id": "hyb-002_consistency_002",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Distance Monotonicity",
+      "dataset_name": "dataset_2_controlled_axis",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 5,
+      "expected_behavior": "Distances are monotonically increasing within filtered entities",
+      "oracle_check": "filter_satisfaction_and_monotonicity",
+      "bug_yield_potential": "HIGH"
+    },
+    {
+      "test_id": "hyb-002_consistency_003",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Different Top-K Values",
+      "dataset_name": "dataset_2_controlled_axis",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 3,
+      "expected_behavior": "Filter satisfaction and monotonicity with top_k=3",
+      "oracle_check": "filter_satisfaction_and_monotonicity",
+      "bug_yield_potential": "MEDIUM"
+    },
+    {
+      "test_id": "hyb-002_consistency_004",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Exact Reference Comparison",
+      "dataset_name": "dataset_2_controlled_axis",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 5,
+      "expected_behavior": "Compare with exact ground truth (ALLOWED_DIFFERENCE for ANN)",
+      "oracle_check": "filter_satisfaction_and_monotonicity",
+      "bug_yield_potential": "MEDIUM"
+    },
+    {
+      "test_id": "hyb-003_empty_001",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Impossible Condition",
+      "dataset_name": "dataset_4_impossible_filter",
+      "filter_criteria": {
+        "color": "blue"
+      },
+      "top_k": 10,
+      "expected_behavior": "Empty results (all entities are red)",
+      "oracle_check": "empty_when_no_match",
+      "bug_yield_potential": "MEDIUM"
+    },
+    {
+      "test_id": "hyb-003_empty_002",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Empty Collection",
+      "dataset_name": "dataset_4_impossible_filter",
+      "filter_criteria": {
+        "color": "red"
+      },
+      "top_k": 10,
+      "use_empty_collection": true,
+      "expected_behavior": "Empty results (collection is empty)",
+      "oracle_check": "empty_when_no_match",
+      "bug_yield_potential": "MEDIUM"
+    },
+    {
+      "test_id": "hyb-003_empty_003",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Null Field Filter",
+      "dataset_name": "dataset_4_impossible_filter",
+      "filter_criteria": {
+        "nonexistent_field": "value"
+      },
+      "top_k": 10,
+      "expected_behavior": "Empty results or consistent error handling",
+      "oracle_check": "empty_when_no_match",
+      "bug_yield_potential": "LOW"
+    },
+    {
+      "test_id": "hyb-003_empty_004",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Contradictory Condition",
+      "dataset_name": "dataset_4_impossible_filter",
+      "filter_criteria": {
+        "color": "blue"
+      },
+      "top_k": 10,
+      "expected_behavior": "Empty results or consistent error handling",
+      "oracle_check": "empty_when_no_match",
+      "bug_yield_potential": "LOW"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+# Regression Pack - API Usability and Validation Cases
+# Collection of test cases for regression testing
+# Includes: API usability issues, validation gaps, confirmed bugs
+
+templates:
+  # ========================================
+  # API USABILITY: Silent kwargs ignore
+  # pymilvus Collection() silently ignores undocumented parameters via **kwargs
+  # Severity: LOW-MEDIUM
+  # Type: API contract mismatch
+  # ========================================
+
+  # R1 Finding: metric_type kwarg silently ignored
+  - template_id: "regression-api-silent-kwargs-001"
+    operation: create_collection
+    param_template:
+      collection_name: "test_regression_silent_kwargs"
+      dimension: 128
+      metric_type: "IGNORED_VALUE"  # This will be silently ignored
+    expected_validity: illegal  # Contract-invalid: parameter exists but is ignored
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "REGRESSION: Collection() silently ignores undocumented kwargs (API usability issue)"
+    regression_for: "cb-bound-005, param-metric-001"
+    bug_family: "api_silent_ignore"
+    bug_type: "api_usability"
+    severity: "LOW-MEDIUM"
+    first_seen: "R1"
+    notes: "metric_type is not a Collection() parameter - it's set during index creation"
+
+  # ========================================
+  # VALIDATION GAPS: Documented parameter validation weaknesses
+  # Cases where documented parameters accept invalid values
+  # (None currently - R1+R2 found no confirmed validation bugs)
+  # ========================================
+
+  # ========================================
+  # CALIBRATION CASES
+  # Valid values to confirm framework is working correctly
+  # ========================================
+
+  - template_id: "cal-metric-valid"
+    operation: create_collection
+    param_template:
+      collection_name: "test_cal_valid"
+      dimension: 128
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "CALIBRATION: Valid collection creation should succeed"

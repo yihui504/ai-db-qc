@@ -1,0 +1,57 @@
+{
+  "contract_id": "SCH-001",
+  "name": "Schema Evolution Data Preservation",
+  "family": "SCHEMA",
+  "type": "universal",
+  "statement": "Adding fields to schema must not corrupt or lose existing data",
+  "rationale": "Schema evolution should be safe for existing data",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["alter_collection"],
+    "conditions": ["new_field_added"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "data_inserted",
+    "new_field_added"
+  ],
+  "postconditions": [
+    "existing_data_accessible",
+    "existing_data_unchanged"
+  ],
+  "invariants": [
+    "Backward compatibility maintained"
+  ],
+  "violation_criteria": {
+    "condition": "existing_data_lost OR existing_data_corrupted",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Add field after data insertion",
+        "sequence": [
+          "insert N entities",
+          "add new scalar field to schema",
+          "verify all N entities still accessible",
+          "verify existing fields unchanged"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "data_count_preserved AND data_unchanged",
+    "verification": "assert count(collection) == original_count; assert all_fields_present",
+    "classification": {
+      "violation": "BUG (data_loss)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

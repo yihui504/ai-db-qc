@@ -1,0 +1,14 @@
+{
+  "case_id": "pilot_003",
+  "property": "Non-Existent Delete Tolerance",
+  "property_number": 7,
+  "oracle_rule": "Rule 4 (Idempotency Extension)",
+  "description": "Deleting non-existent ID should be handled gracefully",
+  "classification": {
+    "result": "CONSISTENT",
+    "reasoning": "Both databases silently succeed on non-existent delete",
+    "category": "PASS",
+    "strategy": "silent-success"
+  },
+  "test_step": 2
+}

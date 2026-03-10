@@ -1,0 +1,52 @@
+{
+  "contract_id": "ANN-002",
+  "name": "Distance Monotonicity",
+  "family": "ANN",
+  "type": "universal",
+  "statement": "Search results must be sorted by distance in ascending order",
+  "rationale": "Users expect nearest neighbors to be returned first",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["top_k > 0"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "top_k > 0",
+    "results_returned"
+  ],
+  "postconditions": [
+    "For all i, j where i < j: distance(result[i]) <= distance(result[j])"
+  ],
+  "invariants": [
+    "Results are monotonically increasing in distance"
+  ],
+  "violation_criteria": {
+    "condition": "exists i, j where i < j AND distance(result[i]) > distance(result[j])",
+    "severity": "high"
+  },
+  "test_generation": {
+    "strategy": "legal",
+    "cases": [
+      {
+        "name": "Multiple results monotonicity",
+        "params": {"top_k": 10, "collection_size": 100},
+        "verification": "check distance ordering"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "is_sorted_by_distance_ascending(results)",
+    "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+    "classification": {
+      "violation": "BUG",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

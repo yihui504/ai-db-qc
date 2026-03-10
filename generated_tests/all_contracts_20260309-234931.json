@@ -1,0 +1,1225 @@
+{
+  "suite_name": "all_contracts",
+  "generated_at": "2026-03-09T23:49:31.050201",
+  "total_tests": 26,
+  "contracts_covered": [
+    "ANN-003",
+    "ANN-001",
+    "ANN-002",
+    "IDX-002",
+    "IDX-004",
+    "SCH-002",
+    "SCH-003",
+    "HYB-001",
+    "SCH-001",
+    "SCH-004",
+    "HYB-003",
+    "ANN-005",
+    "IDX-003",
+    "IDX-001",
+    "HYB-002",
+    "ANN-004"
+  ],
+  "tests": [
+    {
+      "test_id": "ann-001_boundary_001",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Boundary: Zero top-K",
+      "description": "Boundary condition test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 0
+          },
+          "description": "Execute with params: {'top_k': 0}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "0 results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-001_boundary_002",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Boundary: Top-K less than collection size",
+      "description": "Boundary condition test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 5,
+            "collection_size": 100
+          },
+          "description": "Execute with params: {'top_k': 5, 'collection_size': 100}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "exactly 5 results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-001_boundary_003",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Boundary: Top-K greater than collection size",
+      "description": "Boundary condition test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 100,
+            "collection_size": 10
+          },
+          "description": "Execute with params: {'top_k': 100, 'collection_size': 10}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most 10 results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-002_legal_001",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Legal: Multiple results monotonicity",
+      "description": "Legal input test for Distance Monotonicity",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 10,
+            "collection_size": 100
+          },
+          "description": "Execute with params: {'top_k': 10, 'collection_size': 100}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "check distance ordering",
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-003_legal_001",
+      "contract_id": "ANN-003",
+      "name": "Nearest Neighbor Inclusion - Legal: Exact search ground truth",
+      "description": "Legal input test for Nearest Neighbor Inclusion",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "search_mode": "exact",
+            "force_exact": true
+          },
+          "description": "Execute with params: {'search_mode': 'exact', 'force_exact': True}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "compute true nearest neighbor via brute force",
+      "oracle": {
+        "check": "true_nn_in_results OR recall_within_threshold",
+        "verification": "compute_ground_truth(query); assert nn_in_results OR recall >= 0.9",
+        "parameters": {
+          "recall_threshold": 0.9
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS",
+          "allowed_difference": "different_recall_thresholds"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-003_legal_002",
+      "contract_id": "ANN-003",
+      "name": "Nearest Neighbor Inclusion - Legal: ANN accuracy validation",
+      "description": "Legal input test for Nearest Neighbor Inclusion",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "search_mode": "ann",
+            "index_type": "HNSW"
+          },
+          "description": "Execute with params: {'search_mode': 'ann', 'index_type': 'HNSW'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "check recall against ground truth",
+      "oracle": {
+        "check": "true_nn_in_results OR recall_within_threshold",
+        "verification": "compute_ground_truth(query); assert nn_in_results OR recall >= 0.9",
+        "parameters": {
+          "recall_threshold": 0.9
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS",
+          "allowed_difference": "different_recall_thresholds"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-004_legal_001",
+      "contract_id": "ANN-004",
+      "name": "Metric Consistency - Legal: L2 metric correctness",
+      "description": "Legal input test for Metric Consistency",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "metric_type": "L2"
+          },
+          "description": "Execute with params: {'metric_type': 'L2'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "manually compute L2 distance for first result",
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-004_legal_002",
+      "contract_id": "ANN-004",
+      "name": "Metric Consistency - Legal: Cosine metric correctness",
+      "description": "Legal input test for Metric Consistency",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "metric_type": "COSINE"
+          },
+          "description": "Execute with params: {'metric_type': 'COSINE'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "manually compute cosine distance for first result",
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-004_legal_003",
+      "contract_id": "ANN-004",
+      "name": "Metric Consistency - Legal: IP metric correctness",
+      "description": "Legal input test for Metric Consistency",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "metric_type": "IP"
+          },
+          "description": "Execute with params: {'metric_type': 'IP'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "manually compute IP for first result",
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-005_boundary_001",
+      "contract_id": "ANN-005",
+      "name": "Empty Query Handling - Boundary: Search empty collection",
+      "description": "Boundary condition test for Empty Query Handling",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "collection_empty": true
+          },
+          "description": "Execute with params: {'collection_empty': True}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "check outcome consistency",
+      "oracle": {
+        "check": "behavior_is_consistent OR returns_empty_or_error",
+        "verification": "execute_multiple_times(); assert all_outcomes_same",
+        "classification": {
+          "violation": "BUG (inconsistent)",
+          "compliant": "PASS",
+          "allowed_difference": "different_empty_handling_strategies"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "hyb-001_legal_001",
+      "contract_id": "HYB-001",
+      "name": "Filter Pre-Application - Legal: Filter excludes non-matching entities",
+      "description": "Legal input test for Filter Pre-Application",
+      "family": "HYBRID",
+      "strategy": "legal",
+      "setup": [
+        {
+          "operation": "insert entity A (color=red, vector=va)",
+          "description": "Setup: insert entity A (color=red, vector=va)"
+        },
+        {
+          "operation": "insert entity B (color=blue, vector=vb_similar_to_va)",
+          "description": "Setup: insert entity B (color=blue, vector=vb_similar_to_va)"
+        },
+        {
+          "operation": "search with filter color=red",
+          "description": "Setup: search with filter color=red"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {},
+          "description": "Execute with params: {}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "B must not appear in results despite vector similarity",
+      "oracle": {
+        "check": "all_results_satisfy_filter",
+        "verification": "for result in results: assert satisfies_filter(result, filter_criteria)",
+        "classification": {
+          "violation": "BUG (filter_violation)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "HYBRID"
+      ]
+    },
+    {
+      "test_id": "hyb-002_combo_001",
+      "contract_id": "HYB-002",
+      "name": "Filter-Result Consistency - Combinatorial: Compare filtered and unfiltered",
+      "description": "Combinatorial test for Filter-Result Consistency",
+      "family": "HYBRID",
+      "strategy": "combinatorial",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {},
+          "description": "Execute with params: {}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "filtered_equals_manual_filter(unfiltered)",
+        "verification": "assert set(filtered_ids) == set([id for id in unfiltered_ids if satisfies_filter(id)])",
+        "classification": {
+          "violation": "BUG (inconsistent_filtering)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "HYBRID"
+      ]
+    },
+    {
+      "test_id": "hyb-003_boundary_001",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter Result Handling - Boundary: Filter with no matches",
+      "description": "Boundary condition test for Empty Filter Result Handling",
+      "family": "HYBRID",
+      "strategy": "boundary",
+      "setup": [
+        {
+          "operation": "insert entities (color=red)",
+          "description": "Setup: insert entities (color=red)"
+        },
+        {
+          "operation": "search with filter color=blue",
+          "description": "Setup: search with filter color=blue"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {},
+          "description": "Execute with params: {}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "empty results",
+      "expected_result": null,
+      "oracle": {
+        "check": "results_empty OR consistent_empty_handling",
+        "verification": "assert len(results) == 0",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS",
+          "allowed_difference": "different_empty_handling"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "HYBRID"
+      ]
+    },
+    {
+      "test_id": "idx-001_seq_001",
+      "contract_id": "IDX-001",
+      "name": "Index Semantic Neutrality - Sequence: Pre/post index result comparison",
+      "description": "Sequence test for Index Semantic Neutrality",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert data",
+          "description": "Step 1: insert data"
+        },
+        {
+          "step": 2,
+          "operation": "search (force exact/brute force)",
+          "description": "Step 2: search (force exact/brute force)"
+        },
+        {
+          "step": 3,
+          "operation": "create index",
+          "description": "Step 3: create index"
+        },
+        {
+          "step": 4,
+          "operation": "search (using index)",
+          "description": "Step 4: search (using index)"
+        },
+        {
+          "step": 5,
+          "operation": "compare results",
+          "description": "Step 5: compare results"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "results are semantically equivalent",
+      "oracle": {
+        "check": "semantic_equivalence(results_before, results_after)",
+        "verification": "compare_result_sets(); assert overlap >= expected_recall",
+        "parameters": {
+          "expected_recall": 0.9
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS",
+          "allowed_difference": "different_ann_approximation"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "high",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "idx-002_seq_001",
+      "contract_id": "IDX-002",
+      "name": "Index Data Preservation - Sequence: Data count after index creation",
+      "description": "Sequence test for Index Data Preservation",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "create index",
+          "description": "Step 2: create index"
+        },
+        {
+          "step": 3,
+          "operation": "count entities",
+          "description": "Step 3: count entities"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "count == N",
+      "oracle": {
+        "check": "data_count_preserved AND all_data_accessible",
+        "verification": "assert count(collection) == original_count",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "idx-002_seq_002",
+      "contract_id": "IDX-002",
+      "name": "Index Data Preservation - Sequence: Data count after index deletion",
+      "description": "Sequence test for Index Data Preservation",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "create index",
+          "description": "Step 2: create index"
+        },
+        {
+          "step": 3,
+          "operation": "drop index",
+          "description": "Step 3: drop index"
+        },
+        {
+          "step": 4,
+          "operation": "count entities",
+          "description": "Step 4: count entities"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "count == N",
+      "oracle": {
+        "check": "data_count_preserved AND all_data_accessible",
+        "verification": "assert count(collection) == original_count",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "idx-002_seq_003",
+      "contract_id": "IDX-002",
+      "name": "Index Data Preservation - Sequence: Data count after index rebuild",
+      "description": "Sequence test for Index Data Preservation",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "create index",
+          "description": "Step 2: create index"
+        },
+        {
+          "step": 3,
+          "operation": "rebuild index",
+          "description": "Step 3: rebuild index"
+        },
+        {
+          "step": 4,
+          "operation": "count entities",
+          "description": "Step 4: count entities"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "count == N",
+      "oracle": {
+        "check": "data_count_preserved AND all_data_accessible",
+        "verification": "assert count(collection) == original_count",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "idx-003_illegal_001",
+      "contract_id": "IDX-003",
+      "name": "Index Parameter Validation - Illegal: Invalid index type",
+      "description": "Illegal input test for Index Parameter Validation",
+      "family": "INDEX",
+      "strategy": "illegal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "index_type": "INVALID_TYPE"
+          },
+          "description": "Execute with params: {'index_type': 'INVALID_TYPE'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "error",
+      "expected_result": null,
+      "oracle": {
+        "check": "valid_params_succeeds OR invalid_params_fails",
+        "verification": "assert error_occurs for invalid parameters",
+        "classification": {
+          "violation": "BUG (accepts_invalid)",
+          "compliant": "PASS",
+          "allowed_difference": "different_parameter_ranges"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "illegal",
+        "INDEX",
+        "validation"
+      ]
+    },
+    {
+      "test_id": "idx-003_illegal_002",
+      "contract_id": "IDX-003",
+      "name": "Index Parameter Validation - Illegal: Invalid index parameters",
+      "description": "Illegal input test for Index Parameter Validation",
+      "family": "INDEX",
+      "strategy": "illegal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "index_type": "HNSW",
+            "M": -1
+          },
+          "description": "Execute with params: {'index_type': 'HNSW', 'M': -1}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "error",
+      "expected_result": null,
+      "oracle": {
+        "check": "valid_params_succeeds OR invalid_params_fails",
+        "verification": "assert error_occurs for invalid parameters",
+        "classification": {
+          "violation": "BUG (accepts_invalid)",
+          "compliant": "PASS",
+          "allowed_difference": "different_parameter_ranges"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "illegal",
+        "INDEX",
+        "validation"
+      ]
+    },
+    {
+      "test_id": "idx-003_illegal_003",
+      "contract_id": "IDX-003",
+      "name": "Index Parameter Validation - Illegal: Out-of-range parameters",
+      "description": "Illegal input test for Index Parameter Validation",
+      "family": "INDEX",
+      "strategy": "illegal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "index_type": "IVF",
+            "nlist": 0
+          },
+          "description": "Execute with params: {'index_type': 'IVF', 'nlist': 0}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "error",
+      "expected_result": null,
+      "oracle": {
+        "check": "valid_params_succeeds OR invalid_params_fails",
+        "verification": "assert error_occurs for invalid parameters",
+        "classification": {
+          "violation": "BUG (accepts_invalid)",
+          "compliant": "PASS",
+          "allowed_difference": "different_parameter_ranges"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "illegal",
+        "INDEX",
+        "validation"
+      ]
+    },
+    {
+      "test_id": "idx-004_seq_001",
+      "contract_id": "IDX-004",
+      "name": "Multiple Index Behavior - Sequence: Create multiple indexes, then search",
+      "description": "Sequence test for Multiple Index Behavior",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert data",
+          "description": "Step 1: insert data"
+        },
+        {
+          "step": 2,
+          "operation": "create index type HNSW",
+          "description": "Step 2: create index type HNSW"
+        },
+        {
+          "step": 3,
+          "operation": "create index type IVF",
+          "description": "Step 3: create index type IVF"
+        },
+        {
+          "step": 4,
+          "operation": "search",
+          "description": "Step 4: search"
+        },
+        {
+          "step": 5,
+          "operation": "verify which index used",
+          "description": "Step 5: verify which index used"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "index_selection_is_deterministic",
+        "verification": "execute_multiple_times(); assert same_index_used",
+        "classification": {
+          "violation": "BUG (non-deterministic)",
+          "compliant": "PASS",
+          "allowed_difference": "different_index_selection_strategies"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "sch-001_seq_001",
+      "contract_id": "SCH-001",
+      "name": "Schema Evolution Data Preservation - Sequence: Add field after data insertion",
+      "description": "Sequence test for Schema Evolution Data Preservation",
+      "family": "SCHEMA",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "add new scalar field to schema",
+          "description": "Step 2: add new scalar field to schema"
+        },
+        {
+          "step": 3,
+          "operation": "verify all N entities still accessible",
+          "description": "Step 3: verify all N entities still accessible"
+        },
+        {
+          "step": 4,
+          "operation": "verify existing fields unchanged",
+          "description": "Step 4: verify existing fields unchanged"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "data_count_preserved AND data_unchanged",
+        "verification": "assert count(collection) == original_count; assert all_fields_present",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "SCHEMA"
+      ]
+    },
+    {
+      "test_id": "sch-002_seq_001",
+      "contract_id": "SCH-002",
+      "name": "Query Compatibility Across Schema Updates - Sequence: Query compatibility after field addition",
+      "description": "Sequence test for Query Compatibility Across Schema Updates",
+      "family": "SCHEMA",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "execute query \u00e2\u2020\u2019 results_before",
+          "description": "Step 1: execute query \u00e2\u2020\u2019 results_before"
+        },
+        {
+          "step": 2,
+          "operation": "add new field",
+          "description": "Step 2: add new field"
+        },
+        {
+          "step": 3,
+          "operation": "execute same query \u00e2\u2020\u2019 results_after",
+          "description": "Step 3: execute same query \u00e2\u2020\u2019 results_after"
+        },
+        {
+          "step": 4,
+          "operation": "verify compatibility",
+          "description": "Step 4: verify compatibility"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "query_succeeds AND results_semantically_equivalent",
+        "verification": "assert query_executes(); assert results_match(results_before)",
+        "classification": {
+          "violation": "BUG (breaking_change)",
+          "compliant": "PASS",
+          "allowed_difference": "slight_result_variance"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "SCHEMA"
+      ]
+    },
+    {
+      "test_id": "sch-003_seq_001",
+      "contract_id": "SCH-003",
+      "name": "Index Rebuild After Schema Change - Sequence: Index behavior after schema addition",
+      "description": "Sequence test for Index Rebuild After Schema Change",
+      "family": "SCHEMA",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "create index",
+          "description": "Step 1: create index"
+        },
+        {
+          "step": 2,
+          "operation": "add field to schema",
+          "description": "Step 2: add field to schema"
+        },
+        {
+          "step": 3,
+          "operation": "search using index",
+          "description": "Step 3: search using index"
+        },
+        {
+          "step": 4,
+          "operation": "verify behavior",
+          "description": "Step 4: verify behavior"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "index_works OR explicit_rebuild_required OR error_consistent",
+        "verification": "assert search_succeeds() OR clear_error_message OR rebuild_needed",
+        "classification": {
+          "violation": "BUG (undefined_behavior)",
+          "compliant": "PASS",
+          "allowed_difference": "different_rebuild_requirements"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "SCHEMA"
+      ]
+    },
+    {
+      "test_id": "sch-004_legal_001",
+      "contract_id": "SCH-004",
+      "name": "Metadata Accuracy - Legal: Count accuracy",
+      "description": "Legal input test for Metadata Accuracy",
+      "family": "SCHEMA",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {},
+          "description": "Execute with params: {}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "metadata_matches_actual",
+        "verification": "assert collection.count() == actual_count(); assert collection.dimension == created_dimension",
+        "classification": {
+          "violation": "BUG (metadata_inaccuracy)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "low",
+      "tags": [
+        "legal",
+        "SCHEMA"
+      ]
+    },
+    {
+      "test_id": "sch-004_legal_002",
+      "contract_id": "SCH-004",
+      "name": "Metadata Accuracy - Legal: Dimension accuracy",
+      "description": "Legal input test for Metadata Accuracy",
+      "family": "SCHEMA",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {},
+          "description": "Execute with params: {}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "metadata_matches_actual",
+        "verification": "assert collection.count() == actual_count(); assert collection.dimension == created_dimension",
+        "classification": {
+          "violation": "BUG (metadata_inaccuracy)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "low",
+      "tags": [
+        "legal",
+        "SCHEMA"
+      ]
+    }
+  ]
+}

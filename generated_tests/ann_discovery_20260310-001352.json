@@ -1,0 +1,3405 @@
+{
+  "suite_name": "ann_discovery",
+  "generated_at": "2026-03-10T00:13:52.754704",
+  "total_tests": 44,
+  "contracts_covered": [
+    "ANN-001",
+    "ANN-004",
+    "ANN-002"
+  ],
+  "strategies_used": [
+    "duplicate_datasets",
+    "size_edge_cases",
+    "combinatorial_params",
+    "extreme_values",
+    "cross_metric",
+    "degenerate_vectors",
+    "index_stress"
+  ],
+  "tests": [
+    {
+      "test_id": "ann_discovery_001",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_all_zeros_1",
+      "description": "Discovery test for Top-K Cardinality Correctness with Degenerate dataset: all_zeros",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_zeros",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_002",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_1",
+      "description": "Discovery test for Top-K Cardinality Correctness with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_003",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_2",
+      "description": "Discovery test for Distance Monotonicity with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_004",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=100, metric=IP",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "IP"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=100",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_005",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=1, metric=L2",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 1,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 1,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=1"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_006",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_alternating_3",
+      "description": "Discovery test for Distance Monotonicity with Degenerate dataset: alternating",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: alternating",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_007",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_3",
+      "description": "Discovery test for Top-K Cardinality Correctness with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_008",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_1",
+      "description": "Discovery test for Distance Monotonicity with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_009",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_4",
+      "description": "Discovery test for Top-K Cardinality Correctness with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_010",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_two",
+      "description": "Discovery test for Top-K Cardinality Correctness with Two vector collection (edge case)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 2,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 2,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=2"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "edge_case"
+      ],
+      "dataset_type": "edge_case",
+      "dataset_description": "Two vector collection (edge case)",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_011",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=10, metric=IP",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "IP"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 10,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_012",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=10, metric=L2",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 10,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 1,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=1"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_013",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_negative_values_5",
+      "description": "Discovery test for Top-K Cardinality Correctness with Degenerate dataset: negative_values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: negative_values",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_014",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=10, metric=IP",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "IP"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 10,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 1,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=1"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_015",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_alternating_3",
+      "description": "Discovery test for Top-K Cardinality Correctness with Degenerate dataset: alternating",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: alternating",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_016",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_all_ones_2",
+      "description": "Discovery test for Distance Monotonicity with Degenerate dataset: all_ones",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_ones",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_017",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=1, metric=IP",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "IP"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 1,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_018",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_all_ones_2",
+      "description": "Discovery test for Top-K Cardinality Correctness with Degenerate dataset: all_ones",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_ones",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_019",
+      "contract_id": "ANN-002",
+      "name": "Index stress test: IVF_FLAT_nlist_1024",
+      "description": "Test with index configuration: IVF_FLAT_nlist_1024",
+      "family": "ANN",
+      "strategy": "index_stress",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 200,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 1024
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "correct search results",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "index_stress",
+        "performance",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=1)",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_020",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_single",
+      "description": "Discovery test for Top-K Cardinality Correctness with Single vector collection (edge case)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 1,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 1,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=1"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "edge_case"
+      ],
+      "dataset_type": "edge_case",
+      "dataset_description": "Single vector collection (edge case)",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_021",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: size_edge_single",
+      "description": "Discovery test for Distance Monotonicity with Single vector collection (edge case)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 1,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 1,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=1"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "edge_case"
+      ],
+      "dataset_type": "edge_case",
+      "dataset_description": "Single vector collection (edge case)",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_022",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=1, metric=L2",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 1,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_023",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_L2_search_IP",
+      "description": "Test with index_metric=L2, search_metric=IP",
+      "family": "ANN",
+      "strategy": "cross_metric",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 50,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "IP"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "consistent metric behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "cross_metric",
+        "consistency",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=1)",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_024",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: extreme_2",
+      "description": "Discovery test for Top-K Cardinality Correctness with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_025",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=10, metric=L2",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 10,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=10",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_026",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: size_edge_empty",
+      "description": "Discovery test for Distance Monotonicity with Empty collection (edge case)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 0,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "edge_case"
+      ],
+      "dataset_type": "edge_case",
+      "dataset_description": "Empty collection (edge case)",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_027",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_empty",
+      "description": "Discovery test for Top-K Cardinality Correctness with Empty collection (edge case)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 0,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "edge_case"
+      ],
+      "dataset_type": "edge_case",
+      "dataset_description": "Empty collection (edge case)",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_028",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_3",
+      "description": "Discovery test for Distance Monotonicity with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_029",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_all_zeros_1",
+      "description": "Discovery test for Distance Monotonicity with Degenerate dataset: all_zeros",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: all_zeros",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_030",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: extreme_4",
+      "description": "Discovery test for Distance Monotonicity with Dataset with 100 vectors containing extreme floating-point values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "extreme"
+      ],
+      "dataset_type": "extreme",
+      "dataset_description": "Dataset with 100 vectors containing extreme floating-point values",
+      "discovery_strategy": "extreme_values",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_031",
+      "contract_id": "ANN-001",
+      "name": "Index stress test: IVF_FLAT_nlist_1024",
+      "description": "Test with index configuration: IVF_FLAT_nlist_1024",
+      "family": "ANN",
+      "strategy": "index_stress",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 200,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 1024
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "correct search results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "index_stress",
+        "performance",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=1)",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_032",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=1, size=1, metric=IP",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "IP"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 1,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 1,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=1"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=1",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_033",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_L2_search_L2",
+      "description": "Test with index_metric=L2, search_metric=L2",
+      "family": "ANN",
+      "strategy": "cross_metric",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 50,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "consistent metric behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "cross_metric",
+        "consistency",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=0)",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_034",
+      "contract_id": "ANN-002",
+      "name": "Index stress test: IVF_FLAT_nlist_128",
+      "description": "Test with index configuration: IVF_FLAT_nlist_128",
+      "family": "ANN",
+      "strategy": "index_stress",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 200,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "correct search results",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "index_stress",
+        "performance",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=0)",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_035",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_IP_search_IP",
+      "description": "Test with index_metric=IP, search_metric=IP",
+      "family": "ANN",
+      "strategy": "cross_metric",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "IP"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 50,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "IP"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "consistent metric behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "cross_metric",
+        "consistency",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=2)",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_036",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: duplicates_1",
+      "description": "Discovery test for Top-K Cardinality Correctness with Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "duplicates",
+        "tie_breaking"
+      ],
+      "dataset_type": "duplicates",
+      "dataset_description": "Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+      "discovery_strategy": "duplicate_datasets",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_037",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_single_nonzero_4",
+      "description": "Discovery test for Distance Monotonicity with Degenerate dataset: single_nonzero",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: single_nonzero",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_038",
+      "contract_id": "ANN-001",
+      "name": "Index stress test: IVF_FLAT_nlist_128",
+      "description": "Test with index configuration: IVF_FLAT_nlist_128",
+      "family": "ANN",
+      "strategy": "index_stress",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 200,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "correct search results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "index_stress",
+        "performance",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 200 random vectors (seed=0)",
+      "discovery_strategy": "index_stress",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_039",
+      "contract_id": "ANN-004",
+      "name": "Cross-metric test: index_COSINE_search_COSINE",
+      "description": "Test with index_metric=COSINE, search_metric=COSINE",
+      "family": "ANN",
+      "strategy": "cross_metric",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "COSINE"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 50,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "COSINE"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "consistent metric behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "cross_metric",
+        "consistency",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Dataset with 50 random vectors (seed=3)",
+      "discovery_strategy": "cross_metric",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_040",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Combo: top_k=0, size=100, metric=L2",
+      "description": "Combinatorial parameter test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "combinatorial",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 0,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=0"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most top_k results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "combinatorial",
+        "boundary",
+        "ANN"
+      ],
+      "dataset_type": "random",
+      "dataset_description": "Random vectors, size=100",
+      "discovery_strategy": "combinatorial_params",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_041",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: duplicates_1",
+      "description": "Discovery test for Distance Monotonicity with Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "duplicates",
+        "tie_breaking"
+      ],
+      "dataset_type": "duplicates",
+      "dataset_description": "Dataset with 100 vectors (30 duplicates, tests tie-breaking)",
+      "discovery_strategy": "duplicate_datasets",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_042",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Discovery: degenerate_negative_values_5",
+      "description": "Discovery test for Distance Monotonicity with Degenerate dataset: negative_values",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: negative_values",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    },
+    {
+      "test_id": "ann_discovery_043",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: size_edge_small",
+      "description": "Discovery test for Top-K Cardinality Correctness with Small collection (10 vectors)",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 10,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "edge_case"
+      ],
+      "dataset_type": "edge_case",
+      "dataset_description": "Small collection (10 vectors)",
+      "discovery_strategy": "size_edge_cases",
+      "bug_yield_potential": "medium"
+    },
+    {
+      "test_id": "ann_discovery_044",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Discovery: degenerate_single_nonzero_4",
+      "description": "Discovery test for Top-K Cardinality Correctness with Degenerate dataset: single_nonzero",
+      "family": "ANN",
+      "strategy": "discovery",
+      "setup": [
+        {
+          "operation": "create_collection",
+          "params": {
+            "dimension": 128,
+            "metric_type": "L2"
+          }
+        },
+        {
+          "operation": "insert_vectors",
+          "params": {
+            "count": 100,
+            "dataset_type": "generated"
+          }
+        },
+        {
+          "operation": "create_index",
+          "params": {
+            "index_type": "IVF_FLAT",
+            "nlist": 128
+          }
+        },
+        {
+          "operation": "load_collection",
+          "params": {}
+        }
+      ],
+      "steps": [
+        {
+          "operation": "search",
+          "params": {
+            "top_k": 10,
+            "metric_type": "L2"
+          },
+          "description": "Execute search with top_k=10"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "drop_collection",
+          "description": "Drop test collection"
+        },
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "contract-compliant behavior",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "discovery",
+        "high_yield",
+        "ANN",
+        "degenerate"
+      ],
+      "dataset_type": "degenerate",
+      "dataset_description": "Degenerate dataset: single_nonzero",
+      "discovery_strategy": "degenerate_vectors",
+      "bug_yield_potential": "high"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "run_id": "r3-sequence-r3-sequence-main-20260309-175203",
+  "run_tag": "r3-sequence-main",
+  "timestamp": "2026-03-09T17:52:13.460241",
+  "phase": "R3",
+  "adapter": "milvus",
+  "templates": "casegen/templates/r3_sequence_state.yaml",
+  "case_count": 11,
+  "minimum_success_met": true,
+  "classifications": {
+    "issue_ready": 1,
+    "observation": 5,
+    "calibration": 3,
+    "exploratory": 2
+  }
+}

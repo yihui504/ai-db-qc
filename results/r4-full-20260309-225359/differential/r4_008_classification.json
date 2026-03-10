@@ -1,0 +1,15 @@
+{
+  "case_id": "r4_008",
+  "property": "Collection Creation Idempotency",
+  "category": "PRIMARY",
+  "property_number": 8,
+  "oracle_rule": "Rule 6 (Creation Idempotency)",
+  "description": "Duplicate collection creation should have deterministic behavior",
+  "classification": {
+    "result": "ALLOWED_DIFFERENCE",
+    "category": "ALLOWED",
+    "reasoning": "Different creation idempotency: Milvus=allows, Qdrant=rejects",
+    "strategy": "different"
+  },
+  "test_step": 2
+}

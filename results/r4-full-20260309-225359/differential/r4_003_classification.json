@@ -1,0 +1,15 @@
+{
+  "case_id": "r4_003",
+  "property": "Delete Idempotency",
+  "category": "PRIMARY",
+  "property_number": 3,
+  "oracle_rule": "Rule 4 (Delete Idempotency)",
+  "description": "Delete operations should be idempotent",
+  "classification": {
+    "result": "CONSISTENT",
+    "category": "PASS",
+    "reasoning": "Both databases allow repeated delete (idempotent success)",
+    "strategy": "both-succeed"
+  },
+  "test_step": 6
+}

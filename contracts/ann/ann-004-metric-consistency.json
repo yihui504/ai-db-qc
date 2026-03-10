@@ -1,0 +1,64 @@
+{
+  "contract_id": "ANN-004",
+  "name": "Metric Consistency",
+  "family": "ANN",
+  "type": "universal",
+  "statement": "Distance calculations must be consistent with the specified metric type (L2, IP, COSINE)",
+  "rationale": "Users expect mathematically correct distance calculations",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["metric_type_specified"]
+  },
+  "preconditions": [
+    "metric_type_specified",
+    "vectors_valid"
+  ],
+  "postconditions": [
+    "distance(result, query) = metric_function(vector[result], query)"
+  ],
+  "invariants": [
+    "Distance calculation is deterministic and matches metric definition"
+  ],
+  "violation_criteria": {
+    "condition": "computed_distance != expected_metric_distance",
+    "severity": "high"
+  },
+  "test_generation": {
+    "strategy": "legal",
+    "cases": [
+      {
+        "name": "L2 metric correctness",
+        "params": {"metric_type": "L2"},
+        "verification": "manually compute L2 distance for first result"
+      },
+      {
+        "name": "Cosine metric correctness",
+        "params": {"metric_type": "COSINE"},
+        "verification": "manually compute cosine distance for first result"
+      },
+      {
+        "name": "IP metric correctness",
+        "params": {"metric_type": "IP"},
+        "verification": "manually compute IP for first result"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+    "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+    "parameters": {
+      "epsilon": 1e-6
+    },
+    "classification": {
+      "violation": "BUG",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

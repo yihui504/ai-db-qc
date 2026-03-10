@@ -1,0 +1,57 @@
+{
+  "contract_id": "SCH-003",
+  "name": "Index Rebuild After Schema Change",
+  "family": "SCHEMA",
+  "type": "database_specific",
+  "statement": "Indexes must work correctly or require rebuild after schema changes",
+  "rationale": "Schema-index relationship must be well-defined",
+  "scope": {
+    "databases": ["milvus", "qdrant"],
+    "operations": ["create_index", "alter_collection", "search"],
+    "conditions": ["schema_changed"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "index_created",
+    "schema_changed"
+  ],
+  "postconditions": [
+    "index_works OR index_requires_rebuild OR clear_error"
+  ],
+  "invariants": [
+    "Index behavior after schema change is deterministic"
+  ],
+  "violation_criteria": {
+    "condition": "index_behavior_unclear OR inconsistent",
+    "severity": "medium"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Index behavior after schema addition",
+        "sequence": [
+          "create index",
+          "add field to schema",
+          "search using index",
+          "verify behavior"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "index_works OR explicit_rebuild_required OR error_consistent",
+    "verification": "assert search_succeeds() OR clear_error_message OR rebuild_needed",
+    "classification": {
+      "violation": "BUG (undefined_behavior)",
+      "compliant": "PASS",
+      "allowed_difference": "different_rebuild_requirements"
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": ["IDX-001"],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

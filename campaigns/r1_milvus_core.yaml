@@ -1,0 +1,27 @@
+# Campaign R1: Milvus Core High-Yield
+name: "R1: Milvus Core High-Yield"
+description: "10-case narrow/deep pack for capability boundaries and precondition sensitivity"
+
+# Generate workflow config (top-level for generate)
+template: casegen/templates/r1_core.yaml
+substitutions:
+  dimension: 128
+  metric_type: L2
+  collection: test_collection
+  # Vector data for test cases (note: instantiator substitutes as strings, adapter should parse)
+  vectors: "[[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]"
+  vectors_128: "[[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.1, 0.2]]"
+  query_vector: "[0.1, 0.2, 0.3]"
+output: packs/r1_core_pack.json
+
+# Validate workflow config (nested for validate)
+databases:
+  - type: milvus
+    host: localhost
+    port: 19530
+    connection_id: default
+    alias: test_collection  # Collection name for adapter
+case_pack: packs/r1_core_pack.json  # Path to generated pack
+contract:
+  profile: contracts/db_profiles/milvus_profile.yaml
+output_dir: results/r1_milvus

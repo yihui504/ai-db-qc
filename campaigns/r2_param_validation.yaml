@@ -1,0 +1,29 @@
+# Campaign R2: Parameter Validation Focus
+name: "R2: Parameter Validation"
+description: "11-case focused parameter validation campaign"
+
+# Generate workflow config (top-level for generate)
+template: casegen/templates/r2_param_validation.yaml
+substitutions:
+  dimension: 128
+  metric_type: L2
+  collection: test_collection
+  # Vector data for test cases
+  vectors: "[[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]"
+  query_vector: "[0.1, 0.2, 0.3]"
+  # Additional substitutions for R2
+  index_type: IVF_FLAT
+  dtype: FLOAT_VECTOR
+output: packs/r2_param_validation_pack.json
+
+# Validate workflow config (nested for validate)
+databases:
+  - type: milvus
+    host: localhost
+    port: 19530
+    connection_id: default
+    alias: test_collection  # Collection name for adapter
+case_pack: packs/r2_param_validation_pack.json  # Path to generated pack
+contract:
+  profile: contracts/db_profiles/milvus_profile.yaml
+output_dir: results/r2_param_validation

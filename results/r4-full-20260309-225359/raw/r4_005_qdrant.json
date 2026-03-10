@@ -1,0 +1,52 @@
+{
+  "database": "qdrant",
+  "case_id": "r4_005",
+  "property": "Load-State Enforcement",
+  "property_number": 5,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_005",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "insert",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_005",
+        "inserted_count": 1,
+        "ids": [
+          0
+        ]
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 3,
+      "operation": "search",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_005",
+        "results": [
+          {
+            "id": 0,
+            "score": 0.99999994,
+            "payload": {}
+          }
+        ],
+        "count": 1
+      },
+      "error": null,
+      "error_type": null
+    }
+  ]
+}

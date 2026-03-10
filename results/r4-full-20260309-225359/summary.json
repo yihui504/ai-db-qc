@@ -1,0 +1,49 @@
+{
+  "campaign": "R4 Full Differential Testing",
+  "version": "1.0",
+  "timestamp": "2026-03-09T14:54:29.423860Z",
+  "environment": {
+    "timestamp": "2026-03-09T14:53:59.202688Z",
+    "pymilvus_version": "2.6.2",
+    "qdrant_client_version": "1.9.2",
+    "milvus_image": "milvusdb/milvus:v2.6.10",
+    "qdrant_image": null
+  },
+  "adapter_requested": "real",
+  "adapter_actual": "real",
+  "databases": [
+    "milvus",
+    "qdrant"
+  ],
+  "total_cases": 8,
+  "results": {
+    "total_cases": 8,
+    "pass_consistent": 4,
+    "allowed_difference": 4,
+    "bugs": 0,
+    "observation": 0
+  },
+  "by_category": {
+    "primary": {
+      "total": 5,
+      "pass": 4,
+      "allowed": 1,
+      "bugs": 0,
+      "observation": 0
+    },
+    "allowed_sensitive": {
+      "total": 2,
+      "pass": 0,
+      "allowed": 2,
+      "bugs": 0,
+      "observation": 0
+    },
+    "exploratory": {
+      "total": 1,
+      "pass": 0,
+      "allowed": 1,
+      "bugs": 0,
+      "observation": 0
+    }
+  }
+}

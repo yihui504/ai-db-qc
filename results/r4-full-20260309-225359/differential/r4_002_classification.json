@@ -1,0 +1,14 @@
+{
+  "case_id": "r4_002",
+  "property": "Deleted Entity Visibility",
+  "category": "PRIMARY",
+  "property_number": 2,
+  "oracle_rule": "Rule 2 (Deleted Entity Visibility)",
+  "description": "Deleted entities must not appear in search results",
+  "classification": {
+    "result": "CONSISTENT",
+    "category": "PASS",
+    "reasoning": "Both databases correctly exclude deleted entity from search results"
+  },
+  "test_step": 7
+}

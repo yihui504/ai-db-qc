@@ -1,0 +1,99 @@
+{
+  "database": "qdrant",
+  "case_id": "r4_001",
+  "property": "Post-Drop Rejection",
+  "property_number": 1,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_001",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 2,
+      "operation": "insert",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_001",
+        "inserted_count": 2,
+        "ids": [
+          1,
+          2
+        ]
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 3,
+      "operation": "build_index",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-creates HNSW index",
+        "operation": "no-op"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 4,
+      "operation": "load",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-loads collections",
+        "operation": "no-op"
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 5,
+      "operation": "search",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_001",
+        "results": [
+          {
+            "id": 2,
+            "score": 0.99999994,
+            "payload": {}
+          },
+          {
+            "id": 1,
+            "score": 0.99999994,
+            "payload": {}
+          }
+        ],
+        "count": 2
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 6,
+      "operation": "drop_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "r4_001",
+        "deleted": true
+      },
+      "error": null,
+      "error_type": null
+    },
+    {
+      "step": 7,
+      "operation": "search",
+      "status": "error",
+      "data": {},
+      "error": "Unexpected Response: 404 (Not Found)\nRaw response content:\nb'{\"status\":{\"error\":\"Not found: Collection `r4_001` doesn\\'t exist!\"},\"time\":8.712e-6}'",
+      "error_type": "UnexpectedResponse"
+    }
+  ]
+}

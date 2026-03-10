@@ -1,0 +1,62 @@
+{
+  "contract_id": "IDX-001",
+  "name": "Index Semantic Neutrality",
+  "family": "INDEX",
+  "type": "universal",
+  "statement": "Creating an index must not change the semantic results of search operations",
+  "rationale": "Indexes are performance optimizations, not semantic changes",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["create_index", "search"],
+    "conditions": ["index_type_supported"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "data_inserted",
+    "search_executed_before_index"
+  ],
+  "postconditions": [
+    "search_results_after_index == search_results_before_index (modulo ANN approximation)"
+  ],
+  "invariants": [
+    "Index creation preserves semantic correctness"
+  ],
+  "violation_criteria": {
+    "condition": "semantic_results_differ_significantly_beyond_ann_approximation",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Pre/post index result comparison",
+        "sequence": [
+          "insert data",
+          "search (force exact/brute force)",
+          "create index",
+          "search (using index)",
+          "compare results"
+        ],
+        "verification": "results are semantically equivalent"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "semantic_equivalence(results_before, results_after)",
+    "verification": "compare_result_sets(); assert overlap >= expected_recall",
+    "parameters": {
+      "expected_recall": 0.9
+    },
+    "classification": {
+      "violation": "BUG",
+      "compliant": "PASS",
+      "allowed_difference": "different_ann_approximation"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["ANN-003"],
+    "test_complexity": "high",
+    "version": "1.0"
+  }
+}

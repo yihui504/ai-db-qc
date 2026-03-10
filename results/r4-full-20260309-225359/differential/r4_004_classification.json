@@ -1,0 +1,14 @@
+{
+  "case_id": "r4_004",
+  "property": "Index-Independent Search",
+  "category": "ALLOWED-SENSITIVE",
+  "property_number": 4,
+  "oracle_rule": "Rule 3 (Search Without Index)",
+  "description": "Search behavior without explicit index creation",
+  "classification": {
+    "result": "ALLOWED_DIFFERENCE",
+    "category": "ALLOWED",
+    "reasoning": "Different index requirements: Milvus requires index (ARCHITECTURAL DIFFERENCE)"
+  },
+  "test_step": 3
+}

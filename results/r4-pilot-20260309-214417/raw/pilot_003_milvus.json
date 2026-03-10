@@ -1,0 +1,26 @@
+{
+  "database": "milvus",
+  "case_id": "pilot_003",
+  "property": "Non-Existent Delete Tolerance",
+  "property_number": 7,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": [
+        {
+          "id": "test_pilot_003_milvus"
+        }
+      ],
+      "error": null
+    },
+    {
+      "step": 2,
+      "operation": "delete",
+      "status": "success",
+      "data": [],
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,437 @@
+{
+  "suite_name": "ann_pilot",
+  "generated_at": "2026-03-09T23:57:42.984534",
+  "total_tests": 10,
+  "contracts_covered": [
+    "ANN-003",
+    "ANN-002",
+    "ANN-001",
+    "ANN-005",
+    "ANN-004"
+  ],
+  "tests": [
+    {
+      "test_id": "ann-001_boundary_001",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Boundary: Zero top-K",
+      "description": "Boundary condition test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 0
+          },
+          "description": "Execute with params: {'top_k': 0}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "0 results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-001_boundary_002",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Boundary: Top-K less than collection size",
+      "description": "Boundary condition test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 5,
+            "collection_size": 100
+          },
+          "description": "Execute with params: {'top_k': 5, 'collection_size': 100}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "exactly 5 results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-001_boundary_003",
+      "contract_id": "ANN-001",
+      "name": "Top-K Cardinality Correctness - Boundary: Top-K greater than collection size",
+      "description": "Boundary condition test for Top-K Cardinality Correctness",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 100,
+            "collection_size": 10
+          },
+          "description": "Execute with params: {'top_k': 100, 'collection_size': 10}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "at most 10 results",
+      "expected_result": null,
+      "oracle": {
+        "check": "count(results) <= top_k",
+        "verification": "assert len(results) <= top_k",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-002_legal_001",
+      "contract_id": "ANN-002",
+      "name": "Distance Monotonicity - Legal: Multiple results monotonicity",
+      "description": "Legal input test for Distance Monotonicity",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "top_k": 10,
+            "collection_size": 100
+          },
+          "description": "Execute with params: {'top_k': 10, 'collection_size': 100}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "check distance ordering",
+      "oracle": {
+        "check": "is_sorted_by_distance_ascending(results)",
+        "verification": "for i in range(len(results)-1): assert results[i].distance <= results[i+1].distance",
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-003_legal_001",
+      "contract_id": "ANN-003",
+      "name": "Nearest Neighbor Inclusion - Legal: Exact search ground truth",
+      "description": "Legal input test for Nearest Neighbor Inclusion",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "search_mode": "exact",
+            "force_exact": true
+          },
+          "description": "Execute with params: {'search_mode': 'exact', 'force_exact': True}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "compute true nearest neighbor via brute force",
+      "oracle": {
+        "check": "true_nn_in_results OR recall_within_threshold",
+        "verification": "compute_ground_truth(query); assert nn_in_results OR recall >= 0.9",
+        "parameters": {
+          "recall_threshold": 0.9
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS",
+          "allowed_difference": "different_recall_thresholds"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-003_legal_002",
+      "contract_id": "ANN-003",
+      "name": "Nearest Neighbor Inclusion - Legal: ANN accuracy validation",
+      "description": "Legal input test for Nearest Neighbor Inclusion",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "search_mode": "ann",
+            "index_type": "HNSW"
+          },
+          "description": "Execute with params: {'search_mode': 'ann', 'index_type': 'HNSW'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "check recall against ground truth",
+      "oracle": {
+        "check": "true_nn_in_results OR recall_within_threshold",
+        "verification": "compute_ground_truth(query); assert nn_in_results OR recall >= 0.9",
+        "parameters": {
+          "recall_threshold": 0.9
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS",
+          "allowed_difference": "different_recall_thresholds"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "high",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-004_legal_001",
+      "contract_id": "ANN-004",
+      "name": "Metric Consistency - Legal: L2 metric correctness",
+      "description": "Legal input test for Metric Consistency",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "metric_type": "L2"
+          },
+          "description": "Execute with params: {'metric_type': 'L2'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "manually compute L2 distance for first result",
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-004_legal_002",
+      "contract_id": "ANN-004",
+      "name": "Metric Consistency - Legal: Cosine metric correctness",
+      "description": "Legal input test for Metric Consistency",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "metric_type": "COSINE"
+          },
+          "description": "Execute with params: {'metric_type': 'COSINE'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "manually compute cosine distance for first result",
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-004_legal_003",
+      "contract_id": "ANN-004",
+      "name": "Metric Consistency - Legal: IP metric correctness",
+      "description": "Legal input test for Metric Consistency",
+      "family": "ANN",
+      "strategy": "legal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "metric_type": "IP"
+          },
+          "description": "Execute with params: {'metric_type': 'IP'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "manually compute IP for first result",
+      "oracle": {
+        "check": "distance_equals_computed_metric(metric_type, result.distance, result.vector, query)",
+        "verification": "expected = compute_metric(metric_type, result.vector, query); assert abs(result.distance - expected) < 1e-6",
+        "parameters": {
+          "epsilon": 1e-06
+        },
+        "classification": {
+          "violation": "BUG",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "medium",
+      "tags": [
+        "legal",
+        "ANN"
+      ]
+    },
+    {
+      "test_id": "ann-005_boundary_001",
+      "contract_id": "ANN-005",
+      "name": "Empty Query Handling - Boundary: Search empty collection",
+      "description": "Boundary condition test for Empty Query Handling",
+      "family": "ANN",
+      "strategy": "boundary",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "collection_empty": true
+          },
+          "description": "Execute with params: {'collection_empty': True}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "check outcome consistency",
+      "oracle": {
+        "check": "behavior_is_consistent OR returns_empty_or_error",
+        "verification": "execute_multiple_times(); assert all_outcomes_same",
+        "classification": {
+          "violation": "BUG (inconsistent)",
+          "compliant": "PASS",
+          "allowed_difference": "different_empty_handling_strategies"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "boundary",
+        "ANN"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "contract_id": "ANN-001",
+  "name": "Top-K Cardinality Correctness",
+  "family": "ANN",
+  "type": "universal",
+  "statement": "Search operation with top_k parameter must return at most K results",
+  "rationale": "top_k parameter limits result set size for performance and predictability",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["top_k specified"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "top_k >= 0",
+    "collection_has_sufficient_entities"
+  ],
+  "postconditions": [
+    "length(results) <= top_k"
+  ],
+  "invariants": [
+    "Result count never exceeds top_k parameter"
+  ],
+  "violation_criteria": {
+    "condition": "length(search_results) > top_k",
+    "severity": "high"
+  },
+  "test_generation": {
+    "strategy": "boundary",
+    "cases": [
+      {
+        "name": "Zero top-K",
+        "params": {"top_k": 0},
+        "expected": "0 results"
+      },
+      {
+        "name": "Top-K less than collection size",
+        "params": {"top_k": 5, "collection_size": 100},
+        "expected": "exactly 5 results"
+      },
+      {
+        "name": "Top-K greater than collection size",
+        "params": {"top_k": 100, "collection_size": 10},
+        "expected": "at most 10 results"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "count(results) <= top_k",
+    "verification": "assert len(results) <= top_k",
+    "classification": {
+      "violation": "BUG",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

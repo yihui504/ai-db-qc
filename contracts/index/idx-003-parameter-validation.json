@@ -1,0 +1,61 @@
+{
+  "contract_id": "IDX-003",
+  "name": "Index Parameter Validation",
+  "family": "INDEX",
+  "type": "database_specific",
+  "statement": "Index creation must validate index type and parameters",
+  "rationale": "Invalid index parameters should be rejected with clear error",
+  "scope": {
+    "databases": ["milvus", "qdrant"],
+    "operations": ["create_index"],
+    "conditions": ["collection_exists"]
+  },
+  "preconditions": [
+    "collection_exists"
+  ],
+  "postconditions": [
+    "valid_parameters_succeed OR invalid_parameters_fail_with_clear_error"
+  ],
+  "invariants": [
+    "Index creation is deterministic for given parameters"
+  ],
+  "violation_criteria": {
+    "condition": "invalid_parameters_accepted OR unclear_error_message",
+    "severity": "medium"
+  },
+  "test_generation": {
+    "strategy": "illegal",
+    "cases": [
+      {
+        "name": "Invalid index type",
+        "params": {"index_type": "INVALID_TYPE"},
+        "expected": "error"
+      },
+      {
+        "name": "Invalid index parameters",
+        "params": {"index_type": "HNSW", "M": -1},
+        "expected": "error"
+      },
+      {
+        "name": "Out-of-range parameters",
+        "params": {"index_type": "IVF", "nlist": 0},
+        "expected": "error"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "valid_params_succeeds OR invalid_params_fails",
+    "verification": "assert error_occurs for invalid parameters",
+    "classification": {
+      "violation": "BUG (accepts_invalid)",
+      "compliant": "PASS",
+      "allowed_difference": "different_parameter_ranges"
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "database": "qdrant",
+  "case_id": "pilot_002",
+  "property": "Delete Idempotency",
+  "property_number": 3,
+  "steps": [
+    {
+      "step": 1,
+      "operation": "create_collection",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_002_qdrant",
+        "dimension": 128,
+        "metric_type": "COSINE"
+      },
+      "error": null
+    },
+    {
+      "step": 2,
+      "operation": "insert",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_002_qdrant",
+        "inserted_count": 1,
+        "ids": [
+          100
+        ]
+      },
+      "error": null
+    },
+    {
+      "step": 3,
+      "operation": "build_index",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-creates HNSW index",
+        "operation": "no-op"
+      },
+      "error": null
+    },
+    {
+      "step": 4,
+      "operation": "load",
+      "status": "success",
+      "data": {
+        "note": "Qdrant auto-loads collections",
+        "operation": "no-op"
+      },
+      "error": null
+    },
+    {
+      "step": 5,
+      "operation": "delete",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_002_qdrant",
+        "deleted_ids": [
+          100
+        ],
+        "deleted_count": 1
+      },
+      "error": null
+    },
+    {
+      "step": 6,
+      "operation": "delete",
+      "status": "success",
+      "data": {
+        "collection_name": "test_pilot_002_qdrant",
+        "deleted_ids": [
+          100
+        ],
+        "deleted_count": 1
+      },
+      "error": null
+    }
+  ]
+}

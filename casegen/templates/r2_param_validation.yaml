@@ -1,0 +1,144 @@
+# Campaign R2: Parameter Validation Focus
+# 11 cases focused on parameter validation weaknesses
+
+templates:
+  # ========================================
+  # PRIMARY CASES (8)
+  # ========================================
+
+  # Family 1: Metric Type (1 primary case)
+  - template_id: param-metric-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_r2_empty_metric"
+      dimension: 128
+      metric_type: ""  # Invalid: empty string
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Invalid metric_type empty string - should be rejected"
+
+  # Family 2: Index Type (2 cases)
+  - template_id: param-index-001
+    operation: build_index
+    param_template:
+      collection_name: "{collection}"
+      index_type: "INVALID_INDEX"  # Invalid: non-existent index type
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: []
+    rationale: "Invalid index_type - should be rejected"
+
+  - template_id: param-index-002
+    operation: build_index
+    param_template:
+      collection_name: "{collection}"
+      index_type: ""  # Invalid: empty string
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: []
+    rationale: "Invalid index_type empty string - should be rejected"
+
+  # Family 3: Numeric Boundaries (4 cases)
+  - template_id: param-num-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_r2_dim_negative"
+      dimension: -1  # Invalid: negative value
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Invalid dimension negative value - should be rejected"
+
+  - template_id: param-num-002
+    operation: create_collection
+    param_template:
+      collection_name: "test_r2_dim_overflow"
+      dimension: 32769  # Invalid: exceeds documented max of 32768
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Invalid dimension exceeds maximum - should be rejected"
+
+  - template_id: param-num-003
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: -100  # Invalid: negative value
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: []
+    rationale: "Invalid top_k negative value - should be rejected"
+
+  - template_id: param-num-004
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 999999999  # Invalid: absurdly large value
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: []
+    rationale: "Invalid top_k absurdly large - should be rejected"
+
+  # Family 4: DataType Validation (1 case)
+  - template_id: param-dtype-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_r2_invalid_dtype"
+      dimension: 128
+      metric_type: "L2"
+      dtype: "INVALID_VECTOR_TYPE"  # Invalid: non-existent vector type
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Invalid vector dtype - should be rejected"
+    # Note: This case requires custom handling in adapter to test dtype validation
+
+  # ========================================
+  # CALIBRATION CASES (2)
+  # ========================================
+
+  - template_id: cal-metric-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_r2_cal_metric"
+      dimension: 128
+      metric_type: "L2"  # Valid: should succeed
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Calibration: valid metric_type should succeed"
+
+  - template_id: cal-index-001
+    operation: build_index
+    param_template:
+      collection_name: "{collection}"
+      index_type: "IVF_FLAT"  # Valid: should succeed
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: []
+    rationale: "Calibration: valid index_type should succeed"
+
+  # ========================================
+  # EXPLORATORY CASES (1)
+  # ========================================
+
+  - template_id: exp-metric-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_r2_exp_lowercase"
+      dimension: 128
+      metric_type: "l2"  # Exploratory: lowercase may be valid
+    expected_validity: illegal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Exploratory: lowercase metric_type - may be valid (case-insensitive API)"

@@ -1,0 +1,14 @@
+{
+  "case_id": "r4_005",
+  "property": "Load-State Enforcement",
+  "category": "ALLOWED-SENSITIVE",
+  "property_number": 5,
+  "oracle_rule": "Rule 7 (Load Requirement)",
+  "description": "Search behavior without explicit load",
+  "classification": {
+    "result": "ALLOWED_DIFFERENCE",
+    "category": "ALLOWED",
+    "reasoning": "Different load requirements: Milvus requires load (ARCHITECTURAL DIFFERENCE)"
+  },
+  "test_step": 3
+}

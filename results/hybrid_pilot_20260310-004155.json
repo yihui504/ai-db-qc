@@ -1,0 +1,1135 @@
+{
+  "run_id": "hybrid-pilot-20260310-004155",
+  "timestamp": "2026-03-10T00:41:55.648731",
+  "total_tests": 14,
+  "is_real_database": true,
+  "results": [
+    {
+      "test_id": "hyb-001_exclusion_001",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Basic",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "All results must have color=red, no blue entities",
+      "execution": {
+        "test_id": "hyb-001_exclusion_001",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Basic",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:41:26.517689",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 3,
+              "score": 0.1600000113248825,
+              "distance": 0.1600000113248825,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 5,
+              "score": 0.64000004529953,
+              "distance": 0.64000004529953,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 6,
+              "score": 1.0,
+              "distance": 1.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 7,
+              "score": 1.440000057220459,
+              "distance": 1.440000057220459,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 8,
+              "score": 1.959999918937683,
+              "distance": 1.959999918937683,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 9,
+              "score": 2.56000018119812,
+              "distance": 2.56000018119812,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 10,
+              "score": 3.239999771118164,
+              "distance": 3.239999771118164,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 11,
+              "score": 4.0,
+              "distance": 4.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            }
+          ],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "15 entities: Entity 2 (blue) has nearly identical vector to query but must be excluded",
+          "collection_matches_nothing": false,
+          "result_count": 10
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 10 results satisfy filter criteria",
+        "evidence": {
+          "result_count": 10,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:28.677017"
+    },
+    {
+      "test_id": "hyb-001_exclusion_002",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Similarity Trap",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "Entity 2 (blue) with near-identical vector must be excluded",
+      "execution": {
+        "test_id": "hyb-001_exclusion_002",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Similarity Trap",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:41:28.677017",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 3,
+              "score": 0.1600000113248825,
+              "distance": 0.1600000113248825,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 5,
+              "score": 0.64000004529953,
+              "distance": 0.64000004529953,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 6,
+              "score": 1.0,
+              "distance": 1.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 7,
+              "score": 1.440000057220459,
+              "distance": 1.440000057220459,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 8,
+              "score": 1.959999918937683,
+              "distance": 1.959999918937683,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 9,
+              "score": 2.56000018119812,
+              "distance": 2.56000018119812,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 10,
+              "score": 3.239999771118164,
+              "distance": 3.239999771118164,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 11,
+              "score": 4.0,
+              "distance": 4.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            }
+          ],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "15 entities: Entity 2 (blue) has nearly identical vector to query but must be excluded",
+          "collection_matches_nothing": false,
+          "result_count": 10
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 10 results satisfy filter criteria",
+        "evidence": {
+          "result_count": 10,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:30.874754"
+    },
+    {
+      "test_id": "hyb-001_exclusion_003",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Multiple Conditions",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "All results must have color=red AND status=active",
+      "execution": {
+        "test_id": "hyb-001_exclusion_003",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Multiple Conditions",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:41:30.874754",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 6,
+              "score": 1.0,
+              "distance": 1.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 8,
+              "score": 1.959999918937683,
+              "distance": 1.959999918937683,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 10,
+              "score": 3.239999771118164,
+              "distance": 3.239999771118164,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 12,
+              "score": 4.840000152587891,
+              "distance": 4.840000152587891,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 14,
+              "score": 6.7599992752075195,
+              "distance": 6.7599992752075195,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            }
+          ],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "red",
+            "status": "active"
+          },
+          "dataset_description": "15 entities: Entity 2 (blue) has nearly identical vector to query but must be excluded",
+          "collection_matches_nothing": false,
+          "result_count": 7
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 7 results satisfy filter criteria",
+        "evidence": {
+          "result_count": 7,
+          "filter": {
+            "color": "red",
+            "status": "active"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:32.998682"
+    },
+    {
+      "test_id": "hyb-001_exclusion_004",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Set Membership",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "HIGH",
+      "expected_behavior": "All results must have color IN [red, green]",
+      "execution": {
+        "test_id": "hyb-001_exclusion_004",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Set Membership",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "HIGH",
+        "timestamp": "2026-03-10T00:41:32.998682",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 3,
+              "score": 0.1600000113248825,
+              "distance": 0.1600000113248825,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 5,
+              "score": 0.64000004529953,
+              "distance": 0.64000004529953,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 6,
+              "score": 1.0,
+              "distance": 1.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 7,
+              "score": 1.440000057220459,
+              "distance": 1.440000057220459,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 8,
+              "score": 1.959999918937683,
+              "distance": 1.959999918937683,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 9,
+              "score": 2.56000018119812,
+              "distance": 2.56000018119812,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            },
+            {
+              "id": 10,
+              "score": 3.239999771118164,
+              "distance": 3.239999771118164,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 11,
+              "score": 4.0,
+              "distance": 4.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "pending"
+              }
+            }
+          ],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": [
+              "red",
+              "green"
+            ]
+          },
+          "dataset_description": "15 entities: Entity 2 (blue) has nearly identical vector to query but must be excluded",
+          "collection_matches_nothing": false,
+          "result_count": 10
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 10 results satisfy filter criteria",
+        "evidence": {
+          "result_count": 10,
+          "filter": {
+            "color": [
+              "red",
+              "green"
+            ]
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:35.134507"
+    },
+    {
+      "test_id": "hyb-001_exclusion_005",
+      "contract_id": "HYB-001",
+      "name": "Filter Exclusion - Null Handling",
+      "dataset_name": "dataset_1_vector_trap",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Results must have status=NULL (should be empty or handle gracefully)",
+      "execution": {
+        "test_id": "hyb-001_exclusion_005",
+        "contract_id": "HYB-001",
+        "name": "Filter Exclusion - Null Handling",
+        "dataset_name": "dataset_1_vector_trap",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:41:35.134507",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 10,
+          "filter_criteria": {
+            "status": null
+          },
+          "dataset_description": "15 entities: Entity 2 (blue) has nearly identical vector to query but must be excluded",
+          "collection_matches_nothing": true,
+          "result_count": 0
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 0 results satisfy filter criteria",
+        "evidence": {
+          "result_count": 0,
+          "filter": {
+            "status": null
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:37.776679"
+    },
+    {
+      "test_id": "hyb-001_truncation_001",
+      "contract_id": "HYB-001",
+      "name": "Top-K Truncation - Full Filtered Subset",
+      "dataset_name": "dataset_3_top_k_truncation",
+      "bug_yield_potential": "CRITICAL",
+      "expected_behavior": "Return all 3 red entities (not 10 with 7 blue)",
+      "execution": {
+        "test_id": "hyb-001_truncation_001",
+        "contract_id": "HYB-001",
+        "name": "Top-K Truncation - Full Filtered Subset",
+        "dataset_name": "dataset_3_top_k_truncation",
+        "bug_yield_potential": "CRITICAL",
+        "timestamp": "2026-03-10T00:41:37.776679",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 2,
+              "score": 0.010000000707805157,
+              "distance": 0.010000000707805157,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 3,
+              "score": 0.04000000283122063,
+              "distance": 0.04000000283122063,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            }
+          ],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "15 entities: only 3 red, top_k=10 - should return all 3 red entities",
+          "collection_matches_nothing": false,
+          "result_count": 3
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 3 results satisfy filter criteria",
+        "evidence": {
+          "result_count": 3,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:39.362110"
+    },
+    {
+      "test_id": "hyb-002_consistency_001",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Filter Satisfaction",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "HIGH",
+      "expected_behavior": "All results satisfy color=red",
+      "execution": {
+        "test_id": "hyb-002_consistency_001",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Filter Satisfaction",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "HIGH",
+        "timestamp": "2026-03-10T00:41:39.362110",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 2,
+              "score": 0.02250000089406967,
+              "distance": 0.02250000089406967,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.20249998569488525,
+              "distance": 0.20249998569488525,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 5,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 7,
+              "score": 0.809999942779541,
+              "distance": 0.809999942779541,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            }
+          ],
+          "top_k": 5,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "12 entities on x-axis: deterministic distances, alternating colors",
+          "collection_matches_nothing": false,
+          "result_count": 5
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 5 results satisfy filter AND distances are monotonic",
+        "evidence": {
+          "result_count": 5,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:41.564848"
+    },
+    {
+      "test_id": "hyb-002_consistency_002",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Distance Monotonicity",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "HIGH",
+      "expected_behavior": "Distances are monotonically increasing within filtered entities",
+      "execution": {
+        "test_id": "hyb-002_consistency_002",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Distance Monotonicity",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "HIGH",
+        "timestamp": "2026-03-10T00:41:41.564848",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 2,
+              "score": 0.02250000089406967,
+              "distance": 0.02250000089406967,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.20249998569488525,
+              "distance": 0.20249998569488525,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 5,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 7,
+              "score": 0.809999942779541,
+              "distance": 0.809999942779541,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            }
+          ],
+          "top_k": 5,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "12 entities on x-axis: deterministic distances, alternating colors",
+          "collection_matches_nothing": false,
+          "result_count": 5
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 5 results satisfy filter AND distances are monotonic",
+        "evidence": {
+          "result_count": 5,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:43.780929"
+    },
+    {
+      "test_id": "hyb-002_consistency_003",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Different Top-K Values",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Filter satisfaction and monotonicity with top_k=3",
+      "execution": {
+        "test_id": "hyb-002_consistency_003",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Different Top-K Values",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:41:43.780929",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 2,
+              "score": 0.02250000089406967,
+              "distance": 0.02250000089406967,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.20249998569488525,
+              "distance": 0.20249998569488525,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            }
+          ],
+          "top_k": 3,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "12 entities on x-axis: deterministic distances, alternating colors",
+          "collection_matches_nothing": false,
+          "result_count": 3
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 3 results satisfy filter AND distances are monotonic",
+        "evidence": {
+          "result_count": 3,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:46.275508"
+    },
+    {
+      "test_id": "hyb-002_consistency_004",
+      "contract_id": "HYB-002",
+      "name": "Consistency - Exact Reference Comparison",
+      "dataset_name": "dataset_2_controlled_axis",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Compare with exact ground truth (ALLOWED_DIFFERENCE for ANN)",
+      "execution": {
+        "test_id": "hyb-002_consistency_004",
+        "contract_id": "HYB-002",
+        "name": "Consistency - Exact Reference Comparison",
+        "dataset_name": "dataset_2_controlled_axis",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:41:46.275508",
+        "is_real_database": true,
+        "results": {
+          "results": [
+            {
+              "id": 1,
+              "score": 0.0,
+              "distance": 0.0,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 2,
+              "score": 0.02250000089406967,
+              "distance": 0.02250000089406967,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 4,
+              "score": 0.20249998569488525,
+              "distance": 0.20249998569488525,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 5,
+              "score": 0.36000001430511475,
+              "distance": 0.36000001430511475,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            },
+            {
+              "id": 7,
+              "score": 0.809999942779541,
+              "distance": 0.809999942779541,
+              "scalar_fields": {
+                "color": "red",
+                "status": "active"
+              }
+            }
+          ],
+          "top_k": 5,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "12 entities on x-axis: deterministic distances, alternating colors",
+          "collection_matches_nothing": false,
+          "result_count": 5
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "All 5 results satisfy filter AND distances are monotonic",
+        "evidence": {
+          "result_count": 5,
+          "filter": {
+            "color": "red"
+          }
+        }
+      },
+      "timestamp": "2026-03-10T00:41:48.484593"
+    },
+    {
+      "test_id": "hyb-003_empty_001",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Impossible Condition",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Empty results (all entities are red)",
+      "execution": {
+        "test_id": "hyb-003_empty_001",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Impossible Condition",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:41:48.484593",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "blue"
+          },
+          "dataset_description": "10 entities: all red, filter for blue - should return empty results",
+          "collection_matches_nothing": true,
+          "result_count": 0
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Filter matches nothing and correctly returned empty results",
+        "evidence": {
+          "result_count": 0
+        }
+      },
+      "timestamp": "2026-03-10T00:41:51.215375"
+    },
+    {
+      "test_id": "hyb-003_empty_002",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Empty Collection",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "MEDIUM",
+      "expected_behavior": "Empty results (collection is empty)",
+      "execution": {
+        "test_id": "hyb-003_empty_002",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Empty Collection",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "MEDIUM",
+        "timestamp": "2026-03-10T00:41:51.215375",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "red"
+          },
+          "dataset_description": "10 entities: all red, filter for blue - should return empty results",
+          "collection_matches_nothing": true,
+          "result_count": 0
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Filter matches nothing and correctly returned empty results",
+        "evidence": {
+          "result_count": 0
+        }
+      },
+      "timestamp": "2026-03-10T00:41:51.333086"
+    },
+    {
+      "test_id": "hyb-003_empty_003",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Null Field Filter",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "LOW",
+      "expected_behavior": "Empty results or consistent error handling",
+      "execution": {
+        "test_id": "hyb-003_empty_003",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Null Field Filter",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "LOW",
+        "timestamp": "2026-03-10T00:41:51.333086",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 10,
+          "filter_criteria": {
+            "nonexistent_field": "value"
+          },
+          "dataset_description": "10 entities: all red, filter for blue - should return empty results",
+          "collection_matches_nothing": true,
+          "result_count": 0
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Filter matches nothing and correctly returned empty results",
+        "evidence": {
+          "result_count": 0
+        }
+      },
+      "timestamp": "2026-03-10T00:41:53.368158"
+    },
+    {
+      "test_id": "hyb-003_empty_004",
+      "contract_id": "HYB-003",
+      "name": "Empty Filter - Contradictory Condition",
+      "dataset_name": "dataset_4_impossible_filter",
+      "bug_yield_potential": "LOW",
+      "expected_behavior": "Empty results or consistent error handling",
+      "execution": {
+        "test_id": "hyb-003_empty_004",
+        "contract_id": "HYB-003",
+        "name": "Empty Filter - Contradictory Condition",
+        "dataset_name": "dataset_4_impossible_filter",
+        "bug_yield_potential": "LOW",
+        "timestamp": "2026-03-10T00:41:53.368158",
+        "is_real_database": true,
+        "results": {
+          "results": [],
+          "top_k": 10,
+          "filter_criteria": {
+            "color": "blue"
+          },
+          "dataset_description": "10 entities: all red, filter for blue - should return empty results",
+          "collection_matches_nothing": true,
+          "result_count": 0
+        },
+        "status": "success",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Filter matches nothing and correctly returned empty results",
+        "evidence": {
+          "result_count": 0
+        }
+      },
+      "timestamp": "2026-03-10T00:41:55.648209"
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "by_classification": {
+      "PASS": 14
+    },
+    "by_contract": {
+      "HYB-001": {
+        "passed": 6,
+        "failed": 0,
+        "total": 6
+      },
+      "HYB-002": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4
+      },
+      "HYB-003": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4
+      }
+    },
+    "issue_candidates": [],
+    "passed": 14,
+    "failed": 0
+  }
+}

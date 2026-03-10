@@ -1,0 +1,55 @@
+{
+  "contract_id": "HYB-003",
+  "name": "Empty Filter Result Handling",
+  "family": "HYBRID",
+  "type": "universal",
+  "statement": "Search with filter matching no entities must return empty results",
+  "rationale": "Filters should exclude all non-matching entities",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["filter_matches_no_entities"]
+  },
+  "preconditions": [
+    "collection_with_scalar_fields",
+    "filter_matches_no_entities"
+  ],
+  "postconditions": [
+    "results_empty OR error_consistent_with_empty_results"
+  ],
+  "invariants": [
+    "Empty filters produce predictable outcomes"
+  ],
+  "violation_criteria": {
+    "condition": "non_empty_results_when_filter_matches_nothing",
+    "severity": "high"
+  },
+  "test_generation": {
+    "strategy": "boundary",
+    "cases": [
+      {
+        "name": "Filter with no matches",
+        "setup": [
+          "insert entities (color=red)",
+          "search with filter color=blue"
+        ],
+        "expected": "empty results"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "results_empty OR consistent_empty_handling",
+    "verification": "assert len(results) == 0",
+    "classification": {
+      "violation": "BUG",
+      "compliant": "PASS",
+      "allowed_difference": "different_empty_handling"
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

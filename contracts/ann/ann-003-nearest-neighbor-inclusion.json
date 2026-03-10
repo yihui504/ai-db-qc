@@ -1,0 +1,61 @@
+{
+  "contract_id": "ANN-003",
+  "name": "Nearest Neighbor Inclusion",
+  "family": "ANN",
+  "type": "universal",
+  "statement": "Search must include the true nearest neighbor (exact) or approximate it within precision bounds (ANN)",
+  "rationale": "Primary use case is finding nearest vectors; accuracy must be bounded",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["query_vector_valid"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "query_vector_valid",
+    "exact_nearest_neighbor_computable"
+  ],
+  "postconditions": [
+    "true_nearest_neighbor IN results OR approximation_error_within_bounds"
+  ],
+  "invariants": [
+    "ANN algorithms maintain recall/precision bounds"
+  ],
+  "violation_criteria": {
+    "condition": "true_nearest_neighbor NOT IN results AND approximation_error_exceeds_bounds",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "legal",
+    "cases": [
+      {
+        "name": "Exact search ground truth",
+        "params": {"search_mode": "exact", "force_exact": true},
+        "verification": "compute true nearest neighbor via brute force"
+      },
+      {
+        "name": "ANN accuracy validation",
+        "params": {"search_mode": "ann", "index_type": "HNSW"},
+        "verification": "check recall against ground truth"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "true_nn_in_results OR recall_within_threshold",
+    "verification": "compute_ground_truth(query); assert nn_in_results OR recall >= 0.9",
+    "parameters": {
+      "recall_threshold": 0.9
+    },
+    "classification": {
+      "violation": "BUG",
+      "compliant": "PASS",
+      "allowed_difference": "different_recall_thresholds"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["ANN-004"],
+    "test_complexity": "high",
+    "version": "1.0"
+  }
+}

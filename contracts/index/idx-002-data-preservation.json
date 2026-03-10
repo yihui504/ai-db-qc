@@ -1,0 +1,62 @@
+{
+  "contract_id": "IDX-002",
+  "name": "Index Data Preservation",
+  "family": "INDEX",
+  "type": "universal",
+  "statement": "Index operations (create, rebuild, delete) must not lose or corrupt data",
+  "rationale": "Indexes are derivatives of primary data; data integrity is paramount",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["create_index", "drop_index", "rebuild_index"],
+    "conditions": ["collection_exists"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "data_inserted"
+  ],
+  "postconditions": [
+    "all_inserted_data_still_accessible",
+    "data_count_unchanged"
+  ],
+  "invariants": [
+    "Data integrity maintained across index operations"
+  ],
+  "violation_criteria": {
+    "condition": "data_count_before != data_count_after OR data_lost",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Data count after index creation",
+        "sequence": ["insert N entities", "create index", "count entities"],
+        "verification": "count == N"
+      },
+      {
+        "name": "Data count after index deletion",
+        "sequence": ["insert N entities", "create index", "drop index", "count entities"],
+        "verification": "count == N"
+      },
+      {
+        "name": "Data count after index rebuild",
+        "sequence": ["insert N entities", "create index", "rebuild index", "count entities"],
+        "verification": "count == N"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "data_count_preserved AND all_data_accessible",
+    "verification": "assert count(collection) == original_count",
+    "classification": {
+      "violation": "BUG (data_loss)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

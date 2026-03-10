@@ -180,9 +180,11 @@ class Triage:
 
         # 4. Error message is clearly poor diagnostics
         # Poor: Very generic messages without any specific information
+        # Flatten param_aliases from param_contexts for checking
+        all_param_aliases = [alias for _, aliases in param_contexts for alias in aliases]
         poor_indicators = [
             ("invalid parameter", "parameter" not in error_msg or
-             any(param in error_msg for param in [p for params in param_contexts for p in params])),
+             not any(alias in error_msg for alias in all_param_aliases)),
             ("operation failed", not any(symptom in error_msg for symptom in
              ["timeout", "connection", "network", "permission"])),
             ("error occurred", True)  # Always poor

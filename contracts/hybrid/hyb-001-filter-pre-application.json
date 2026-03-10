@@ -1,0 +1,55 @@
+{
+  "contract_id": "HYB-001",
+  "name": "Filter Pre-Application",
+  "family": "HYBRID",
+  "type": "universal",
+  "statement": "Scalar filters must be applied before vector ranking",
+  "rationale": "Filtered entities should never appear in results regardless of vector similarity",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search"],
+    "conditions": ["filter_expression_provided"]
+  },
+  "preconditions": [
+    "collection_with_scalar_fields",
+    "filter_expression_provided"
+  ],
+  "postconditions": [
+    "no_excluded_entities_in_results"
+  ],
+  "invariants": [
+    "Filter application is strict (no false positives)"
+  ],
+  "violation_criteria": {
+    "condition": "excluded_entity_appears_in_results",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "legal",
+    "cases": [
+      {
+        "name": "Filter excludes non-matching entities",
+        "setup": [
+          "insert entity A (color=red, vector=va)",
+          "insert entity B (color=blue, vector=vb_similar_to_va)",
+          "search with filter color=red"
+        ],
+        "verification": "B must not appear in results despite vector similarity"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "all_results_satisfy_filter",
+    "verification": "for result in results: assert satisfies_filter(result, filter_criteria)",
+    "classification": {
+      "violation": "BUG (filter_violation)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}
