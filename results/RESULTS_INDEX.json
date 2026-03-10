@@ -1,0 +1,551 @@
+{
+  "last_updated": "2026-03-10T17:00:30.512309",
+  "total_runs": 33,
+  "entries": [
+    {
+      "run_id": "r5d-p05-20260310-141433",
+      "result_file": "results\\r5d_p05_20260310-141439.json",
+      "timestamp": "2026-03-10T14:14:39.251538",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 2,
+      "classifications": {
+        "PASS": 0,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 2,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 0
+      },
+      "file_size_bytes": 108833
+    },
+    {
+      "run_id": "r5d-p05-20260310-141351",
+      "result_file": "results\\r5d_p05_20260310-141357.json",
+      "timestamp": "2026-03-10T14:13:57.475720",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 2,
+      "classifications": {
+        "PASS": 0,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 1
+      },
+      "file_size_bytes": 108153
+    },
+    {
+      "run_id": "r5d-p05-20260310-141324",
+      "result_file": "results\\r5d_p05_20260310-141324.json",
+      "timestamp": "2026-03-10T14:13:24.620724",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 2,
+      "classifications": {
+        "PASS": 0,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 1
+      },
+      "file_size_bytes": 105527
+    },
+    {
+      "run_id": "r5d-p05-20260310-141251",
+      "result_file": "results\\r5d_p05_20260310-141256.json",
+      "timestamp": "2026-03-10T14:12:56.848274",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 2,
+      "classifications": {
+        "PASS": 0,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 1
+      },
+      "file_size_bytes": 106698
+    },
+    {
+      "run_id": "r5d-p0-20260310-140340",
+      "result_file": "results\\r5d_p0_20260310-140345.json",
+      "timestamp": "2026-03-10T14:03:45.567480",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 4,
+      "classifications": {
+        "PASS": 3,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 0
+      },
+      "file_size_bytes": 825039
+    },
+    {
+      "run_id": "r5d-p0-20260310-140322",
+      "result_file": "results\\r5d_p0_20260310-140327.json",
+      "timestamp": "2026-03-10T14:03:27.783700",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 4,
+      "classifications": {
+        "PASS": 3,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 0
+      },
+      "file_size_bytes": 825039
+    },
+    {
+      "run_id": "r5d-smoke-20260310-135201",
+      "result_file": "results\\r5d_smoke_20260310-135206.json",
+      "timestamp": "2026-03-10T13:52:06.186644",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 4,
+      "classifications": {
+        "PASS": 3,
+        "BUG_CANDIDATE": 0,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 0
+      },
+      "file_size_bytes": 824616
+    },
+    {
+      "run_id": "r5d-smoke-20260310-135121",
+      "result_file": "results\\r5d_smoke_20260310-135138.json",
+      "timestamp": "2026-03-10T13:51:38.996413",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 4,
+      "classifications": {
+        "PASS": 2,
+        "BUG_CANDIDATE": 1,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 0
+      },
+      "file_size_bytes": 825242
+    },
+    {
+      "run_id": "r5d-smoke-20260310-135015",
+      "result_file": "results\\r5d_smoke_20260310-135017.json",
+      "timestamp": "2026-03-10T13:50:17.663528",
+      "database_family": "Milvus",
+      "db_version": "v2.6.10",
+      "mode": "REAL",
+      "campaign": "R5D Schema Evolution",
+      "total_cases": 4,
+      "classifications": {
+        "PASS": 2,
+        "BUG_CANDIDATE": 1,
+        "OBSERVATION": 1,
+        "ALLOWED_DIFFERENCE": 0,
+        "EXPECTED_FAILURE": 0,
+        "EXPERIMENT_DESIGN_ISSUE": 0
+      },
+      "file_size_bytes": 24256
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-124135",
+      "result_file": "results\\r5b_lifecycle_20260310-124135.json",
+      "timestamp": "2026-03-10T12:41:35.165968",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 11,
+      "classifications": {
+        "PASS": 8,
+        "EXPECTED_FAILURE": 1,
+        "VERSION_GUARDED": 1,
+        "EXPERIMENT_DESIGN_ISSUE": 1
+      },
+      "file_size_bytes": 11662263
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-123955",
+      "result_file": "results\\r5b_lifecycle_20260310-123955.json",
+      "timestamp": "2026-03-10T12:39:55.490636",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 11,
+      "classifications": {
+        "PASS": 8,
+        "EXPECTED_FAILURE": 1,
+        "VERSION_GUARDED": 1,
+        "EXPERIMENT_DESIGN_ISSUE": 1
+      },
+      "file_size_bytes": 11658715
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-123741",
+      "result_file": "results\\r5b_lifecycle_20260310-123741.json",
+      "timestamp": "2026-03-10T12:37:41.666422",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 11,
+      "classifications": {
+        "PASS": 8,
+        "EXPECTED_FAILURE": 1,
+        "VERSION_GUARDED": 1,
+        "EXPERIMENT_DESIGN_ISSUE": 1
+      },
+      "file_size_bytes": 11662267
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-123545",
+      "result_file": "results\\r5b_lifecycle_20260310-123545.json",
+      "timestamp": "2026-03-10T12:35:45.181161",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 11,
+      "classifications": {
+        "PASS": 7,
+        "EXPECTED_FAILURE": 1,
+        "VERSION_GUARDED": 1,
+        "EXPERIMENT_DESIGN_ISSUE": 1,
+        "INFRA_FAILURE": 1
+      },
+      "file_size_bytes": 11653829
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-121731",
+      "result_file": "results\\r5b_lifecycle_20260310-121731.json",
+      "timestamp": "2026-03-10T12:17:31.130913",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 7,
+        "EXPECTED_FAILURE": 1,
+        "VERSION_GUARDED": 1,
+        "ALLOWED_DIFFERENCE": 1
+      },
+      "file_size_bytes": 10586933
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-120943",
+      "result_file": "results\\r5b_lifecycle_20260310-120943.json",
+      "timestamp": "2026-03-10T12:09:43.027625",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 7,
+        "EXPECTED_FAILURE": 1,
+        "VERSION_GUARDED": 1,
+        "INFRA_FAILURE": 1
+      },
+      "file_size_bytes": 10577234
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-115857",
+      "result_file": "results\\r5b_lifecycle_20260310-115857.json",
+      "timestamp": "2026-03-10T11:58:57.839802",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "PASS": 7,
+        "EXPECTED_FAILURE": 1
+      },
+      "file_size_bytes": 8434928
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-115814",
+      "result_file": "results\\r5b_lifecycle_20260310-115814.json",
+      "timestamp": "2026-03-10T11:58:14.931770",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "PASS": 6,
+        "EXPECTED_FAILURE": 1,
+        "BUG_CANDIDATE": 1
+      },
+      "file_size_bytes": 8437971
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-115704",
+      "result_file": "results\\r5b_lifecycle_20260310-115704.json",
+      "timestamp": "2026-03-10T11:57:04.513874",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "PASS": 6,
+        "EXPECTED_FAILURE": 1,
+        "BUG_CANDIDATE": 1
+      },
+      "file_size_bytes": 8453326
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-115625",
+      "result_file": "results\\r5b_lifecycle_20260310-115625.json",
+      "timestamp": "2026-03-10T11:56:25.664703",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "PASS": 6,
+        "EXPECTED_FAILURE": 1,
+        "BUG_CANDIDATE": 1
+      },
+      "file_size_bytes": 8452387
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-115340",
+      "result_file": "results\\r5b_lifecycle_20260310-115340.json",
+      "timestamp": "2026-03-10T11:53:40.077843",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "BUG_CANDIDATE": 6,
+        "PASS": 1,
+        "OBSERVATION": 1
+      },
+      "file_size_bytes": 8450722
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-115216",
+      "result_file": "results\\r5b_lifecycle_20260310-115216.json",
+      "timestamp": "2026-03-10T11:52:16.114223",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "BUG_CANDIDATE": 7,
+        "OBSERVATION": 1
+      },
+      "file_size_bytes": 4113185
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-114356",
+      "result_file": "results\\r5b_lifecycle_20260310-114356.json",
+      "timestamp": "2026-03-10T11:43:56.968306",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "BUG_CANDIDATE": 6,
+        "PASS": 2
+      },
+      "file_size_bytes": 23763
+    },
+    {
+      "run_id": "r5b-lifecycle-20260310-114329",
+      "result_file": "results\\r5b_lifecycle_20260310-114329.json",
+      "timestamp": "2026-03-10T11:43:29.148010",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": "R5B_INDEX_LIFECYCLE",
+      "total_cases": 8,
+      "classifications": {
+        "BUG_CANDIDATE": 6,
+        "PASS": 2
+      },
+      "file_size_bytes": 23763
+    },
+    {
+      "run_id": "hybrid-pilot-20260310-004155",
+      "result_file": "results\\hybrid_pilot_20260310-004155.json",
+      "timestamp": "2026-03-10T00:41:55.648731",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 14,
+      "classifications": {
+        "PASS": 14
+      },
+      "file_size_bytes": 35273
+    },
+    {
+      "run_id": "hybrid-pilot-20260310-004009",
+      "result_file": "results\\hybrid_pilot_20260310-004009.json",
+      "timestamp": "2026-03-10T00:40:09.033607",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 14,
+      "classifications": {
+        "OBSERVATION": 14
+      },
+      "file_size_bytes": 22049
+    },
+    {
+      "run_id": "ann-discovery-20260310-001622",
+      "result_file": "results\\ann_discovery_20260310-001622.json",
+      "timestamp": "2026-03-10T00:16:22.045841",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 44,
+      "classifications": {
+        "PASS": 40,
+        "OBSERVATION": 4
+      },
+      "file_size_bytes": 84137
+    },
+    {
+      "run_id": "ann-pilot-20260310-000535",
+      "result_file": "results\\ann_pilot_20260310-000535.json",
+      "timestamp": "2026-03-10T00:05:35.301367",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 10
+      },
+      "file_size_bytes": 45064
+    },
+    {
+      "run_id": "ann-pilot-20260310-000456",
+      "result_file": "results\\ann_pilot_20260310-000456.json",
+      "timestamp": "2026-03-10T00:04:56.976030",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 7,
+        "VIOLATION": 3
+      },
+      "file_size_bytes": 44940
+    },
+    {
+      "run_id": "ann-pilot-20260310-000405",
+      "result_file": "results\\ann_pilot_20260310-000405.json",
+      "timestamp": "2026-03-10T00:04:05.368955",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 5,
+        "OBSERVATION": 2,
+        "VIOLATION": 3
+      },
+      "file_size_bytes": 44721
+    },
+    {
+      "run_id": "ann-pilot-20260310-000308",
+      "result_file": "results\\ann_pilot_20260310-000308.json",
+      "timestamp": "2026-03-10T00:03:08.275791",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 5,
+        "OBSERVATION": 5
+      },
+      "file_size_bytes": 43980
+    },
+    {
+      "run_id": "ann-pilot-20260310-000153",
+      "result_file": "results\\ann_pilot_20260310-000153.json",
+      "timestamp": "2026-03-10T00:01:53.817628",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 5,
+        "OBSERVATION": 5
+      },
+      "file_size_bytes": 30890
+    },
+    {
+      "run_id": "ann-pilot-20260310-000124",
+      "result_file": "results\\ann_pilot_20260310-000124.json",
+      "timestamp": "2026-03-10T00:01:24.177706",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "PASS": 5,
+        "OBSERVATION": 5
+      },
+      "file_size_bytes": 30914
+    },
+    {
+      "run_id": "ann-pilot-20260309-235952",
+      "result_file": "results\\ann_pilot_20260309-235952.json",
+      "timestamp": "2026-03-09T23:59:52.617532",
+      "database_family": "unknown",
+      "db_version": "unknown",
+      "mode": "UNKNOWN",
+      "campaign": null,
+      "total_cases": 10,
+      "classifications": {
+        "OBSERVATION": 10
+      },
+      "file_size_bytes": 30636
+    }
+  ]
+}

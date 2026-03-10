@@ -362,10 +362,10 @@ def main():
 
     manifest_path = config_path.parent / "bootstrap_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2))
-    print(f"Generated {len(artifacts)} artifacts:")
+    print(f"Generated {len(artifacts)} artifacts + 1 manifest:")
     for a in artifacts:
         print(f"  - {a['type']}: {a['path']}")
-    print(f"Manifest: {manifest_path}")
+    print(f"  - manifest: {manifest_path}")
 
     return 0
 
