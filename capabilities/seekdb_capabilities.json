@@ -1,0 +1,159 @@
+{
+  "adapter_name": "seekdb_adapter",
+  "db_family": "SeekDB",
+  "sdk_version": "seekdb_sdk (TODO: verify version)",
+  "validated_db_version": "TODO",
+  "last_updated": "2026-03-10",
+  "operations": [
+    {
+      "operation": "build_index",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._build_index",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated in campaign"
+    },
+    {
+      "operation": "create_collection",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._create_collection",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated in campaign"
+    },
+    {
+      "operation": "delete",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "SeekDBAdapter._delete",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated"
+    },
+    {
+      "operation": "drop_collection",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._drop_collection",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated"
+    },
+    {
+      "operation": "error",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "SeekDBAdapter._error",
+      "verification_path": null,
+      "known_constraints": [
+        {"type": "internal", "value": "Helper method for error handling"}
+      ],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Internal helper for error responses"
+    },
+    {
+      "operation": "filtered_search",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._filtered_search",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated in campaign"
+    },
+    {
+      "operation": "get_connection",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "SeekDBAdapter._get_connection",
+      "verification_path": null,
+      "known_constraints": [
+        {"type": "internal", "value": "Helper method for connection management"}
+      ],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Internal helper for connection pooling"
+    },
+    {
+      "operation": "hybrid_search",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._hybrid_search",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "SeekDB-specific hybrid search operation"
+    },
+    {
+      "operation": "insert",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._insert",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Core operation, not yet validated in campaign"
+    },
+    {
+      "operation": "load_index",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "SeekDBAdapter._load_index",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "SeekDB-specific index loading"
+    },
+    {
+      "operation": "search",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "SeekDBAdapter._search",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Core operation, not yet validated in campaign"
+    },
+    {
+      "operation": "vector_to_literal",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "SeekDBAdapter._vector_to_literal",
+      "verification_path": null,
+      "known_constraints": [
+        {"type": "internal", "value": "Helper method for vector format conversion"}
+      ],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Internal helper for vector processing"
+    }
+  ]
+}

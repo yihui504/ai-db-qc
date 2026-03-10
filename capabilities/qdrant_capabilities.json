@@ -1,0 +1,95 @@
+{
+  "adapter_name": "qdrant_adapter",
+  "db_family": "Qdrant",
+  "sdk_version": "qdrant-client (TODO: verify version)",
+  "validated_db_version": "TODO",
+  "last_updated": "2026-03-10",
+  "operations": [
+    {
+      "operation": "build_index",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "QdrantAdapter._build_index",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Operation exists in adapter, not yet validated in campaign"
+    },
+    {
+      "operation": "create_collection",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "QdrantAdapter._create_collection",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Core operation, not yet validated in campaign"
+    },
+    {
+      "operation": "delete",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "QdrantAdapter._delete",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated"
+    },
+    {
+      "operation": "drop_collection",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "QdrantAdapter._drop_collection",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Not yet validated"
+    },
+    {
+      "operation": "insert",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "QdrantAdapter._insert",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Core operation, not yet validated in campaign"
+    },
+    {
+      "operation": "load",
+      "support_status": "unsupported",
+      "support_level": "static_only",
+      "confidence": "high",
+      "implementation_path": null,
+      "verification_path": null,
+      "known_constraints": [
+        {"type": "api_limitation", "value": "Qdrant does not have explicit load operation"}
+      ],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Qdrant collections are always loaded, no explicit load operation"
+    },
+    {
+      "operation": "search",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "QdrantAdapter._search",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Core operation, not yet validated in campaign"
+    }
+  ]
+}

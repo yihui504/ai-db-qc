@@ -1,0 +1,238 @@
+{
+  "adapter_name": "milvus_adapter",
+  "db_family": "Milvus",
+  "sdk_version": "pymilvus v2.6.10",
+  "validated_db_version": "v2.6.10",
+  "last_updated": "2026-03-10",
+  "operations": [
+    {
+      "operation": "build_index",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._build_index",
+      "verification_path": "run_r5b_smoke.py::ILC-001",
+      "known_constraints": [
+        {"type": "precondition", "value": "collection must exist and have data"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Core operation validated in R5B index lifecycle campaign"
+    },
+    {
+      "operation": "count_entities",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._count_entities",
+      "verification_path": "run_r5b_smoke.py::ILC-009b",
+      "known_constraints": [
+        {"type": "timing", "value": "May show delay due to flush/search visibility timing"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Validated in R5B, exhibits documented timing behavior"
+    },
+    {
+      "operation": "create_collection",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._create_collection",
+      "verification_path": "run_r5d_smoke.py::R5D-001",
+      "known_constraints": [
+        {"type": "schema_requirement", "value": "enable_dynamic_field=True required for scalar fields"},
+        {"type": "field_constraint", "value": "nullable fields require nullable=True in schema"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B", "R5D"],
+      "notes": "Core operation validated across R5B and R5D campaigns"
+    },
+    {
+      "operation": "delete",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "medium",
+      "implementation_path": "MilvusAdapter._delete",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Available in SDK, not validated in campaigns yet"
+    },
+    {
+      "operation": "describe_collection",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._describe_collection",
+      "verification_path": "run_r5d_smoke.py::R5D-001",
+      "known_constraints": [
+        {"type": "timing", "value": "entity_count may have timing delay"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5D"],
+      "notes": "Metadata structure accurate, entity count has timing behavior"
+    },
+    {
+      "operation": "drop_collection",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._drop_collection",
+      "verification_path": "run_r5b_smoke.py::ILC-007",
+      "known_constraints": [
+        {"type": "side_effect", "value": "collection must be released first"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Validated in R5B, properly releases collection"
+    },
+    {
+      "operation": "drop_index",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._drop_index",
+      "verification_path": "run_r5b_smoke.py::ILC-007",
+      "known_constraints": [
+        {"type": "side_effect", "value": "collection will be NotLoad after drop"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Validated in R5B ILC-007"
+    },
+    {
+      "operation": "filtered_search",
+      "support_status": "partially_supported",
+      "support_level": "campaign_validated",
+      "confidence": "medium",
+      "implementation_path": "MilvusAdapter._filtered_search",
+      "verification_path": "run_r5d_smoke.py::R5D-006",
+      "known_constraints": [
+        {"type": "semantics", "value": "Filter effectiveness inconclusive - returns 0 results in R5D-006"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5D"],
+      "notes": "Filter syntax accepted, but effectiveness not conclusively validated"
+    },
+    {
+      "operation": "flush",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._flush",
+      "verification_path": "run_r5b_smoke.py::ILC-009b",
+      "known_constraints": [
+        {"type": "critical_behavior", "value": "Enables search visibility for newly inserted data"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Critical operation proven in R5B ILC-009b - flush enables search visibility"
+    },
+    {
+      "operation": "get_load_state",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._get_load_state",
+      "verification_path": "run_r5b_smoke.py::ILC-003, ILC-005",
+      "known_constraints": [],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Used for load state validation in R5B"
+    },
+    {
+      "operation": "insert",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._insert",
+      "verification_path": "run_r5b_smoke.py::ILC-009b, R5D-005",
+      "known_constraints": [
+        {"type": "schema_compatibility", "value": "Must match collection schema fields"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B", "R5D"],
+      "notes": "Core operation, validated with nullable fields in R5D-005"
+    },
+    {
+      "operation": "load",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._load",
+      "verification_path": "run_r5b_smoke.py::ILC-003",
+      "known_constraints": [
+        {"type": "precondition", "value": "index must exist"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Validated in R5B ILC-003"
+    },
+    {
+      "operation": "parse_vectors",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "MilvusAdapter._parse_vectors",
+      "verification_path": null,
+      "known_constraints": [
+        {"type": "internal", "value": "Helper method for vector processing"}
+      ],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Internal helper method, not a direct operation"
+    },
+    {
+      "operation": "release",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._release",
+      "verification_path": "run_r5b_smoke.py::ILC-005",
+      "known_constraints": [],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Validated in R5B ILC-005, metadata preserved after release"
+    },
+    {
+      "operation": "reload",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._reload",
+      "verification_path": "run_r5b_smoke.py::ILC-006",
+      "known_constraints": [],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B"],
+      "notes": "Validated in R5B ILC-006, results match pre-release"
+    },
+    {
+      "operation": "search",
+      "support_status": "supported",
+      "support_level": "campaign_validated",
+      "confidence": "high",
+      "implementation_path": "MilvusAdapter._search",
+      "verification_path": "run_r5b_smoke.py::ILC-004, R5D-003",
+      "known_constraints": [
+        {"type": "precondition", "value": "collection must be loaded"}
+      ],
+      "evidence_source": "campaign",
+      "validated_in_campaigns": ["R5B", "R5D"],
+      "notes": "Core operation validated across R5B and R5D"
+    },
+    {
+      "operation": "wait",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "low",
+      "implementation_path": "MilvusAdapter._wait",
+      "verification_path": null,
+      "known_constraints": [],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Utility operation for timing control"
+    }
+  ]
+}

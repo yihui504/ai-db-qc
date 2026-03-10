@@ -1,0 +1,23 @@
+{
+  "adapter_name": "mock_adapter",
+  "db_family": "Mock",
+  "sdk_version": "in-memory mock",
+  "validated_db_version": "N/A",
+  "last_updated": "2026-03-10",
+  "operations": [
+    {
+      "operation": "build_error_response",
+      "support_status": "supported",
+      "support_level": "static_only",
+      "confidence": "high",
+      "implementation_path": "MockAdapter._build_error_response",
+      "verification_path": null,
+      "known_constraints": [
+        {"type": "internal", "value": "Helper method for error response generation"}
+      ],
+      "evidence_source": "static_scan",
+      "validated_in_campaigns": [],
+      "notes": "Mock adapter helper for testing error paths"
+    }
+  ]
+}
