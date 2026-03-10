@@ -236,6 +236,93 @@ def execute_r6a001_case(adapter: MilvusAdapter, case: Dict) -> Dict:
             collection.release()
             adapter.execute({"operation": "drop_collection", "params": {"collection_name": case["collection_name"]}})
 
+        # R6A-004: CONS-004 Insert-Search Timing Window Observation
+        elif case["case_id"] == "R6A-004":
+            create_collection_with_index(adapter, case)
+            execution_trace.append({"step": 1, "operation": "create_collection_with_index", "result_status": "success"})
+
+            collection = Collection(case["collection_name"], using="default")
+            collection.load()
+            execution_trace.append({"step": 2, "operation": "load", "result_status": "success"})
+
+            # Insert
+            insert_data(adapter, case["collection_name"], case["num_entities"])
+            execution_trace.append({"step": 3, "operation": "insert", "result_status": "success"})
+
+            search_data = [[0.1] * case["dimension"]]
+
+            # Search t=0 (immediate)
+            results = collection.search(data=search_data, anns_field="vector", param={"metric_type": "L2", "params": {"nprobe": 10}}, limit=10)
+            t0_count = len(results[0])
+            execution_trace.append({"step": 4, "operation": "search_t0_immediate", "result_status": "success", "search_count": t0_count})
+
+            # Wait 1 second
+            time.sleep(1.0)
+
+            # Search t=1s (after wait, no flush)
+            results = collection.search(data=search_data, anns_field="vector", param={"metric_type": "L2", "params": {"nprobe": 10}}, limit=10)
+            t1_count = len(results[0])
+            execution_trace.append({"step": 5, "operation": "search_t1_after_wait", "result_status": "success", "search_count": t1_count, "wait_seconds": 1.0})
+
+            # Flush
+            adapter.execute({"operation": "flush", "params": {"collection_name": case["collection_name"]}})
+            time.sleep(0.5)
+            execution_trace.append({"step": 6, "operation": "flush", "result_status": "success"})
+
+            # Search after flush (baseline)
+            results = collection.search(data=search_data, anns_field="vector", param={"metric_type": "L2", "params": {"nprobe": 10}}, limit=10)
+            flush_count = len(results[0])
+            execution_trace.append({"step": 7, "operation": "search_after_flush_baseline", "result_status": "success", "search_count": flush_count})
+
+            # Cleanup
+            collection.release()
+            adapter.execute({"operation": "drop_collection", "params": {"collection_name": case["collection_name"]}})
+
+        # R6A-006: CONS-006 Repeated Flush Stability
+        elif case["case_id"] == "R6A-006":
+            create_collection_with_index(adapter, case)
+            execution_trace.append({"step": 1, "operation": "create_collection_with_index", "result_status": "success"})
+
+            insert_data(adapter, case["collection_name"], case["num_entities"])
+            execution_trace.append({"step": 2, "operation": "insert", "result_status": "success"})
+
+            collection = Collection(case["collection_name"], using="default")
+
+            # First flush
+            adapter.execute({"operation": "flush", "params": {"collection_name": case["collection_name"]}})
+            time.sleep(0.5)
+            execution_trace.append({"step": 3, "operation": "flush_first", "result_status": "success"})
+
+            # Check storage state before second flush
+            before_storage = collection.num_entities
+            execution_trace.append({"step": 4, "operation": "check_storage_state_before_second", "num_entities": before_storage})
+
+            # Load and check search state before second flush
+            collection.load()
+            time.sleep(0.5)
+            search_data = [[0.1] * case["dimension"]]
+            results = collection.search(data=search_data, anns_field="vector", param={"metric_type": "L2", "params": {"nprobe": 10}}, limit=10)
+            before_search = len(results[0])
+            execution_trace.append({"step": 5, "operation": "check_search_state_before_second", "result_status": "success", "search_count": before_search})
+
+            # Second flush
+            adapter.execute({"operation": "flush", "params": {"collection_name": case["collection_name"]}})
+            time.sleep(0.5)
+            execution_trace.append({"step": 6, "operation": "flush_second", "result_status": "success"})
+
+            # Check storage state after second flush
+            after_storage = collection.num_entities
+            execution_trace.append({"step": 7, "operation": "check_storage_state_after_second", "num_entities": after_storage})
+
+            # Check search state after second flush
+            results = collection.search(data=search_data, anns_field="vector", param={"metric_type": "L2", "params": {"nprobe": 10}}, limit=10)
+            after_search = len(results[0])
+            execution_trace.append({"step": 8, "operation": "check_search_state_after_second", "result_status": "success", "search_count": after_search})
+
+            # Cleanup
+            collection.release()
+            adapter.execute({"operation": "drop_collection", "params": {"collection_name": case["collection_name"]}})
+
         case_result["execution_trace"] = execution_trace
 
     except Exception as e:
@@ -269,14 +356,26 @@ def execute_r6a001_case(adapter: MilvusAdapter, case: Dict) -> Dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run R6A-001 smoke tests (Round 1 Core)")
+    parser = argparse.ArgumentParser(description="Run R6A-001 smoke tests")
     parser.add_argument("--mode", default="REAL", choices=["MOCK", "REAL"])
+    parser.add_argument("--round", default="round1_core", choices=["round1_core", "round2_extended", "all"])
     parser.add_argument("--output", "-o", help="Output results JSON path")
     args = parser.parse_args()
 
-    print("R6A-001: Consistency / Visibility Campaign (Round 1 Core)")
+    # Determine which cases to run
+    if args.round == "round1_core":
+        round_name = "Round 1 Core"
+        test_list = "R6A-001 (CONS-001), R6A-002 (CONS-002), R6A-003 (CONS-003), R6A-005 (CONS-005)"
+    elif args.round == "round2_extended":
+        round_name = "Round 2 Extended"
+        test_list = "R6A-004 (CONS-004), R6A-006 (CONS-006)"
+    else:  # all
+        round_name = "Round 1 Core + Round 2 Extended"
+        test_list = "R6A-001, R6A-002, R6A-003, R6A-004, R6A-005, R6A-006"
+
+    print(f"R6A-001: Consistency / Visibility Campaign ({round_name})")
     print("=" * 60)
-    print("Tests: R6A-001 (CONS-001), R6A-002 (CONS-002), R6A-003 (CONS-003), R6A-005 (CONS-005)")
+    print(f"Tests: {test_list}")
     print()
 
     if args.mode == "MOCK":
@@ -291,8 +390,15 @@ def main():
     # Generate test cases
     from casegen.generators.r6a_001_generator import R6a001Generator
     generator = R6a001Generator({})
-    cases = generator.generate()  # Round 1 core only
-    print(f"Generated {len(cases)} test cases (Round 1 Core)")
+
+    if args.round == "round1_core":
+        cases = generator.generate()
+    elif args.round == "round2_extended":
+        cases = generator.generate_round2()
+    else:  # all
+        cases = generator.generate() + generator.generate_round2()
+
+    print(f"Generated {len(cases)} test cases ({round_name})")
     print()
 
     # Execute cases

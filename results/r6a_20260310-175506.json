@@ -1,0 +1,146 @@
+{
+  "run_id": "r6a-20260310-175506",
+  "timestamp": "2026-03-10T17:55:06.218681",
+  "database": "Milvus v2.6.10",
+  "mode": "REAL",
+  "campaign": "R6A Consistency / Visibility",
+  "round": "round1_core",
+  "total_cases": 2,
+  "summary": {
+    "total": 2,
+    "by_classification": {
+      "OBSERVATION": 2
+    }
+  },
+  "results": [
+    {
+      "case_id": "R6A-004",
+      "contract_id": "CONS-004",
+      "name": "Insert-Search Timing Window Observation",
+      "oracle_expectations": {
+        "note": "Do not preset strong conclusions. Document observed behavior."
+      },
+      "execution_trace": [
+        {
+          "step": 1,
+          "operation": "create_collection_with_index",
+          "result_status": "success"
+        },
+        {
+          "step": 2,
+          "operation": "load",
+          "result_status": "success"
+        },
+        {
+          "step": 3,
+          "operation": "insert",
+          "result_status": "success"
+        },
+        {
+          "step": 4,
+          "operation": "search_t0_immediate",
+          "result_status": "success",
+          "search_count": 0
+        },
+        {
+          "step": 5,
+          "operation": "search_t1_after_wait",
+          "result_status": "success",
+          "search_count": 5,
+          "wait_seconds": 1.0
+        },
+        {
+          "step": 6,
+          "operation": "flush",
+          "result_status": "success"
+        },
+        {
+          "step": 7,
+          "operation": "search_after_flush_baseline",
+          "result_status": "success",
+          "search_count": 5
+        }
+      ],
+      "oracle": {
+        "classification": "OBSERVATION",
+        "satisfied": true,
+        "reasoning": "Observed insert-search visibility within tested wait window. t=0: 0, t=1s: 0, after flush: 0.",
+        "evidence": {
+          "search_t0_count": 0,
+          "search_t1_count": 0,
+          "search_after_flush_count": 0,
+          "wait_window_tested": "1 second"
+        },
+        "interpretation": "Observed behavior documented. No strong conclusion\u9884\u8bbe about timing requirements.",
+        "note": "Default classification: OBSERVATION. Could be EXPERIMENT_DESIGN_ISSUE if test setup invalid."
+      }
+    },
+    {
+      "case_id": "R6A-006",
+      "contract_id": "CONS-006",
+      "name": "Repeated Flush Stability",
+      "oracle_expectations": {
+        "no_contradictory_regressions": "storage and search states should not regress"
+      },
+      "execution_trace": [
+        {
+          "step": 1,
+          "operation": "create_collection_with_index",
+          "result_status": "success"
+        },
+        {
+          "step": 2,
+          "operation": "insert",
+          "result_status": "success"
+        },
+        {
+          "step": 3,
+          "operation": "flush_first",
+          "result_status": "success"
+        },
+        {
+          "step": 4,
+          "operation": "check_storage_state_before_second",
+          "num_entities": 5
+        },
+        {
+          "step": 5,
+          "operation": "check_search_state_before_second",
+          "result_status": "success",
+          "search_count": 5
+        },
+        {
+          "step": 6,
+          "operation": "flush_second",
+          "result_status": "success"
+        },
+        {
+          "step": 7,
+          "operation": "check_storage_state_after_second",
+          "num_entities": 5
+        },
+        {
+          "step": 8,
+          "operation": "check_search_state_after_second",
+          "result_status": "success",
+          "search_count": 5
+        }
+      ],
+      "oracle": {
+        "classification": "OBSERVATION",
+        "satisfied": true,
+        "reasoning": "Repeated flush: storage before=5, after=5. Search before=0, after=0",
+        "evidence": {
+          "storage_before": 5,
+          "storage_after": 5,
+          "storage_regression": false,
+          "search_before": 0,
+          "search_after": 0,
+          "search_regression": false
+        },
+        "interpretation": "Repeated flush should not introduce contradictory visibility regressions.",
+        "note": "Minimal evidence: storage/search state before/after second flush."
+      }
+    }
+  ]
+}
