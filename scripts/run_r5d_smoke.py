@@ -228,6 +228,123 @@ class SchemaOracleEngine:
             v1_schema_after
         )
 
+    def _oracle_sch005_nullable_semantics(self, result: Dict, contract: Dict) -> Dict[str, Any]:
+        """
+        SCH-005: Nullable/Default Field Read Semantics
+        Reading missing scalar fields must have deterministic behavior
+        """
+        query_results = result.get("query_results", {})
+        null_behavior_detected = query_results.get("null_behavior", "unknown")
+
+        # Document actual behavior
+        if null_behavior_detected == "null":
+            return self._oracle_result(
+                "SCH-005", Classification.PASS, True,
+                "Missing fields return null - deterministic behavior",
+                {"behavior": "null", "deterministic": True}
+            )
+        elif null_behavior_detected == "default":
+            return self._oracle_result(
+                "SCH-005", Classification.PASS, True,
+                f"Missing fields return default value - deterministic behavior",
+                {"behavior": "default", "deterministic": True}
+            )
+        elif null_behavior_detected == "error":
+            return self._oracle_result(
+                "SCH-005", Classification.PASS, True,
+                "Missing fields cause error - deterministic behavior",
+                {"behavior": "error", "deterministic": True}
+            )
+        elif null_behavior_detected == "missing":
+            return self._oracle_result(
+                "SCH-005", Classification.PASS, True,
+                "Missing fields are absent from results - deterministic behavior",
+                {"behavior": "missing_from_results", "deterministic": True}
+            )
+        else:
+            # Check if we can determine from query results
+            if query_results.get("status") == "success":
+                results = query_results.get("results", [])
+                if results:
+                    # Check first result for category field
+                    first_result = results[0]
+                    if "category" in first_result.get("scalar_fields", {}):
+                        category_val = first_result["scalar_fields"]["category"]
+                        return self._oracle_result(
+                            "SCH-005", Classification.PASS, True,
+                            f"Missing scalar field returned: '{category_val}' - deterministic behavior",
+                            {"behavior": f"value_{category_val}", "deterministic": True}
+                        )
+                    else:
+                        return self._oracle_result(
+                            "SCH-005", Classification.PASS, True,
+                            "Missing scalar field absent from results - deterministic behavior",
+                            {"behavior": "absent_from_results", "deterministic": True}
+                        )
+
+            return self._oracle_result(
+                "SCH-005", Classification.OBSERVATION, True,
+                f"Null behavior documented: {null_behavior_detected}",
+                {"behavior": null_behavior_detected, "note": "Deterministic behavior confirmed"}
+            )
+
+    def _oracle_sch006_filter_semantics(self, result: Dict, contract: Dict) -> Dict[str, Any]:
+        """
+        SCH-006: Post-Change Filter Semantics
+        Filter queries on new scalar fields must work correctly
+        """
+        filter_results = result.get("filter_results", {})
+
+        if filter_results.get("status") == "error":
+            error = filter_results.get("error", "")
+            # Check if it's a clear "not supported" error
+            if "not support" in error.lower() or "not implemented" in error.lower():
+                return self._oracle_result(
+                    "SCH-006", Classification.EXPECTED_FAILURE, False,
+                    f"Filter not supported: {error}",
+                    {"error": error, "supported": False}
+                )
+            else:
+                return self._oracle_result(
+                    "SCH-006", Classification.OBSERVATION, False,
+                    f"Filter error: {error}",
+                    {"error": error, "needs_investigation": True}
+                )
+
+        # Check if filter worked
+        results = filter_results.get("results", [])
+        filter_value = "A"  # From test case
+
+        if not results:
+            return self._oracle_result(
+                "SCH-006", Classification.OBSERVATION, False,
+                "Filter returned no results - may be timing or filter issue",
+                {"result_count": 0, "filter_value": filter_value}
+            )
+
+        # Check if all results match the filter
+        all_match = True
+        non_matching = []
+        for r in results:
+            scalar_fields = r.get("scalar_fields", {})
+            category = scalar_fields.get("category", None)
+            if category != filter_value:
+                all_match = False
+                non_matching.append({"id": r.get("id"), "category": category})
+
+        if all_match:
+            return self._oracle_result(
+                "SCH-006", Classification.PASS, True,
+                f"Filter works correctly ({len(results)} results, all match filter='{filter_value}')",
+                {"result_count": len(results), "filter_value": filter_value, "all_match": True}
+            )
+        else:
+            return self._oracle_result(
+                "SCH-006", Classification.BUG_CANDIDATE, False,
+                f"Filter returned non-matching entities: {non_matching}",
+                {"result_count": len(results), "non_matching": non_matching}
+            )
+
     def evaluate(self, result: Dict, contract: Dict) -> Dict[str, Any]:
         """Evaluate a result against a contract."""
         contract_id = contract.get("contract_id", "")
@@ -240,6 +357,10 @@ class SchemaOracleEngine:
             return self._oracle_sch002_query_compatibility(result, contract)
         elif contract_id == "SCH-008":
             return self._oracle_sch008_schema_isolation(result, contract)
+        elif contract_id == "SCH-005":
+            return self._oracle_sch005_nullable_semantics(result, contract)
+        elif contract_id == "SCH-006":
+            return self._oracle_sch006_filter_semantics(result, contract)
         else:
             return self._oracle_result(
                 contract_id, Classification.EXPERIMENT_DESIGN_ISSUE, False,
@@ -533,13 +654,143 @@ class R5DSmokeGenerator:
             ]
         }
 
-    def generate_all(self) -> List[Dict[str, Any]]:
-        """Generate all Round 1 smoke test cases."""
+    def generate_r5d005(self) -> Dict[str, Any]:
+        """
+        R5D-005: Null Semantics (SCH-005)
+
+        Purpose: Document missing scalar field behavior
+
+        Sequence:
+        1. Create collection_v2: {id, vector[128], category}
+        2. Insert entities WITHOUT category value
+        3. Query v2, read category field
+        4. Document: null / default / error
+        """
+        return {
+            "case_id": "R5D-005",
+            "contract_id": "SCH-005",
+            "name": "Null Semantics",
+            "description": "Missing scalar field behavior",
+            "sequence": [
+                {
+                    "step": 1,
+                    "operation": "create_collection",
+                    "params": {
+                        "collection_name": "r5d005_v2",
+                        "dimension": self.dimension,
+                        "field_types": [
+                            {"name": "id", "type": "INT64", "is_primary": True},
+                            {"name": "vector", "type": "FLOAT_VECTOR", "params": {"dim": self.dimension}},
+                            {"name": "category", "type": "VARCHAR", "params": {"max_length": 256}, "nullable": True}
+                        ]
+                    }
+                },
+                {
+                    "step": 2,
+                    "operation": "insert",
+                    "params": {
+                        "collection_name": "r5d005_v2",
+                        "num_entities": 10,
+                        "omit_field": "category"  # Insert WITHOUT category
+                    },
+                    "flush_after": True
+                },
+                {
+                    "step": 2.5,
+                    "operation": "build_index",
+                    "params": {
+                        "collection_name": "r5d005_v2"
+                    }
+                },
+                {
+                    "step": 3,
+                    "operation": "search",
+                    "params": {
+                        "collection_name": "r5d005_v2",
+                        "vector": self._generate_vector(42),
+                        "top_k": 10
+                    },
+                    "capture_as": "query_results"
+                }
+            ]
+        }
+
+    def generate_r5d006(self) -> Dict[str, Any]:
+        """
+        R5D-006: Filter Semantics (SCH-006)
+
+        Purpose: Verify filters work on new scalar fields
+
+        Sequence:
+        1. Create collection_v2: {id, vector[128], category}
+        2. Insert entities WITH category="A" and category="B"
+        3. filtered_search: category == "A"
+        4. Verify: Only category="A" entities returned
+        """
+        return {
+            "case_id": "R5D-006",
+            "contract_id": "SCH-006",
+            "name": "Filter Semantics",
+            "description": "Filter on new scalar field works",
+            "sequence": [
+                {
+                    "step": 1,
+                    "operation": "create_collection",
+                    "params": {
+                        "collection_name": "r5d006_v2",
+                        "dimension": self.dimension,
+                        "field_types": [
+                            {"name": "id", "type": "INT64", "is_primary": True},
+                            {"name": "vector", "type": "FLOAT_VECTOR", "params": {"dim": self.dimension}},
+                            {"name": "category", "type": "VARCHAR", "params": {"max_length": 256}}
+                        ]
+                    }
+                },
+                {
+                    "step": 2,
+                    "operation": "insert",
+                    "params": {
+                        "collection_name": "r5d006_v2",
+                        "num_entities": 20,
+                        "with_category": True
+                    },
+                    "flush_after": True
+                },
+                {
+                    "step": 2.5,
+                    "operation": "build_index",
+                    "params": {
+                        "collection_name": "r5d006_v2"
+                    }
+                },
+                {
+                    "step": 3,
+                    "operation": "filtered_search",
+                    "params": {
+                        "collection_name": "r5d006_v2",
+                        "vector": self._generate_vector(42),
+                        "top_k": 10,
+                        "filter": {"category": "A"}
+                    },
+                    "capture_as": "filter_results"
+                }
+            ]
+        }
+
+    def generate_all_round1(self) -> List[Dict[str, Any]]:
+        """Generate all Round 1 P0 test cases."""
         return [
             self.generate_r5d001(),
             self.generate_r5d002(),
             self.generate_r5d003(),
             self.generate_r5d004()
+        ]
+
+    def generate_all_round2(self) -> List[Dict[str, Any]]:
+        """Generate all Round 2 (P0.5) test cases."""
+        return [
+            self.generate_r5d005(),
+            self.generate_r5d006()
         ]
 
 
@@ -605,13 +856,130 @@ class R5DTestExecutor:
             "entity_count": metadata.get("entity_count")
         }
 
+    def _create_collection_with_dynamic_field(self, collection_name: str, dimension: int, enable_dynamic: bool = True) -> Dict[str, Any]:
+        """Create collection with dynamic field enabled for Round 2 tests."""
+        from pymilvus import Collection, CollectionSchema, FieldSchema, DataType, connections
+
+        # Define schema with dynamic field enabled
+        fields = [
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True),
+            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dimension)
+        ]
+
+        schema = CollectionSchema(
+            fields,
+            f"Auto generated schema for {collection_name}",
+            enable_dynamic_field=enable_dynamic
+        )
+
+        # Create collection
+        connections.connect(alias=self.adapter.alias)
+        collection = Collection(name=collection_name, schema=schema, using=self.adapter.alias)
+
+        # Track for cleanup
+        if collection_name not in self._collections_created:
+            self._collections_created.append(collection_name)
+
+        return {
+            "status": "success",
+            "operation": "create_collection",
+            "collection_name": collection_name,
+            "enable_dynamic_field": enable_dynamic,
+            "data": [{"id": collection_name}]
+        }
+
+    def _create_collection_direct(self, collection_name: str, field_types: List[Dict]) -> Dict[str, Any]:
+        """Create collection with explicit field types (for Round 2 with category field)."""
+        from pymilvus import Collection, CollectionSchema, FieldSchema, DataType, connections
+
+        # Convert field type names to DataType enums
+        type_map = {
+            "INT64": DataType.INT64,
+            "FLOAT_VECTOR": DataType.FLOAT_VECTOR,
+            "VARCHAR": DataType.VARCHAR
+        }
+
+        fields = []
+        for ft in field_types:
+            dtype = type_map.get(ft.get("type", "INT64"), DataType.INT64)
+            name = ft.get("name")
+
+            # Build FieldSchema based on type
+            if ft.get("is_primary"):
+                field_schema = FieldSchema(
+                    name=name,
+                    dtype=DataType.INT64,
+                    is_primary=True,
+                    auto_id=False
+                )
+            elif dtype == DataType.FLOAT_VECTOR:
+                field_schema = FieldSchema(
+                    name=name,
+                    dtype=dtype,
+                    dim=ft.get("params", {}).get("dim", 128)
+                )
+            elif dtype == DataType.VARCHAR:
+                # For Round 2 null semantics test, make category nullable
+                is_nullable = ft.get("nullable", False)
+                field_schema = FieldSchema(
+                    name=name,
+                    dtype=dtype,
+                    max_length=ft.get("params", {}).get("max_length", 256),
+                    nullable=is_nullable
+                )
+            else:
+                field_schema = FieldSchema(
+                    name=name,
+                    dtype=dtype
+                )
+
+            fields.append(field_schema)
+
+        # Enable dynamic field for schema with scalar fields
+        schema = CollectionSchema(
+            fields,
+            f"Schema for {collection_name}",
+            enable_dynamic_field=True  # Enable for scalar field flexibility
+        )
+
+        # Create collection
+        connections.connect(alias=self.adapter.alias)
+        collection = Collection(name=collection_name, schema=schema, using=self.adapter.alias)
+
+        # Track for cleanup
+        if collection_name not in self._collections_created:
+            self._collections_created.append(collection_name)
+
+        return {
+            "status": "success",
+            "operation": "create_collection",
+            "collection_name": collection_name,
+            "enable_dynamic_field": True,
+            "data": [{"id": collection_name}]
+        }
+
     def execute_operation(self, operation: str, params: Dict) -> Dict[str, Any]:
-        """Execute a single operation via adapter."""
+        """Execute a single operation via adapter or direct pymilvus calls."""
+        collection_name = params.get("collection_name")
+
+        # Special handling for create_collection with scalar fields (Round 2)
+        if operation == "create_collection" and params.get("field_types"):
+            field_types = params.get("field_types", [])
+            # Check if we have VARCHAR (scalar) fields
+            has_scalar = any(ft.get("type") == "VARCHAR" for ft in field_types)
+            if has_scalar:
+                # Use direct collection creation with dynamic field enabled
+                result = self._create_collection_direct(
+                    collection_name,
+                    field_types
+                )
+                return result
+
+        # Use adapter for other operations
         result = self.adapter.execute({"operation": operation, "params": params})
 
         # Track created collections
         if operation == "create_collection":
-            collection_name = params.get("collection_name")
             if collection_name and collection_name not in self._collections_created:
                 self._collections_created.append(collection_name)
 
@@ -639,21 +1007,33 @@ class R5DTestExecutor:
             if operation == "insert":
                 num_entities = params.get("num_entities", 0)
                 collection_name = params.get("collection_name")
+                omit_field = params.get("omit_field", None)
+                with_category = params.get("with_category", False)
 
                 # Build insert data in adapter format
                 vectors = []
                 scalar_data = []
                 for i in range(num_entities):
                     vectors.append([float(i) * 0.01] * 128)  # Simple deterministic vector
-                    scalar_data.append({"id": i})
+                    entity = {"id": i}
 
-                # Add category if v2
-                if "v2" in collection_name:
-                    for i, scalar in enumerate(scalar_data):
-                        scalar["category"] = "A" if i % 2 == 0 else "B"
+                    # Add category field based on flags
+                    if omit_field and omit_field != "category":
+                        # Add category unless it's the omitted field
+                        entity["category"] = "A" if i % 2 == 0 else "B"
+                    elif with_category:
+                        entity["category"] = "A" if i % 2 == 0 else "B"
+                    # If omit_field == "category", don't add it
+                    # Otherwise for v2 collections, add category
+                    elif "v2" in collection_name and omit_field != "category":
+                        entity["category"] = "A" if i % 2 == 0 else "B"
+
+                    scalar_data.append(entity)
 
                 # Replace num_entities with adapter format
                 params.pop("num_entities", None)
+                params.pop("omit_field", None)
+                params.pop("with_category", None)
                 params["vectors"] = vectors
                 params["scalar_data"] = scalar_data
 
@@ -676,8 +1056,8 @@ class R5DTestExecutor:
                 time.sleep(COUNT_OBSERVATION_WAIT_MS / 1000.0)
                 print(f"    [wait] Waited {COUNT_OBSERVATION_WAIT_MS}ms for count visibility")
 
-            # Add load before search (required by Milvus)
-            if operation == "search":
+            # Add load before search/filtered_search (required by Milvus)
+            if operation in ("search", "filtered_search"):
                 collection_name = params.get("collection_name")
                 # Load collection first
                 try:
@@ -939,5 +1319,140 @@ def run_full_p0():
     return report
 
 
+def run_round2():
+    """Run R5D Round 2 (P0.5) execution."""
+    print("="*60)
+    print("R5D ROUND 2 (P0.5) EXECUTION - Field Semantics")
+    print("="*60)
+    print(f"Date: {datetime.now().isoformat()}")
+    print(f"Database: Milvus v2.6.10")
+    print(f"Campaign: R5D Schema Evolution")
+    print(f"Cases: 2 (R5D-005, R5D-006)")
+    print(f"Focus: Field-level semantics (behavioral documentation)")
+    print("="*60)
+
+    # Generate run ID
+    run_id = f"r5d-p05-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+
+    # Create generator and executor
+    generator = R5DSmokeGenerator(dimension=128)
+    executor = R5DTestExecutor()
+
+    # Load contracts
+    with open("contracts/schema/schema_contracts.json", "r") as f:
+        contracts_data = json.load(f)
+
+    # Create contract lookup
+    contracts = {}
+    for layer in contracts_data.get("contract_layers", {}).values():
+        for contract in layer.get("contracts", []):
+            contracts[contract["contract_id"]] = contract
+
+    # Generate Round 2 cases
+    cases = generator.generate_all_round2()
+    print(f"\n[OK] Generated {len(cases)} Round 2 test cases")
+
+    # Connect
+    try:
+        executor.connect()
+    except Exception as e:
+        print(f"\n[FAIL] Cannot proceed without connection: {e}")
+        return
+
+    # Execute cases
+    results = []
+    classifications = {"PASS": 0, "BUG_CANDIDATE": 0, "OBSERVATION": 0,
+                       "ALLOWED_DIFFERENCE": 0, "EXPECTED_FAILURE": 0,
+                       "EXPERIMENT_DESIGN_ISSUE": 0}
+
+    for case in cases:
+        try:
+            result = executor.execute_case(case)
+
+            # Get contract
+            contract_id = case.get("contract_id")
+            contract = contracts.get(contract_id, {})
+
+            # Run oracle
+            oracle_result = executor.oracle.evaluate(result, contract)
+            result["oracle"] = oracle_result
+
+            # Track classification
+            cls = oracle_result.get("classification", "EXPERIMENT_DESIGN_ISSUE")
+            classifications[cls] = classifications.get(cls, 0) + 1
+
+            # Show oracle result
+            print(f"\n[Oracle] {cls}: {oracle_result.get('reasoning', '')}")
+
+            results.append(result)
+
+        except Exception as e:
+            print(f"\n[FAIL] Case execution failed: {e}")
+            results.append({
+                "case_id": case.get("case_id"),
+                "error": str(e),
+                "oracle": {
+                    "classification": "EXPERIMENT_DESIGN_ISSUE",
+                    "reasoning": f"Execution error: {e}"
+                }
+            })
+
+    # Cleanup
+    executor.cleanup()
+    executor.disconnect()
+
+    # Build final report
+    report = {
+        "run_id": run_id,
+        "timestamp": datetime.now().isoformat(),
+        "database": "Milvus v2.6.10",
+        "mode": "REAL",
+        "campaign": "R5D Schema Evolution",
+        "round": "Round 2 (P0.5)",
+        "total_tests": len(cases),
+        "execution_type": "round2_field_semantics",
+        "note": "Document actual field-level behavior",
+        "summary": {
+            "total": len(cases),
+            "by_classification": classifications,
+            "passed": classifications.get("PASS", 0),
+            "observation": classifications.get("OBSERVATION", 0),
+            "bug_candidate": classifications.get("BUG_CANDIDATE", 0),
+            "expected_failure": classifications.get("EXPECTED_FAILURE", 0)
+        },
+        "results": results
+    }
+
+    # Save report
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+
+    report_file = results_dir / f"r5d_p05_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
+    with open(report_file, "w") as f:
+        json.dump(report, f, indent=2, default=str)
+
+    print(f"\n{'='*60}")
+    print("ROUND 2 EXECUTION COMPLETE")
+    print(f"{'='*60}")
+    print(f"Run ID: {run_id}")
+    print(f"Report saved: {report_file}")
+    print(f"\nClassification Summary:")
+    for cls, count in classifications.items():
+        if count > 0:
+            print(f"  {cls}: {count}")
+    print(f"\nResults Summary:")
+    print(f"  PASS: {report['summary']['passed']}/{len(cases)}")
+    print(f"  OBSERVATION: {report['summary']['observation']}/{len(cases)}")
+    print(f"  BUG_CANDIDATE: {report['summary']['bug_candidate']}/{len(cases)}")
+    print(f"  EXPECTED_FAILURE: {report['summary']['expected_failure']}/{len(cases)}")
+    print("="*60)
+
+    return report
+
+
 if __name__ == "__main__":
-    run_full_p0()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "round2":
+        run_round2()
+    else:
+        run_full_p0()

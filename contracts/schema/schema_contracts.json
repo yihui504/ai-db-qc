@@ -1,15 +1,24 @@
 {
   "contract_family": "SCHEMA_EVOLUTION",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Schema evolution contracts - multi-collection version comparison (NOT in-place mutation)",
   "verification_summary": {
     "date": "2026-03-10",
     "database": "Milvus v2.6.10",
     "mode": "REAL",
-    "run_ids": [],
+    "run_ids": ["r5d-p0-20260310-140340"],
     "total_contracts": 4,
-    "verified": {},
-    "classification": {}
+    "round1_complete": true,
+    "verified": {
+      "framework_level_candidates": 2,
+      "milvus_validated": 1,
+      "documented_observation": 1
+    },
+    "classification": {
+      "PASS": 3,
+      "OBSERVATION": 1,
+      "BUG_CANDIDATE": 0
+    }
   },
   "scope_note": "P0 evaluates schema evolution semantics via multi-collection version comparison, NOT in-place schema mutation. Milvus SDK v2.6.10 does not support alter_collection, add_field, drop_field, rename_field operations.",
   "contract_layers": {
@@ -22,6 +31,11 @@
           "statement": "Collection metadata must accurately reflect actual schema",
           "layer": "LAYER_1_FOUNDATION",
           "oracle_strategy": "STRICT",
+          "round1_result": "OBSERVATION",
+          "round1_case": "R5D-001",
+          "verification_status": "documented_observation",
+          "universal_candidate": "PARTIAL",
+          "universal_note": "Schema structure is framework-level; entity count timing is implementation-specific",
           "preconditions": [
             "collection created with known schema"
           ],
@@ -33,7 +47,9 @@
           "invariants": [
             "Metadata consistency"
           ],
-          "milvus_verified": false,
+          "milvus_verified": true,
+          "milvus_classification": "OBSERVATION",
+          "milvus_evidence": "Fields: ['id', 'vector'] correct; Dimension: 128 correct; Entity count: timing behavior (R5B ILC-009b reference)",
           "confidence": "HIGH"
         },
         {
@@ -42,6 +58,11 @@
           "statement": "After creating collection_v2, collection_v1 metadata must remain accurate and unchanged",
           "layer": "LAYER_1_FOUNDATION",
           "oracle_strategy": "STRICT",
+          "round1_result": "PASS",
+          "round1_case": "R5D-004",
+          "verification_status": "framework_level_candidate",
+          "universal_candidate": "YES",
+          "universal_note": "Schema isolation should hold for any vector database",
           "preconditions": [
             "collection_v1 exists with known schema",
             "collection_v2 created with different schema"
@@ -53,7 +74,9 @@
           "invariants": [
             "Metadata isolation"
           ],
-          "milvus_verified": false,
+          "milvus_verified": true,
+          "milvus_classification": "PASS",
+          "milvus_evidence": "v1 schema unchanged after v2 creation (fields, dimension, primary_key all stable)",
           "confidence": "HIGH"
         }
       ]
@@ -67,6 +90,11 @@
           "statement": "Creating collection_v2 with extended schema must not affect data in collection_v1",
           "layer": "LAYER_3_DATA_INTEGRITY",
           "oracle_strategy": "STRICT",
+          "round1_result": "PASS",
+          "round1_case": "R5D-002",
+          "verification_status": "framework_level_candidate",
+          "universal_candidate": "YES",
+          "universal_note": "Cross-collection isolation is fundamental - should hold for any database",
           "preconditions": [
             "collection_v1 exists with N entities",
             "collection_v2 created with additional scalar field"
@@ -79,7 +107,9 @@
           "invariants": [
             "Cross-collection data isolation"
           ],
-          "milvus_verified": false,
+          "milvus_verified": true,
+          "milvus_classification": "PASS",
+          "milvus_evidence": "v1 count unchanged after v2 creation (0 → 0)",
           "confidence": "HIGH"
         }
       ]
@@ -93,6 +123,11 @@
           "statement": "Queries on collection_v1 must continue working after collection_v2 with different schema is created",
           "layer": "LAYER_4_QUERY_BEHAVIOR",
           "oracle_strategy": "CONSERVATIVE",
+          "round1_result": "PASS",
+          "round1_case": "R5D-003",
+          "verification_status": "milvus_validated",
+          "universal_candidate": "PARTIAL",
+          "universal_note": "Query stability may vary by implementation",
           "preconditions": [
             "query works on collection_v1",
             "collection_v2 created with different schema"
@@ -104,28 +139,97 @@
           "invariants": [
             "Query stability"
           ],
-          "milvus_verified": false,
+          "milvus_verified": true,
+          "milvus_classification": "PASS",
+          "milvus_evidence": "v1 query returns 10 results before/after v2; top_id stable at 48",
           "confidence": "HIGH"
+        },
+        {
+          "contract_id": "SCH-006",
+          "name": "Post-Change Filter Semantics",
+          "statement": "Filter queries on new scalar fields must work correctly",
+          "layer": "LAYER_4_QUERY_BEHAVIOR",
+          "oracle_strategy": "CONSERVATIVE",
+          "round2_case": "R5D-006",
+          "verification_status": "pending_round2",
+          "universal_candidate": "PARTIAL",
+          "universal_note": "Filter support may vary by implementation",
+          "preconditions": [
+            "collection_v2 created with scalar field",
+            "Data inserted WITH scalar field values"
+          ],
+          "postconditions": [
+            "Filter on scalar field works",
+            "Filter returns correct entities",
+            "Non-matching entities excluded"
+          ],
+          "invariants": [
+            "Filter determinism"
+          ],
+          "milvus_verified": false,
+          "confidence": "MEDIUM"
+        }
+      ]
+    },
+    "layer_5_field_semantics": {
+      "description": "Field Semantics (Edge Cases) - CONSERVATIVE oracle (document behavior)",
+      "contracts": [
+        {
+          "contract_id": "SCH-005",
+          "name": "Nullable/Default Field Read Semantics",
+          "statement": "Reading missing scalar fields must have deterministic behavior",
+          "layer": "LAYER_5_FIELD_SEMANTICS",
+          "oracle_strategy": "CONSERVATIVE",
+          "round2_case": "R5D-005",
+          "verification_status": "pending_round2",
+          "preconditions": [
+            "collection_v2 created with scalar field",
+            "Data inserted WITHOUT scalar field value"
+          ],
+          "postconditions": [
+            "Missing field handled consistently",
+            "Behavior is deterministic (null, default, or error)"
+          ],
+          "invariants": [
+            "Null behavior consistency"
+          ],
+          "milvus_verified": false,
+          "confidence": "MEDIUM"
         }
       ]
     }
   },
   "round2_deferred": {
-    "description": "Deferred to Round 2 (P0.5) - Field Semantics",
+    "description": "Round 2 (P0.5) - Field Semantics",
     "contracts": [
       {
         "contract_id": "SCH-005",
         "name": "Nullable/Default Field Read Semantics",
         "layer": "LAYER_5_FIELD_SEMANTICS",
-        "reason": "Secondary priority - behavioral documentation"
+        "case_id": "R5D-005",
+        "reason": "Document actual Milvus null/default behavior"
       },
       {
         "contract_id": "SCH-006",
         "name": "Post-Change Filter Semantics",
         "layer": "LAYER_4_QUERY_BEHAVIOR",
-        "reason": "Depends on filter support validation"
+        "case_id": "R5D-006",
+        "reason": "Validate filter support on new scalar fields"
       }
     ]
+  },
+  "round1_summary": {
+    "status": "COMPLETE",
+    "date": "2026-03-10",
+    "classification": {
+      "PASS": 3,
+      "OBSERVATION": 1,
+      "BUG_CANDIDATE": 0
+    },
+    "framework_level_candidates": ["SCH-001", "SCH-008"],
+    "milvus_validated": ["SCH-002"],
+    "documented_observations": ["SCH-004"],
+    "key_finding": "Multi-collection schema version comparison successfully validates schema evolution semantics without in-place mutation support"
   },
   "dropped": {
     "description": "Dropped - Operation not supported in SDK",
