@@ -1,7 +1,8 @@
 """Test case generator for R6A-001.
 
 R6A-001: Consistency / Visibility Campaign
-Tests: insert visibility, flush effects, load state, timing windows, release, idempotence
+Round 1 Core: CONS-001, CONS-002, CONS-003, CONS-005
+Round 2 Extended: CONS-004, CONS-006
 """
 
 import random
@@ -26,7 +27,7 @@ class R6a001Generator:
         return vectors
 
     def generate(self) -> List[Dict[str, Any]]:
-        """Generate 6 test cases for consistency/visibility validation."""
+        """Generate 4 core test cases for round 1."""
         cases = []
 
         # CONS-001: Insert Return vs Storage Visibility
@@ -54,49 +55,50 @@ class R6a001Generator:
                 "num_entities_post_flush": 5
             },
             "oracle_expectations": {
-                "insert_count_should_equal": 5,
+                "insert_count_immediate": True,
                 "flush_enables_storage_visibility": True
             }
         })
 
-        # CONS-002: Flush Effect on Storage vs Search Visibility
+        # CONS-002: Storage-Visible vs Search-Visible Relationship
         cases.append({
             "case_id": "R6A-002",
             "contract_id": "CONS-002",
-            "name": "Flush Effect on Storage vs Search Visibility",
-            "description": "flush enables storage_count, but search requires index update",
-            "collection_name": f"{self.collection_prefix}flush_visibility",
+            "name": "Storage-Visible vs Search-Visible Relationship",
+            "description": "flush enables storage_count; search visibility depends on load state",
+            "collection_name": f"{self.collection_prefix}storage_vs_search",
             "dimension": 128,
             "num_entities": 5,
             "operation_sequence": [
                 "create_collection",
                 "insert",
                 "flush",
-                "check_num_entities",
-                "search_without_load",
+                "check_storage_count",  # storage-visible
+                "search_without_load",  # search not visible (unloaded)
                 "load",
-                "search_with_load"
+                "search_with_load"  # search visible (loaded)
             ],
             "expected_classification": "OBSERVATION",
             "oracle_strategy": "CONSERVATIVE",
             "evidence_needed": {
-                "num_entities_post_flush": 5,
+                "storage_count_post_flush": 5,
                 "search_without_load": "0 or error",
                 "search_with_load": 5
             },
             "oracle_expectations": {
                 "flush_enables_storage_visibility": True,
-                "index_update_required_for_search": True
-            }
+                "search_requires_load": True
+            },
+            "scope_note": "Focus: storage-visible vs search-visible relationship. Load gate handled by CONS-003."
         })
 
-        # CONS-003: Load State Effect on Search Visibility
+        # CONS-003: Load/Release/Reload Gate on Search Visibility
         cases.append({
             "case_id": "R6A-003",
             "contract_id": "CONS-003",
-            "name": "Load State Effect on Search Visibility",
-            "description": "search requires loaded collection; unloaded returns EXPECTED_FAILURE",
-            "collection_name": f"{self.collection_prefix}load_visibility",
+            "name": "Load/Release/Reload Gate on Search Visibility",
+            "description": "search requires loaded collection; unload blocks search; reload restores search",
+            "collection_name": f"{self.collection_prefix}load_gate",
             "dimension": 128,
             "num_entities": 3,
             "operation_sequence": [
@@ -105,12 +107,12 @@ class R6a001Generator:
                 "flush",
                 "build_index",
                 "load",
-                "search_baseline",
-                "release",
-                "verify_unloaded",
-                "search_unloaded",
+                "search_baseline",  # establish baseline
+                "release",  # unload
+                "verify_unloaded",  # confirm unloaded
+                "search_unloaded",  # should fail (EXPECTED_FAILURE)
                 "reload",
-                "search_after_reload"
+                "search_after_reload"  # should match baseline
             ],
             "expected_classification": "PASS",
             "oracle_strategy": "STRICT",
@@ -120,41 +122,10 @@ class R6a001Generator:
             },
             "oracle_expectations": {
                 "load_gate_enforced": True,
-                "reload_restores_search": True
-            }
-        })
-
-        # CONS-004: Insert-Search Timing Window
-        cases.append({
-            "case_id": "R6A-004",
-            "contract_id": "CONS-004",
-            "name": "Insert-Search Timing Window",
-            "description": "insert → search without flush has deterministic (non-flush) behavior",
-            "collection_name": f"{self.collection_prefix}timing_window",
-            "dimension": 128,
-            "num_entities": 5,
-            "operation_sequence": [
-                "create_collection",
-                "build_index",
-                "load",
-                "insert",
-                "search_immediate",
-                "wait_1_second",
-                "search_after_wait",
-                "flush",
-                "search_after_flush"
-            ],
-            "expected_classification": "OBSERVATION",
-            "oracle_strategy": "CONSERVATIVE",
-            "evidence_needed": {
-                "search_immediate": 0,
-                "search_after_wait": 0,
-                "search_after_flush": 5
+                "reload_restores_search": True,
+                "data_preserved": True
             },
-            "oracle_expectations": {
-                "wait_without_flush_doesnt_enable_search": True,
-                "flush_required_for_search_visibility": True
-            }
+            "scope_note": "Focus: load/release/reload gate. Flush/storage-visible handled by CONS-002."
         })
 
         # CONS-005: Release Preserves Storage Data
@@ -163,7 +134,7 @@ class R6a001Generator:
             "contract_id": "CONS-005",
             "name": "Release Preserves Storage Data",
             "description": "release() preserves storage_count; reload restores search visibility",
-            "collection_name": f"{self.collection_prefix}release_consistency",
+            "collection_name": f"{self.collection_prefix}release_preserves",
             "dimension": 128,
             "num_entities": 5,
             "operation_sequence": [
@@ -172,17 +143,17 @@ class R6a001Generator:
                 "flush",
                 "build_index",
                 "load",
-                "record_num_entities_loaded",
+                "record_storage_count_baseline",
                 "search_baseline",
                 "release",
-                "check_num_entities_after_release",
+                "check_storage_count_after_release",  # should be unchanged
                 "reload",
-                "search_after_reload"
+                "search_after_reload"  # should match baseline
             ],
             "expected_classification": "PASS",
             "oracle_strategy": "STRICT",
             "evidence_needed": {
-                "num_entities_unchanged_after_release": True,
+                "storage_count_unchanged_after_release": True,
                 "search_after_reload_matches_baseline": True
             },
             "oracle_expectations": {
@@ -191,32 +162,76 @@ class R6a001Generator:
             }
         })
 
-        # CONS-006: Flush Idempotence
+        return cases
+
+    def generate_round2(self) -> List[Dict[str, Any]]:
+        """Generate 2 extended test cases for round 2."""
+        cases = []
+
+        # CONS-004: Insert-Search Timing Window Observation
+        cases.append({
+            "case_id": "R6A-004",
+            "contract_id": "CONS-004",
+            "name": "Insert-Search Timing Window Observation",
+            "description": "observe insert-search visibility within tested wait window (no strong conclusion预设)",
+            "collection_name": f"{self.collection_prefix}timing_window",
+            "dimension": 128,
+            "num_entities": 5,
+            "operation_sequence": [
+                "create_collection",
+                "build_index",
+                "load",
+                "insert",
+                "search_t0_immediate",
+                "wait_1_second",
+                "search_t1_after_wait",
+                "flush",
+                "search_after_flush_baseline"
+            ],
+            "expected_classification": "OBSERVATION",  # or EXPERIMENT_DESIGN_ISSUE
+            "oracle_strategy": "CONSERVATIVE",
+            "evidence_needed": {
+                "search_t0_count": "document actual value",
+                "search_t1_count": "document actual value",
+                "search_after_flush_count": "baseline (expected 5)"
+            },
+            "oracle_expectations": {
+                "note": "Do not preset strong conclusions. Document observed behavior."
+            },
+            "round": "round2_extended"
+        })
+
+        # CONS-006: Repeated Flush Stability
         cases.append({
             "case_id": "R6A-006",
             "contract_id": "CONS-006",
-            "name": "Flush Idempotence",
-            "description": "multiple flush calls are idempotent (no side effects)",
-            "collection_name": f"{self.collection_prefix}flush_idempotence",
+            "name": "Repeated Flush Stability",
+            "description": "repeated flush should not introduce contradictory visibility regressions",
+            "collection_name": f"{self.collection_prefix}flush_stability",
             "dimension": 128,
             "num_entities": 5,
             "operation_sequence": [
                 "create_collection",
                 "insert",
                 "flush_first",
-                "check_num_entities",
+                "check_storage_state_before_second",
+                "check_search_state_before_second",  # if loaded
                 "flush_second",
-                "check_num_entities_unchanged"
+                "check_storage_state_after_second",
+                "check_search_state_after_second"  # if loaded
             ],
             "expected_classification": "OBSERVATION",
             "oracle_strategy": "CONSERVATIVE",
             "evidence_needed": {
-                "num_entities_after_first_flush": 5,
-                "num_entities_after_second_flush": 5
+                "storage_state_before": "document num_entities",
+                "storage_state_after": "document num_entities",
+                "search_state_before": "document search count (if loaded)",
+                "search_state_after": "document search count (if loaded)"
             },
             "oracle_expectations": {
-                "flush_is_idempotent": True
-            }
+                "no_contradictory_regressions": "storage and search states should not regress"
+            },
+            "round": "round2_extended"
         })
 
         return cases

@@ -1,8 +1,12 @@
 {
   "contract_family": "CONS",
   "campaign": "R6A-001",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Consistency / Visibility contracts for Milvus v2.6.10",
+  "rounds": {
+    "round1_core": ["CONS-001", "CONS-002", "CONS-003", "CONS-005"],
+    "round2_extended": ["CONS-004", "CONS-006"]
+  },
   "contracts": [
     {
       "contract_id": "CONS-001",
@@ -10,13 +14,14 @@
       "statement": "insert() returns immediately, but storage_count visibility requires flush",
       "semantic_area": "insert_visibility",
       "oracle_strategy": "CONSERVATIVE",
+      "round": "round1_core",
       "preconditions": [
         "collection exists",
         "no prior data"
       ],
       "postconditions": [
-        "insert_count equals N",
-        "storage_count requires flush"
+        "insert_count equals N (immediate return)",
+        "storage_count requires flush for visibility"
       ],
       "invariants": [],
       "framework_level_candidate": false,
@@ -25,62 +30,70 @@
     },
     {
       "contract_id": "CONS-002",
-      "name": "Flush Effect on Storage vs Search Visibility",
-      "statement": "flush enables storage_count visibility, but search visibility requires index update",
+      "name": "Storage-Visible vs Search-Visible Relationship",
+      "statement": "flush enables storage-visible count; search-visible requires index update (separate from flush)",
       "semantic_area": "flush_visibility",
       "oracle_strategy": "CONSERVATIVE",
+      "round": "round1_core",
       "preconditions": [
         "collection exists with index",
         "no prior data"
       ],
       "postconditions": [
-        "flush enables storage_count",
-        "index update enables search"
+        "flush enables storage_count (num_entities reflects insert)",
+        "search visibility depends on load state (separate concern)"
       ],
       "invariants": [],
       "framework_level_candidate": false,
       "milvus_specific": true,
-      "confidence": "MEDIUM"
+      "confidence": "MEDIUM",
+      "scope_note": "Focus: storage-visible vs search-visible relationship. Load state handled by CONS-003."
     },
     {
       "contract_id": "CONS-003",
-      "name": "Load State Effect on Search Visibility",
-      "statement": "search requires loaded collection; unloaded collection returns EXPECTED_FAILURE",
-      "semantic_area": "load_visibility",
+      "name": "Load/Release/Reload Gate on Search Visibility",
+      "statement": "search requires loaded collection; unload/release blocks search; reload restores search",
+      "semantic_area": "load_gate",
       "oracle_strategy": "STRICT",
+      "round": "round1_core",
       "preconditions": [
         "collection exists with data and index",
-        "collection is unloaded"
+        "collection is loaded"
       ],
       "postconditions": [
-        "search pre-load fails",
-        "search post-load succeeds"
+        "unload/release blocks search (EXPECTED_FAILURE or error)",
+        "reload restores search capability"
       ],
       "invariants": [
-        "load gate is enforced"
+        "load gate is enforced",
+        "data preserved across release/reload"
       ],
       "framework_level_candidate": true,
       "milvus_specific": false,
-      "confidence": "HIGH"
+      "confidence": "HIGH",
+      "scope_note": "Focus: load/release/reload gate. Flush/storage-visible handled by CONS-002."
     },
     {
       "contract_id": "CONS-004",
-      "name": "Insert-Search Timing Window",
-      "statement": "insert → search without flush has deterministic (non-flush) behavior",
+      "name": "Insert-Search Timing Window Observation",
+      "statement": "observe insert-search visibility within tested wait window (no strong conclusion预设)",
       "semantic_area": "timing_visibility",
       "oracle_strategy": "CONSERVATIVE",
+      "round": "round2_extended",
       "preconditions": [
         "collection exists, loaded, with index",
         "no prior data"
       ],
       "postconditions": [
-        "search without flush returns 0",
-        "wait without flush doesn't enable search"
+        "document search visibility at t=0 (immediate)",
+        "document search visibility at t=1s (after wait)",
+        "document search visibility after flush (baseline)"
       ],
       "invariants": [],
       "framework_level_candidate": false,
       "milvus_specific": true,
-      "confidence": "MEDIUM"
+      "confidence": "LOW",
+      "note": "Default classification: OBSERVATION or EXPERIMENT_DESIGN_ISSUE. Do not preset strong conclusions about timing behavior."
     },
     {
       "contract_id": "CONS-005",
@@ -88,6 +101,7 @@
       "statement": "release() preserves storage_count; reload restores search visibility",
       "semantic_area": "release_consistency",
       "oracle_strategy": "STRICT",
+      "round": "round1_core",
       "preconditions": [
         "collection exists with data",
         "collection is loaded"
@@ -105,22 +119,23 @@
     },
     {
       "contract_id": "CONS-006",
-      "name": "Flush Idempotence",
-      "statement": "multiple flush calls are idempotent (no side effects)",
-      "semantic_area": "flush_idempotence",
+      "name": "Repeated Flush Stability",
+      "statement": "repeated flush should not introduce contradictory visibility regressions in the tested path",
+      "semantic_area": "flush_stability",
       "oracle_strategy": "CONSERVATIVE",
+      "round": "round2_extended",
       "preconditions": [
         "collection exists with data"
       ],
       "postconditions": [
-        "second flush has no effect"
+        "storage state before second flush equals storage state after",
+        "search state before second flush equals search state after (if loaded)"
       ],
-      "invariants": [
-        "flush is idempotent"
-      ],
+      "invariants": [],
       "framework_level_candidate": false,
-      "milvus_specific": false,
-      "confidence": "MEDIUM"
+      "milvus_specific": true,
+      "confidence": "MEDIUM",
+      "note": "Focus: no contradictory regressions. Minimal evidence: storage/search state before/after second flush."
     }
   ]
 }

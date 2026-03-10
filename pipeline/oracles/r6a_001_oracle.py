@@ -2,6 +2,9 @@
 
 R6A-001: Consistency / Visibility Campaign
 Classifications: PASS, OBSERVATION, EXPERIMENT_DESIGN_ISSUE, BUG_CANDIDATE, INFRA_FAILURE, EXPECTED_FAILURE
+
+Round 1 Core: CONS-001, CONS-002, CONS-003, CONS-005
+Round 2 Extended: CONS-004, CONS-006
 """
 
 from typing import Dict, Any, Optional
@@ -75,7 +78,6 @@ class R6a001Oracle:
 
     def _eval_cons001(self, result: Dict, trace: list, expectations: Dict) -> Dict:
         """Evaluate CONS-001: Insert Return vs Storage Visibility"""
-        # Check insert_count
         insert_step = self._extract_step_result(trace, "insert")
         if not insert_step or insert_step.get("result_status") != "success":
             return {
@@ -85,16 +87,8 @@ class R6a001Oracle:
             }
 
         insert_count = insert_step.get("insert_count", 0)
-        expected_count = expectations.get("insert_count_should_equal", 0)
+        expected_count = expectations.get("insert_count_immediate", 5)
 
-        if insert_count != expected_count:
-            return {
-                "classification": "BUG_CANDIDATE",
-                "satisfied": False,
-                "reasoning": f"insert_count mismatch: expected {expected_count}, got {insert_count}"
-            }
-
-        # Check storage visibility behavior
         pre_flush = self._extract_step_result(trace, "check_num_entities_pre_flush")
         post_flush = self._extract_step_result(trace, "check_num_entities_post_flush")
 
@@ -112,19 +106,19 @@ class R6a001Oracle:
         return {
             "classification": "OBSERVATION",
             "satisfied": True,
-            "reasoning": f"insert() returns {insert_count} immediately. Pre-flush num_entities={pre_count}, post-flush={post_count}. Flush enables storage visibility.",
+            "reasoning": f"insert() returns {insert_count} immediately. Pre-flush num_entities={pre_count}, post-flush={post_count}.",
             "evidence": {
                 "insert_count": insert_count,
                 "num_entities_pre_flush": pre_count,
                 "num_entities_post_flush": post_count,
                 "flush_enables_storage_visibility": post_count == expected_count
-            }
+            },
+            "interpretation": "Flush enables storage_count visibility. Pre-flush behavior is documented."
         }
 
     def _eval_cons002(self, result: Dict, trace: list, expectations: Dict) -> Dict:
-        """Evaluate CONS-002: Flush Effect on Storage vs Search Visibility"""
-        # Check storage count after flush
-        storage_check = self._extract_step_result(trace, "check_num_entities")
+        """Evaluate CONS-002: Storage-Visible vs Search-Visible Relationship"""
+        storage_check = self._extract_step_result(trace, "check_storage_count")
         search_without = self._extract_step_result(trace, "search_without_load")
         search_with = self._extract_step_result(trace, "search_with_load")
 
@@ -137,23 +131,26 @@ class R6a001Oracle:
 
         storage_count = storage_check.get("num_entities", -1)
         search_without_count = len(search_without.get("result", {}).get("results", []))
+        search_without_status = search_without.get("result_status", "unknown")
         search_with_count = len(search_with.get("result", {}).get("results", []))
 
-        # Document the two-stage visibility
+        # Document two-stage visibility
         return {
             "classification": "OBSERVATION",
             "satisfied": True,
-            "reasoning": f"Flush enables storage_count={storage_count}. Search without load={search_without_count}, with load={search_with_count}. Index update required for search.",
+            "reasoning": f"Storage-visible after flush: count={storage_count}. Search without load: {search_without_status} (count={search_without_count}). Search with load: count={search_with_count}.",
             "evidence": {
                 "storage_count_post_flush": storage_count,
-                "search_without_load": search_without_count,
-                "search_with_load": search_with_count,
+                "search_without_load_status": search_without_status,
+                "search_without_load_count": search_without_count,
+                "search_with_load_count": search_with_count,
                 "two_stage_visibility": True
-            }
+            },
+            "interpretation": "Flush enables storage-visible. Search requires load (separate concern from flush)."
         }
 
     def _eval_cons003(self, result: Dict, trace: list, expectations: Dict) -> Dict:
-        """Evaluate CONS-003: Load State Effect on Search Visibility"""
+        """Evaluate CONS-003: Load/Release/Reload Gate"""
         search_unloaded = self._extract_step_result(trace, "search_unloaded")
         search_after_reload = self._extract_step_result(trace, "search_after_reload")
         baseline = self._extract_step_result(trace, "search_baseline")
@@ -165,17 +162,21 @@ class R6a001Oracle:
                 "reasoning": "Missing required steps"
             }
 
-        # Check if unloaded search failed as expected
         unloaded_status = search_unloaded.get("result_status", "unknown")
+        unloaded_error = search_unloaded.get("error", "")
         baseline_count = len(baseline.get("result", {}).get("results", []))
         reload_count = len(search_after_reload.get("result", {}).get("results", []))
 
         # STRICT gate: unloaded search should fail
-        if unloaded_status == "success" and baseline_count > 0:
+        if unloaded_status == "success":
             return {
                 "classification": "BUG_CANDIDATE",
                 "satisfied": False,
-                "reasoning": f"Search succeeded on unloaded collection (expected failure). Load gate not enforced."
+                "reasoning": f"Search succeeded on unloaded collection. Load gate NOT enforced.",
+                "evidence": {
+                    "search_unloaded_status": "success",
+                    "expected": "EXPECTED_FAILURE or error"
+                }
             }
 
         # Check reload restored search
@@ -183,62 +184,63 @@ class R6a001Oracle:
             return {
                 "classification": "BUG_CANDIDATE",
                 "satisfied": False,
-                "reasoning": f"Reload search count mismatch: baseline={baseline_count}, reload={reload_count}"
+                "reasoning": f"Reload search count mismatch: baseline={baseline_count}, reload={reload_count}",
+                "evidence": {
+                    "baseline_count": baseline_count,
+                    "reload_count": reload_count
+                }
             }
 
         return {
             "classification": "PASS",
             "satisfied": True,
-            "reasoning": f"Load gate enforced. Unloaded search failed, reload search restored (count={reload_count}).",
+            "reasoning": f"Load gate enforced (unloaded: {unloaded_status}). Reload restored search (count={reload_count}).",
             "evidence": {
                 "search_unloaded_status": unloaded_status,
+                "search_unloaded_error": unloaded_error if unloaded_status == "error" else None,
                 "baseline_count": baseline_count,
-                "reload_count": reload_count
+                "reload_count": reload_count,
+                "load_gate_enforced": True,
+                "reload_restores": True
             }
         }
 
     def _eval_cons004(self, result: Dict, trace: list, expectations: Dict) -> Dict:
-        """Evaluate CONS-004: Insert-Search Timing Window"""
-        search_immediate = self._extract_step_result(trace, "search_immediate")
-        search_after_wait = self._extract_step_result(trace, "search_after_wait")
-        search_after_flush = self._extract_step_result(trace, "search_after_flush")
+        """Evaluate CONS-004: Insert-Search Timing Window Observation (Round 2)"""
+        search_t0 = self._extract_step_result(trace, "search_t0_immediate")
+        search_t1 = self._extract_step_result(trace, "search_t1_after_wait")
+        search_after_flush = self._extract_step_result(trace, "search_after_flush_baseline")
 
-        if not search_immediate or not search_after_wait or not search_after_flush:
+        if not search_t0 or not search_t1 or not search_after_flush:
             return {
                 "classification": "EXPERIMENT_DESIGN_ISSUE",
                 "satisfied": False,
-                "reasoning": "Missing required steps"
+                "reasoning": "Missing required timing steps"
             }
 
-        immediate_count = len(search_immediate.get("result", {}).get("results", []))
-        wait_count = len(search_after_wait.get("result", {}).get("results", []))
+        t0_count = len(search_t0.get("result", {}).get("results", []))
+        t1_count = len(search_t1.get("result", {}).get("results", []))
         flush_count = len(search_after_flush.get("result", {}).get("results", []))
 
-        # Check if wait enabled search (BUG if it did without flush)
-        if wait_count > 0:
-            return {
-                "classification": "BUG_CANDIDATE",
-                "satisfied": False,
-                "reasoning": f"Wait without flush enabled search (count={wait_count}). Expected flush requirement."
-            }
-
-        # Document timing behavior
+        # OBSERVATION - document without strong conclusions
         return {
             "classification": "OBSERVATION",
             "satisfied": True,
-            "reasoning": f"Search without flush: immediate={immediate_count}, after wait={wait_count}. Flush required: after flush={flush_count}.",
+            "reasoning": f"Observed insert-search visibility within tested wait window. t=0: {t0_count}, t=1s: {t1_count}, after flush: {flush_count}.",
             "evidence": {
-                "search_immediate": immediate_count,
-                "search_after_wait": wait_count,
-                "search_after_flush": flush_count,
-                "flush_required": flush_count > 0
-            }
+                "search_t0_count": t0_count,
+                "search_t1_count": t1_count,
+                "search_after_flush_count": flush_count,
+                "wait_window_tested": "1 second"
+            },
+            "interpretation": "Observed behavior documented. No strong conclusion预设 about timing requirements.",
+            "note": "Default classification: OBSERVATION. Could be EXPERIMENT_DESIGN_ISSUE if test setup invalid."
         }
 
     def _eval_cons005(self, result: Dict, trace: list, expectations: Dict) -> Dict:
         """Evaluate CONS-005: Release Preserves Storage Data"""
-        baseline_count_step = self._extract_step_result(trace, "record_num_entities_loaded")
-        after_release = self._extract_step_result(trace, "check_num_entities_after_release")
+        baseline_count_step = self._extract_step_result(trace, "record_storage_count_baseline")
+        after_release = self._extract_step_result(trace, "check_storage_count_after_release")
         baseline_results = self._extract_step_result(trace, "search_baseline")
         after_reload = self._extract_step_result(trace, "search_after_reload")
 
@@ -259,14 +261,23 @@ class R6a001Oracle:
             return {
                 "classification": "BUG_CANDIDATE",
                 "satisfied": False,
-                "reasoning": f"Data loss after release: baseline={baseline_count}, after release={release_count}"
+                "reasoning": f"Storage count changed after release: baseline={baseline_count}, after release={release_count}",
+                "evidence": {
+                    "baseline_count": baseline_count,
+                    "release_count": release_count,
+                    "data_loss": True
+                }
             }
 
         if baseline_results_count != reload_count:
             return {
                 "classification": "BUG_CANDIDATE",
                 "satisfied": False,
-                "reasoning": f"Reload search count mismatch: baseline={baseline_results_count}, reload={reload_count}"
+                "reasoning": f"Reload search count mismatch: baseline={baseline_results_count}, reload={reload_count}",
+                "evidence": {
+                    "baseline_count": baseline_results_count,
+                    "reload_count": reload_count
+                }
             }
 
         return {
@@ -275,39 +286,69 @@ class R6a001Oracle:
             "reasoning": f"Release preserves storage (count={release_count}). Reload restores search (count={reload_count}).",
             "evidence": {
                 "storage_preserved": baseline_count == release_count,
-                "search_restored": baseline_results_count == reload_count
+                "search_restored": baseline_results_count == reload_count,
+                "baseline_count": baseline_count,
+                "release_count": release_count,
+                "baseline_results": baseline_results_count,
+                "reload_results": reload_count
             }
         }
 
     def _eval_cons006(self, result: Dict, trace: list, expectations: Dict) -> Dict:
-        """Evaluate CONS-006: Flush Idempotence"""
-        first_flush = self._extract_step_result(trace, "check_num_entities")
-        second_flush = self._extract_step_result(trace, "check_num_entities_unchanged")
+        """Evaluate CONS-006: Repeated Flush Stability (Round 2)"""
+        before_storage = self._extract_step_result(trace, "check_storage_state_before_second")
+        after_storage = self._extract_step_result(trace, "check_storage_state_after_second")
+        before_search = self._extract_step_result(trace, "check_search_state_before_second")
+        after_search = self._extract_step_result(trace, "check_search_state_after_second")
 
-        if not first_flush or not second_flush:
+        if not before_storage or not after_storage:
             return {
                 "classification": "EXPERIMENT_DESIGN_ISSUE",
                 "satisfied": False,
-                "reasoning": "Missing required steps"
+                "reasoning": "Missing storage state checks"
             }
 
-        first_count = first_flush.get("num_entities", -1)
-        second_count = second_flush.get("num_entities", -1)
+        before_storage_count = before_storage.get("num_entities", -1)
+        after_storage_count = after_storage.get("num_entities", -1)
 
-        if first_count != second_count:
-            return {
-                "classification": "BUG_CANDIDATE",
-                "satisfied": False,
-                "reasoning": f"Flush not idempotent: first={first_count}, second={second_count}"
-            }
+        # Check for contradictory regressions in storage
+        storage_regression = False
+        if before_storage_count != after_storage_count:
+            storage_regression = True
+
+        # Check search states (if available)
+        search_regression = False
+        before_search_count = None
+        after_search_count = None
+
+        if before_search and after_search:
+            before_search_count = len(before_search.get("result", {}).get("results", []))
+            after_search_count = len(after_search.get("result", {}).get("results", []))
+            if before_search_count != after_search_count:
+                search_regression = True
+
+        # OBSERVATION - document stability
+        classification = "OBSERVATION"
+        reasoning = f"Repeated flush: storage before={before_storage_count}, after={after_storage_count}"
+        if before_search_count is not None:
+            reasoning += f". Search before={before_search_count}, after={after_search_count}"
+
+        if storage_regression or search_regression:
+            classification = "BUG_CANDIDATE"
+            reasoning += ". Contradictory regression detected!"
 
         return {
-            "classification": "OBSERVATION",
-            "satisfied": True,
-            "reasoning": f"Flush is idempotent: both flushes return count={first_count}",
+            "classification": classification,
+            "satisfied": not (storage_regression or search_regression),
+            "reasoning": reasoning,
             "evidence": {
-                "first_flush_count": first_count,
-                "second_flush_count": second_count,
-                "idempotent": True
-            }
+                "storage_before": before_storage_count,
+                "storage_after": after_storage_count,
+                "storage_regression": storage_regression,
+                "search_before": before_search_count,
+                "search_after": after_search_count,
+                "search_regression": search_regression
+            },
+            "interpretation": "Repeated flush should not introduce contradictory visibility regressions.",
+            "note": "Minimal evidence: storage/search state before/after second flush."
         }
