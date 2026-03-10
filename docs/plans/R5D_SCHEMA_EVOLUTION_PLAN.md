@@ -1,15 +1,27 @@
-# R5D Schema Evolution Campaign - Implementation Plan v1.1
+# R5D Schema Evolution Campaign - Implementation Plan v1.2
 
 **Campaign Code**: R5D
 **Full Name**: Schema Evolution Campaign
 **Date**: 2026-03-10
-**Status**: PLANNING - REVISED
+**Status**: PHASE 1.5 COMPLETE - P0 FINALIZED
 **Previous Campaign**: R5B Index Lifecycle (COMPLETE)
-**Version**: 1.1 (Revised based on feedback)
+**Version**: 1.2 (P0 Finalization - Phase 1.5)
 
 ---
 
-## Change Log v1.0 → v1.1
+## Change Log
+
+### v1.1 → v1.2 (Phase 1.5 - P0 Finalization)
+
+| Section | Change | Rationale |
+|---------|--------|-----------|
+| H (P0 Cases) | Finalized to 4 Round 1 cases | Core semantics only for first round |
+| H (P0 Cases) | Deferred 2 cases to Round 2 | P0.5 for advanced field semantics |
+| A (Scope) | Added explicit multi-collection wording | NOT in-place mutation (not supported) |
+| F (Sequence) | Added Phase 1.5 | P0 finalization checkpoint |
+| I (Strategies) | Updated multi-collection approach | Confirmed SDK limitation |
+
+### v1.0 → v1.1
 
 | Section | Change | Rationale |
 |---------|--------|-----------|
@@ -1294,33 +1306,48 @@ def _extract_error(result):
 
 ## H. P0 First Slice Cases
 
-### H.1 Recommended P0 Cases (7 cases) - REVISED
+### H.1 Final P0 Cases (Phase 1.5 Finalized)
+
+**Round 1 (P0) - 4 Core Cases**:
 
 | Case | Contract | Layer | Tests | Oracle Strategy |
 |------|----------|-------|-------|-----------------|
 | **R5D-001** | SCH-004 | L1 (Foundation) | Metadata accuracy | STRICT |
-| **R5D-002** | SCH-008 | L1 (Foundation) | Metadata reflection after v2 | STRICT |
-| **R5D-003** | SCH-001 | L3 (Data Integrity) | Data preservation | STRICT |
-| **R5D-004** | SCH-002 | L4 (Query Behavior) | Backward compatibility | CONSERVATIVE |
-| **R5D-005** | SCH-007 | L2 (Protection) | Forbidden gate | STRICT |
-| **R5D-006** | SCH-005 | L5 (Field Semantics) | Null behavior | CONSERVATIVE |
-| **R5D-007** | SCH-006 | L4 (Query Behavior) | Filter on new field | CONSERVATIVE |
+| **R5D-002** | SCH-001 | L3 (Data Integrity) | Data preservation | STRICT |
+| **R5D-003** | SCH-002 | L4 (Query Behavior) | Backward compatibility | CONSERVATIVE |
+| **R5D-004** | SCH-008 | L1 (Foundation) | Schema isolation | STRICT |
+
+**Round 2 (P0.5) - 2 Deferred Cases**:
+
+| Case | Contract | Layer | Tests | Oracle Strategy |
+|------|----------|-------|-------|-----------------|
+| **R5D-005** | SCH-005 | L5 (Field Semantics) | Null behavior | CONSERVATIVE |
+| **R5D-006** | SCH-006 | L4 (Query Behavior) | Filter on new field | CONSERVATIVE |
+
+**Dropped**:
+
+| Original Case | Contract | Reason |
+|---------------|----------|--------|
+| ~~R5D-005~~ | SCH-007 (Forbidden Gate) | alter_collection not supported in SDK |
+
+**Summary**:
+- Round 1: **4 cases** (core schema evolution semantics)
+- Round 2: **2 cases** (advanced field semantics)
+- Dropped: **1 case** (operation not supported)
+- Original plan: **7 cases**
 
 ### H.2 Execution Order
 
 ```
-Round 1: Foundation (Validate adapter)
-├── R5D-001: Metadata accuracy
-└── R5D-002: Metadata reflection after v2
+Round 1 (P0): Core Semantics
+├── R5D-001: Metadata accuracy (SCH-004)
+├── R5D-002: Data preservation (SCH-001)
+├── R5D-003: Query compatibility (SCH-002)
+└── R5D-004: Schema isolation (SCH-008)
 
-Round 2: Critical (Validate isolation)
-├── R5D-003: Data preservation
-└── R5D-004: Backward query compatibility
-
-Round 3: Edge Cases (Document behavior)
-├── R5D-005: Forbidden gate
-├── R5D-006: Null semantics
-└── R5D-007: Filter semantics
+Round 2 (P0.5): Field Semantics (Deferred)
+├── R5D-005: Null behavior (SCH-005)
+└── R5D-006: Filter on new field (SCH-006)
 ```
 
 ### H.3 Search Stability (Round 2)
@@ -1363,22 +1390,38 @@ R5D-101: SCH-009 - Search Stability Across Schemas
 
 **Decision**: Use multi-collection comparison instead of single-collection evolution
 
+**CRITICAL CLARIFICATION (Phase 1.5)**:
+> **P0 evaluates schema evolution semantics via multi-collection version comparison, NOT in-place schema mutation.**
+
 **Rationale**:
-- Milvus v2.6.10 doesn't support alter_collection
-- Can't add fields to existing collection
-- Workaround: Create v1 and v2 separately, compare behavior
+- Milvus v2.6.10 SDK does NOT support alter_collection, add_field, drop_field, rename_field
+- These operations simply do not exist in the pymilvus API
+- Workaround: Create v1 and v2 separately, test cross-collection isolation
 
 **Pattern**:
 ```python
-# Instead of:
-collection.create()
-collection.add_field("category")  # NOT SUPPORTED
+# Traditional schema evolution (NOT SUPPORTED):
+# collection.create()
+# collection.alter_collection(...)  # DOES NOT EXIST
 
-# Use:
+# R5D multi-collection approach (WHAT WE ACTUALLY TEST):
 collection_v1 = create({id, vector})
-collection_v2 = create({id, vector, category})
-# Compare v1 behavior before/after v2 creation
+count_v1_before = count_entities(v1)
+
+collection_v2 = create({id, vector, category})  # Separate collection
+
+count_v1_after = count_entities(v1)
+assert count_v1_after == count_v1_before  # SCH-001: Data Preservation
 ```
+
+**What This Tests**:
+- Data isolation: Does v2 creation affect v1 data?
+- Query compatibility: Do v1 queries still work after v2 exists?
+- Schema stability: Does v1 schema remain unchanged after v2 creation?
+
+**What This Does NOT Test**:
+- In-place schema mutation effects (operation doesn't exist)
+- Single collection before/after ALTER (operation doesn't exist)
 
 ---
 
