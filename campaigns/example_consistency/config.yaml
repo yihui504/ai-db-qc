@@ -1,0 +1,30 @@
+# campaigns/example_consistency/config.yaml
+# Example campaign configuration for P3 testing
+
+campaign_name: "example_consistency"
+campaign_id: "EXA-001"
+target_db: "Milvus"
+adapter: "milvus_adapter"
+# MVP: One family only
+contract_families:
+  - "ANN"
+goal: "Example campaign to demonstrate bootstrap scaffolding"
+mode: "REAL"
+
+constraints:
+  max_cases: 10
+  runtime_budget: "30m"
+  required_operations:
+    - "create_collection"
+    - "insert"
+    - "search"
+
+preferences:
+  priority_contracts:
+    - "ANN-001"
+  skip_contracts: []
+
+input_registries:
+  capability_registry: "capabilities/milvus_capabilities.json"
+  contract_coverage: "contracts/CONTRACT_COVERAGE_INDEX.json"
+  validation_matrix: "contracts/VALIDATION_MATRIX.json"

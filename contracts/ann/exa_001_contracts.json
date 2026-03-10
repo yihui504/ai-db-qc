@@ -1,0 +1,16 @@
+{
+  "contract_family": "ANN",
+  "campaign": "EXA-001",
+  "version": "1.0",
+  "description": "Contract definitions for EXA-001",
+  "contracts": [
+    {
+      "contract_id": "ANN-001",
+      "name": "TODO: Contract name",
+      "statement": "TODO: Contract statement",
+      "preconditions": [],
+      "postconditions": [],
+      "invariants": []
+    }
+  ]
+}
