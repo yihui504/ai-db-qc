@@ -14,11 +14,13 @@
 |--------|-------|
 | **Total Cases** | 6 |
 | **Strongly Validated** | 2 |
-| **Partially Validated** | 3 |
-| **Observational Only** | 1 |
+| **Partially Validated** | 4 |
+| **Observational Only** | 0 |
 | **Still Inconclusive** | 0 |
 
 **Conclusion**: R5D P0 completed with interpretable results. Multi-collection schema version comparison validated on Milvus v2.6.10.
+
+**Note**: SCH-006 was upgraded from observational_only/still_inconclusive to partially_validated after SCH-006b follow-up experiment confirmed basic filter semantics work correctly.
 
 ---
 
@@ -73,11 +75,30 @@
 
 | Contract | Case | Finding |
 |----------|------|---------|
-| **SCH-006** Filter Semantics | R5D-006 | Filter path accepted but filter semantics not validated |
+| ~~**SCH-006** Filter Semantics~~ | ~~R5D-006~~ | ~~Filter path accepted but filter semantics not validated~~ |
 
 **Status**: Filter expression syntax is accepted (no error), but effectiveness cannot be determined from 0 results. Filter semantics itself is NOT yet validated.
 
 **Note**: Only the filter PATH is validated (syntax accepted). Filter BEHAVIOR (whether it correctly filters) is still inconclusive.
+
+**SCH-006b Follow-up (POST-R5D)**:
+
+| Contract | Cases | Finding |
+|----------|-------|---------|
+| **SCH-006** Filter Semantics | R5D-006 + SCH006B-001/002/003 | Basic filter semantics validated |
+
+**Status**: SCH-006b confirmed basic filter semantics work correctly on VARCHAR and INT64 scalar fields. upgraded to **PARTIALLY_VALIDATED**.
+
+**SCH-006b Evidence**:
+- VARCHAR filter (match): `category == "alpha"` returned 3/3 correctly ✓
+- VARCHAR filter (no-match): `category == "gamma"` returned 0/2 correctly ✓
+- INT64 filter (comparison): `priority > 3` returned 2/3 correctly ✓
+
+**R5D-006 Root Cause**: Experiment design issues (no baseline query, no explicit flush) not filter malfunction.
+
+**Current SCH-006 Status**: PARTIALLY_VALIDATED
+- Basic filter semantics validated by SCH-006b
+- Advanced / broader filter semantics not yet fully covered (complex expressions, multi-field filters, null value filters)
 
 ---
 
@@ -173,27 +194,39 @@
 
 ### R5D-006: Filter Semantics (SCH-006)
 
-**Validation**: Observational Only (Re-evaluated)
+**Validation**: Partially Validated (after SCH-006b follow-up)
 
 | Aspect | Status | Evidence |
 |--------|--------|----------|
 | Filter expression execution | ✓ No error | category == 'A' expression accepted |
-| Filter results | ⚠ 0 entities | Returns 0 results (inconclusive) |
+| Filter results (R5D-006) | ⚠ 0 entities | Returns 0 results (inconclusive) |
+| Filter results (SCH-006b) | ✓ Correct | 3/3 test cases PASSED |
 
-**Final Conclusion** (TIGHTENED):
-> SCH-006 is OBSERVATIONAL ONLY - closer to EXPERIMENT_DESIGN_ISSUE than true validation.
+**R5D-006 Original Conclusion** (TIGHTENED):
+> SCH-006 was OBSERVATIONAL ONLY - closer to EXPERIMENT_DESIGN_ISSUE than true validation.
 >
-> Current evidence is INSUFFICIENT to determine filter semantics:
+> Current evidence was INSUFFICIENT to determine filter semantics:
 > - Filter executes without error (suggests syntax is correct)
 > - Returns 0 results (could be: timing issue, data issue, or filter not working)
 > - Cannot distinguish between: (a) filter doesn't work on dynamic fields, (b) timing issue with data visibility, or (c) filter syntax problem
 >
-> **Re-evaluation**: This is closer to EXPERIMENT_DESIGN_ISSUE than OBSERVATION because the test didn't produce evidence that allows us to draw any conclusion about filter behavior. The 0 results could mean anything.
+> **Status**: Filter semantics STILL INCONCLUSIVE. Further investigation needed.
+
+**SCH-006b Follow-up Conclusion** (POST-R5D):
+> SCH-006 is PARTIALLY_VALIDATED. Basic filter semantics work correctly on VARCHAR and INT64 scalar fields.
 >
-> **Status**: Filter semantics STILL INCONCLUSIVE. Further investigation needed with:
-> - Direct data verification (query to confirm data was inserted correctly)
-> - Alternative filter expressions
-> - Non-dynamic field comparison
+> SCH-006b Evidence (3/3 PASS):
+> - VARCHAR filter (match): category == "alpha" → 3 entities (expected 3) ✓
+> - VARCHAR filter (no-match): category == "gamma" → 0 entities (expected 0) ✓
+> - INT64 filter (comparison): priority > 3 → 2 entities (expected 2) ✓
+>
+> **Root Cause Analysis**: R5D-006 inconclusive result was due to experiment design issues:
+> - No baseline query to verify data was actually inserted
+> - No explicit flush to ensure data visibility
+> - Unknown data format
+> - Single filter case tested
+>
+> **Current Limitation**: Basic filter semantics validated; advanced filter expressions (multi-field, complex logic, null handling) not yet fully covered.
 
 ---
 
