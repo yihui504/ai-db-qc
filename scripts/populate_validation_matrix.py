@@ -23,17 +23,35 @@ def parse_result_file(result_path: Path) -> Optional[Dict[str, Any]]:
         if " " in database_str:
             db_family, db_version = database_str.split(" ", 1)
         else:
-            db_family = database_str
+            db_family = database_str or "unknown"
             db_version = "unknown"
 
+        # Extract campaign name (some files don't have campaign field)
+        campaign = data.get("campaign")
+        if not campaign:
+            # Extract from filename
+            if "ann_pilot" in result_path.name or "ann_discovery" in result_path.name:
+                campaign = "ANN_PILOT"
+            elif "hybrid_pilot" in result_path.name:
+                campaign = "HYBRID_PILOT"
+            else:
+                campaign = result_path.stem
+
+        # Handle different result structures
+        results = data.get("results", [])
+        # Normalize results - some use case_id, some use test_id
+        for r in results:
+            if "case_id" not in r and "test_id" in r:
+                r["case_id"] = r["test_id"]
+
         return {
-            "run_id": data.get("run_id"),
-            "campaign": data.get("campaign"),
+            "run_id": data.get("run_id", result_path.stem),
+            "campaign": campaign,
             "campaign_id": data.get("campaign_id"),
             "database_family": db_family,
             "db_version": db_version,
             "timestamp": data.get("timestamp"),
-            "results": data.get("results", [])
+            "results": results
         }
     except Exception as e:
         print(f"Warning: Could not parse {result_path}: {e}")
@@ -41,13 +59,19 @@ def parse_result_file(result_path: Path) -> Optional[Dict[str, Any]]:
 
 
 def main():
-    # Result files to process
+    # Result files to process - expanded to include ANN and Hybrid
     result_files = [
         # R5B Index Lifecycle
         "results/r5b_lifecycle_20260310-124135.json",
         # R5D Schema Evolution
         "results/r5d_p0_20260310-140345.json",
         "results/r5d_p05_20260310-141439.json",
+        # ANN Discovery / Pilots
+        "results/ann_discovery_20260310-001622.json",
+        "results/ann_pilot_20260310-000124.json",
+        # Hybrid Pilots
+        "results/hybrid_pilot_20260310-004009.json",
+        "results/hybrid_pilot_20260310-004155.json",
     ]
 
     validations = []
@@ -87,6 +111,19 @@ def main():
     output_path.write_text(json.dumps(matrix, indent=2))
     print(f"Generated: {output_path}")
     print(f"Total validations: {len(validations)}")
+
+    # Summary by campaign
+    campaigns = {}
+    for v in validations:
+        campaign = v["campaign"]
+        if campaign not in campaigns:
+            campaigns[campaign] = set()
+        campaigns[campaign].add(v["contract_id"])
+
+    print("\nValidations by campaign:")
+    for campaign in sorted(c for c in campaigns.keys() if c):
+        contracts = campaigns[campaign]
+        print(f"  {campaign}: {len(contracts)} contract validations")
 
     return 0
 

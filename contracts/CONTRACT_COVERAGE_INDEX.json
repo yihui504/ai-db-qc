@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-10T16:42:46.715315",
+  "last_updated": "2026-03-10T16:47:58.006943",
   "total_contracts": 29,
   "summary": {
     "contract_counts_by_family": {
@@ -10,16 +10,16 @@
     },
     "coverage_counts_by_family": {
       "ANN": {
-        "unvalidated": 5
+        "strongly_validated": 3,
+        "observational_only": 2
       },
       "HYBRID": {
-        "unvalidated": 3
+        "partially_validated": 3
       },
       "INDEX": {
         "unvalidated": 4,
         "strongly_validated": 7,
-        "partially_validated": 1,
-        "observational_only": 1,
+        "observational_only": 2,
         "inconclusive": 1
       },
       "SCHEMA": {
@@ -34,10 +34,129 @@
       "contract_id": "ANN-001",
       "family": "ANN",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "ANN_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "ann_discovery_001",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_002",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_004",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_005",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_007",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_009",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_010",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_011",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_012",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_013",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_014",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_015",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_017",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_018",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_020",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_022",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_024",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_025",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_027",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_031",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_032",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_036",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_038",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_040",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_043",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_044",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann-001_boundary_001",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann-001_boundary_002",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann-001_boundary_003",
+          "classification": "PASS"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -47,10 +166,73 @@
       "contract_id": "ANN-002",
       "family": "ANN",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "ANN_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "ann_discovery_003",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_006",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_008",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_016",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_019",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_021",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_026",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_028",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_029",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_030",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_034",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_037",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_041",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann_discovery_042",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "ann-002_legal_001",
+          "classification": "PASS"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -60,10 +242,21 @@
       "contract_id": "ANN-003",
       "family": "ANN",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "observational_only",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "ANN_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "ann-003_legal_001",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann-003_legal_002",
+          "classification": "OBSERVATION"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -73,10 +266,41 @@
       "contract_id": "ANN-004",
       "family": "ANN",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "observational_only",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "ANN_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "ann_discovery_023",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann_discovery_033",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann_discovery_035",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann_discovery_039",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann-004_legal_001",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann-004_legal_002",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "ann-004_legal_003",
+          "classification": "OBSERVATION"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -86,10 +310,17 @@
       "contract_id": "ANN-005",
       "family": "ANN",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "ANN_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "ann-005_boundary_001",
+          "classification": "PASS"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -99,10 +330,61 @@
       "contract_id": "HYB-001",
       "family": "HYBRID",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "HYBRID_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "hyb-001_exclusion_001",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-001_exclusion_002",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-001_exclusion_003",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-001_exclusion_004",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-001_exclusion_005",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-001_truncation_001",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-001_exclusion_001",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-001_exclusion_002",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-001_exclusion_003",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-001_exclusion_004",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-001_exclusion_005",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-001_truncation_001",
+          "classification": "PASS"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -112,10 +394,45 @@
       "contract_id": "HYB-002",
       "family": "HYBRID",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "HYBRID_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "hyb-002_consistency_001",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-002_consistency_002",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-002_consistency_003",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-002_consistency_004",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-002_consistency_001",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-002_consistency_002",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-002_consistency_003",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-002_consistency_004",
+          "classification": "PASS"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -125,10 +442,45 @@
       "contract_id": "HYB-003",
       "family": "HYBRID",
       "semantic_area": "unknown",
-      "coverage_status": "unvalidated",
-      "validation_level": "static_only",
-      "validated_in_campaigns": [],
-      "case_evidence": [],
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "HYBRID_PILOT"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "hyb-003_empty_001",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-003_empty_002",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-003_empty_003",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-003_empty_004",
+          "classification": "OBSERVATION"
+        },
+        {
+          "case_id": "hyb-003_empty_001",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-003_empty_002",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-003_empty_003",
+          "classification": "PASS"
+        },
+        {
+          "case_id": "hyb-003_empty_004",
+          "classification": "PASS"
+        }
+      ],
       "report_ref": null,
       "db_matrix_ref": "VALIDATION_MATRIX.json",
       "framework_level_candidate": true,
@@ -197,7 +549,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-001",
           "classification": "PASS"
         }
       ],
@@ -210,14 +562,14 @@
       "contract_id": "ILC-002",
       "family": "INDEX",
       "semantic_area": "framework_level_candidates",
-      "coverage_status": "partially_validated",
+      "coverage_status": "observational_only",
       "validation_level": "campaign_validated",
       "validated_in_campaigns": [
         "R5B_INDEX_LIFECYCLE"
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-002",
           "classification": "EXPECTED_FAILURE"
         }
       ],
@@ -237,7 +589,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-003",
           "classification": "PASS"
         }
       ],
@@ -257,7 +609,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-004",
           "classification": "PASS"
         }
       ],
@@ -277,7 +629,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-005",
           "classification": "PASS"
         }
       ],
@@ -297,7 +649,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-006",
           "classification": "PASS"
         }
       ],
@@ -317,7 +669,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-008",
           "classification": "VERSION_GUARDED"
         }
       ],
@@ -337,7 +689,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-009",
           "classification": "EXPERIMENT_DESIGN_ISSUE"
         }
       ],
@@ -357,7 +709,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-009B",
           "classification": "PASS"
         }
       ],
@@ -377,7 +729,7 @@
       ],
       "case_evidence": [
         {
-          "case_id": null,
+          "case_id": "R5B-ILC-010",
           "classification": "PASS"
         }
       ],

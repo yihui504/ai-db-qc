@@ -146,6 +146,13 @@ def compute_coverage_status(
 
     Returns:
         (coverage_status, validation_level)
+
+    Mapping rules:
+    - strongly_validated: All PASS, campaign-validated with strong evidence
+    - partially_validated: Mix of PASS + non-bug classifications
+    - observational_only: Expected behavior documented (EXPECTED_FAILURE, VERSION_GUARDED, OBSERVATION)
+    - inconclusive: EXPERIMENT_DESIGN_ISSUE or truly inconclusive
+    - unvalidated: No evidence
     """
     if not validations:
         return "unvalidated", "static_only"
@@ -157,22 +164,27 @@ def compute_coverage_status(
     if all(c == "PASS" for c in classifications):
         return "strongly_validated", "campaign_validated"
 
-    # Inconclusive: Has EXPERIMENT_DESIGN_ISSUE or still inconclusive
-    if any(c in ["EXPERIMENT_DESIGN_ISSUE", "inconclusive"] for c in classifications):
+    # Inconclusive: Has EXPERIMENT_DESIGN_ISSUE
+    if "EXPERIMENT_DESIGN_ISSUE" in classifications:
         return "inconclusive", "campaign_validated"
 
-    # Observational: Has OBSERVATION or VERSION_GUARDED
-    if any(c in ["OBSERVATION", "VERSION_GUARDED"] for c in classifications):
+    # Observational: Expected failures or version-guarded behavior
+    if any(c in ["EXPECTED_FAILURE", "VERSION_GUARDED"] for c in classifications):
+        # These are framework-level expected behaviors
+        return "observational_only", "campaign_validated"
+
+    # Observational: Has OBSERVATION (documented behavior, not a bug)
+    if "OBSERVATION" in classifications:
         # Check if also has PASS (mixed)
         if any(c == "PASS" for c in classifications):
             return "partially_validated", "campaign_validated"
         return "observational_only", "campaign_validated"
 
-    # Partial: Mix of PASS/OBSERVATION
+    # Partial: Mix of PASS + other non-bug classifications
     if "PASS" in classifications:
         return "partially_validated", "campaign_validated"
 
-    # Default: has validations but not clear status
+    # Default: has validations but unclear
     return "partially_validated", "campaign_validated"
 
 
