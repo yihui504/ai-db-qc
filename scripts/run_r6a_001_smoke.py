@@ -47,10 +47,10 @@ def create_collection_with_index(adapter: MilvusAdapter, case: Dict) -> Dict:
 
 def insert_data(adapter: MilvusAdapter, collection_name: str, num_entities: int, dimension: int = 128) -> Dict:
     """Insert test data."""
-    # Generate test vectors
+    # Generate test vectors - each entity gets its own vector list
     import random
     random.seed(42)
-    vectors = [random.random() for _ in range(num_entities * dimension)]
+    vectors = [[random.random() for _ in range(dimension)] for _ in range(num_entities)]
 
     # Prepare data columns
     ids = list(range(num_entities))
@@ -339,14 +339,25 @@ def main():
     for cls, count in report["summary"]["by_classification"].items():
         print(f"  {cls}: {count}")
 
-    # Save results
+    # Save results (clean non-serializable objects)
     if args.output:
         output_path = Path(args.output)
     else:
         output_path = Path(f"results/r6a_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(report, indent=2))
+
+    # Clean execution_trace for JSON serialization
+    def clean_trace(obj):
+        if isinstance(obj, dict):
+            return {k: clean_trace(v) for k, v in obj.items() if k != "result"}
+        elif isinstance(obj, list):
+            return [clean_trace(item) for item in obj]
+        else:
+            return obj
+
+    cleaned_report = clean_trace(report)
+    output_path.write_text(json.dumps(cleaned_report, indent=2))
     print(f"\nResults saved to: {output_path}")
 
     return 0

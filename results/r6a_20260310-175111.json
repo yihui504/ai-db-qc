@@ -1,0 +1,273 @@
+{
+  "run_id": "r6a-20260310-175111",
+  "timestamp": "2026-03-10T17:51:11.621816",
+  "database": "Milvus v2.6.10",
+  "mode": "REAL",
+  "campaign": "R6A Consistency / Visibility",
+  "round": "round1_core",
+  "total_cases": 4,
+  "summary": {
+    "total": 4,
+    "by_classification": {
+      "OBSERVATION": 2,
+      "PASS": 2
+    }
+  },
+  "results": [
+    {
+      "case_id": "R6A-001",
+      "contract_id": "CONS-001",
+      "name": "Insert Return vs Storage Visibility",
+      "oracle_expectations": {
+        "insert_count_immediate": true,
+        "flush_enables_storage_visibility": true
+      },
+      "execution_trace": [
+        {
+          "step": 1,
+          "operation": "create_collection",
+          "result_status": "success"
+        },
+        {
+          "step": 2,
+          "operation": "insert",
+          "result_status": "success",
+          "insert_count": 5
+        },
+        {
+          "step": 3,
+          "operation": "check_num_entities_pre_flush",
+          "num_entities": 0
+        },
+        {
+          "step": 4,
+          "operation": "flush",
+          "result_status": "success"
+        },
+        {
+          "step": 5,
+          "operation": "check_num_entities_post_flush",
+          "num_entities": 5
+        }
+      ],
+      "oracle": {
+        "classification": "OBSERVATION",
+        "satisfied": true,
+        "reasoning": "insert() returns 5 immediately. Pre-flush num_entities=0, post-flush=5.",
+        "evidence": {
+          "insert_count": 5,
+          "num_entities_pre_flush": 0,
+          "num_entities_post_flush": 5,
+          "flush_enables_storage_visibility": false
+        },
+        "interpretation": "Flush enables storage_count visibility. Pre-flush behavior is documented."
+      }
+    },
+    {
+      "case_id": "R6A-002",
+      "contract_id": "CONS-002",
+      "name": "Storage-Visible vs Search-Visible Relationship",
+      "oracle_expectations": {
+        "flush_enables_storage_visibility": true,
+        "search_requires_load": true
+      },
+      "execution_trace": [
+        {
+          "step": 1,
+          "operation": "create_collection_with_index",
+          "result_status": "success"
+        },
+        {
+          "step": 2,
+          "operation": "insert",
+          "result_status": "success",
+          "insert_count": 5
+        },
+        {
+          "step": 3,
+          "operation": "flush",
+          "result_status": "success"
+        },
+        {
+          "step": 4,
+          "operation": "check_storage_count",
+          "num_entities": 5
+        },
+        {
+          "step": 5,
+          "operation": "search_without_load",
+          "result_status": "error",
+          "error": "<MilvusException: (code=101, message=failed to search: collection not loaded[collection=464811362484031076])>"
+        },
+        {
+          "step": 6,
+          "operation": "search_with_load",
+          "result_status": "success"
+        }
+      ],
+      "oracle": {
+        "classification": "OBSERVATION",
+        "satisfied": true,
+        "reasoning": "Storage-visible after flush: count=5. Search without load: error (count=0). Search with load: count=5.",
+        "evidence": {
+          "storage_count_post_flush": 5,
+          "search_without_load_status": "error",
+          "search_without_load_count": 0,
+          "search_with_load_count": 5,
+          "two_stage_visibility": true
+        },
+        "interpretation": "Flush enables storage-visible. Search requires load (separate concern from flush)."
+      }
+    },
+    {
+      "case_id": "R6A-003",
+      "contract_id": "CONS-003",
+      "name": "Load/Release/Reload Gate on Search Visibility",
+      "oracle_expectations": {
+        "load_gate_enforced": true,
+        "reload_restores_search": true,
+        "data_preserved": true
+      },
+      "execution_trace": [
+        {
+          "step": 1,
+          "operation": "create_collection_with_index",
+          "result_status": "success"
+        },
+        {
+          "step": 2,
+          "operation": "insert",
+          "result_status": "success"
+        },
+        {
+          "step": 3,
+          "operation": "flush",
+          "result_status": "success"
+        },
+        {
+          "step": 4,
+          "operation": "load",
+          "result_status": "success"
+        },
+        {
+          "step": 5,
+          "operation": "search_baseline",
+          "result_status": "success"
+        },
+        {
+          "step": 6,
+          "operation": "release",
+          "result_status": "success"
+        },
+        {
+          "step": 7,
+          "operation": "verify_unloaded",
+          "load_state": "NotLoad"
+        },
+        {
+          "step": 8,
+          "operation": "search_unloaded",
+          "result_status": "error",
+          "error": "<MilvusException: (code=101, message=failed to search: collection not loaded[collection=464811362484181274])>"
+        },
+        {
+          "step": 9,
+          "operation": "reload",
+          "result_status": "success"
+        },
+        {
+          "step": 10,
+          "operation": "search_after_reload",
+          "result_status": "success"
+        }
+      ],
+      "oracle": {
+        "classification": "PASS",
+        "satisfied": true,
+        "reasoning": "Load gate enforced (unloaded: error). Reload restored search (count=3).",
+        "evidence": {
+          "search_unloaded_status": "error",
+          "search_unloaded_error": "<MilvusException: (code=101, message=failed to search: collection not loaded[collection=464811362484181274])>",
+          "baseline_count": 3,
+          "reload_count": 3,
+          "load_gate_enforced": true,
+          "reload_restores": true
+        }
+      }
+    },
+    {
+      "case_id": "R6A-005",
+      "contract_id": "CONS-005",
+      "name": "Release Preserves Storage Data",
+      "oracle_expectations": {
+        "data_preserved_across_release": true,
+        "reload_restores_search": true
+      },
+      "execution_trace": [
+        {
+          "step": 1,
+          "operation": "create_collection_with_index",
+          "result_status": "success"
+        },
+        {
+          "step": 2,
+          "operation": "insert",
+          "result_status": "success"
+        },
+        {
+          "step": 3,
+          "operation": "flush",
+          "result_status": "success"
+        },
+        {
+          "step": 4,
+          "operation": "load",
+          "result_status": "success"
+        },
+        {
+          "step": 5,
+          "operation": "record_storage_count_baseline",
+          "num_entities": 5
+        },
+        {
+          "step": 6,
+          "operation": "search_baseline",
+          "result_status": "success"
+        },
+        {
+          "step": 7,
+          "operation": "release",
+          "result_status": "success"
+        },
+        {
+          "step": 8,
+          "operation": "check_storage_count_after_release",
+          "num_entities": 5
+        },
+        {
+          "step": 9,
+          "operation": "reload",
+          "result_status": "success"
+        },
+        {
+          "step": 10,
+          "operation": "search_after_reload",
+          "result_status": "success"
+        }
+      ],
+      "oracle": {
+        "classification": "PASS",
+        "satisfied": true,
+        "reasoning": "Release preserves storage (count=5). Reload restores search (count=5).",
+        "evidence": {
+          "storage_preserved": true,
+          "search_restored": true,
+          "baseline_count": 5,
+          "release_count": 5,
+          "baseline_results": 5,
+          "reload_results": 5
+        }
+      }
+    }
+  ]
+}
