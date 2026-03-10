@@ -1,0 +1,527 @@
+{
+  "last_updated": "2026-03-10T16:42:46.715315",
+  "total_contracts": 29,
+  "summary": {
+    "contract_counts_by_family": {
+      "ANN": 5,
+      "HYBRID": 3,
+      "INDEX": 14,
+      "SCHEMA": 7
+    },
+    "coverage_counts_by_family": {
+      "ANN": {
+        "unvalidated": 5
+      },
+      "HYBRID": {
+        "unvalidated": 3
+      },
+      "INDEX": {
+        "unvalidated": 4,
+        "strongly_validated": 7,
+        "partially_validated": 1,
+        "observational_only": 1,
+        "inconclusive": 1
+      },
+      "SCHEMA": {
+        "strongly_validated": 3,
+        "unvalidated": 1,
+        "observational_only": 3
+      }
+    }
+  },
+  "contracts": [
+    {
+      "contract_id": "ANN-001",
+      "family": "ANN",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ANN-002",
+      "family": "ANN",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ANN-003",
+      "family": "ANN",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ANN-004",
+      "family": "ANN",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ANN-005",
+      "family": "ANN",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "HYB-001",
+      "family": "HYBRID",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "HYB-002",
+      "family": "HYBRID",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "HYB-003",
+      "family": "HYBRID",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "IDX-001",
+      "family": "INDEX",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "IDX-002",
+      "family": "INDEX",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "IDX-003",
+      "family": "INDEX",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "IDX-004",
+      "family": "INDEX",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-001",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-002",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "partially_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "EXPECTED_FAILURE"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-003",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-004",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-005",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-006",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-008",
+      "family": "INDEX",
+      "semantic_area": "milvus_validated",
+      "coverage_status": "observational_only",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "VERSION_GUARDED"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-009",
+      "family": "INDEX",
+      "semantic_area": "milvus_validated",
+      "coverage_status": "inconclusive",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "EXPERIMENT_DESIGN_ISSUE"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-009b",
+      "family": "INDEX",
+      "semantic_area": "milvus_validated",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "ILC-010",
+      "family": "INDEX",
+      "semantic_area": "framework_level_candidates",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5B_INDEX_LIFECYCLE"
+      ],
+      "case_evidence": [
+        {
+          "case_id": null,
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-001",
+      "family": "SCHEMA",
+      "semantic_area": "layer_3_data_integrity",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5D Schema Evolution"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R5D-002",
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-002",
+      "family": "SCHEMA",
+      "semantic_area": "layer_4_query_behavior",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5D Schema Evolution"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R5D-003",
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-003",
+      "family": "SCHEMA",
+      "semantic_area": "unknown",
+      "coverage_status": "unvalidated",
+      "validation_level": "static_only",
+      "validated_in_campaigns": [],
+      "case_evidence": [],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-004",
+      "family": "SCHEMA",
+      "semantic_area": "layer_1_foundation",
+      "coverage_status": "observational_only",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5D Schema Evolution"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R5D-001",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-005",
+      "family": "SCHEMA",
+      "semantic_area": "layer_5_field_semantics",
+      "coverage_status": "observational_only",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5D Schema Evolution"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R5D-005",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-006",
+      "family": "SCHEMA",
+      "semantic_area": "layer_4_query_behavior",
+      "coverage_status": "observational_only",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5D Schema Evolution"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R5D-006",
+          "classification": "OBSERVATION"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": false,
+      "notes": "Auto-generated from validation matrix"
+    },
+    {
+      "contract_id": "SCH-008",
+      "family": "SCHEMA",
+      "semantic_area": "layer_1_foundation",
+      "coverage_status": "strongly_validated",
+      "validation_level": "campaign_validated",
+      "validated_in_campaigns": [
+        "R5D Schema Evolution"
+      ],
+      "case_evidence": [
+        {
+          "case_id": "R5D-004",
+          "classification": "PASS"
+        }
+      ],
+      "report_ref": null,
+      "db_matrix_ref": "VALIDATION_MATRIX.json",
+      "framework_level_candidate": true,
+      "notes": "Auto-generated from validation matrix"
+    }
+  ],
+  "_generated_from": [
+    "contract_definitions",
+    "VALIDATION_MATRIX.json"
+  ]
+}
