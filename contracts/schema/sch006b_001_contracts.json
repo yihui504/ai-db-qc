@@ -1,0 +1,16 @@
+{
+  "contract_family": "SCHEMA",
+  "campaign": "SCH006B-001",
+  "version": "1.0",
+  "description": "Contract definitions for SCH006B-001",
+  "contracts": [
+    {
+      "contract_id": "SCHEMA-001",
+      "name": "TODO: Contract name",
+      "statement": "TODO: Contract statement",
+      "preconditions": [],
+      "postconditions": [],
+      "invariants": []
+    }
+  ]
+}

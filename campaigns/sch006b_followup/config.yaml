@@ -1,0 +1,36 @@
+# campaigns/sch006b_followup/config.yaml
+# SCH-006b Follow-up Campaign
+# Goal: Verify filter semantics on dynamic scalar fields (SCH-006 was inconclusive)
+
+campaign_name: "SCH-006b Filter Semantics Verification"
+campaign_id: "SCH006B-001"
+target_db: "Milvus"
+adapter: "milvus_adapter"
+# MVP: One family only
+contract_families:
+  - "SCHEMA"
+goal: "Verify filter semantics on dynamic scalar fields - SCH-006b follow-up experiment to determine whether filter behavior actually works on dynamic fields"
+mode: "REAL"
+
+constraints:
+  max_cases: 5
+  runtime_budget: "20m"
+  required_operations:
+    - "create_collection"
+    - "insert"
+    - "search"
+    - "query"
+
+preferences:
+  priority_contracts:
+    - "SCH-006"  # Base contract, will extend with SCH-006b variant
+  skip_contracts: []
+
+input_registries:
+  capability_registry: "capabilities/milvus_capabilities.json"
+  contract_coverage: "contracts/CONTRACT_COVERAGE_INDEX.json"
+  validation_matrix: "contracts/VALIDATION_MATRIX.json"
+
+# Follow-up context
+followup_for: "SCH-006"
+followup_reason: "SCH-006 was observational_only (0 results inconclusive) - need to verify filter semantics with data confirmation query"

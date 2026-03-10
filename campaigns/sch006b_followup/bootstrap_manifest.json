@@ -1,0 +1,39 @@
+{
+  "campaign_name": "SCH-006b Filter Semantics Verification",
+  "campaign_id": "SCH006B-001",
+  "generated_at": "2026-03-10T17:05:10.667898",
+  "input_config": "campaigns\\sch006b_followup\\config.yaml",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "docs\\plans\\SCH006B-001_PLAN.md"
+    },
+    {
+      "type": "contract_spec",
+      "path": "contracts\\schema\\sch006b_001_contracts.json"
+    },
+    {
+      "type": "generator",
+      "path": "casegen\\generators\\sch006b_001_generator.py"
+    },
+    {
+      "type": "oracle",
+      "path": "pipeline\\oracles\\sch006b_001_oracle.py"
+    },
+    {
+      "type": "smoke_runner",
+      "path": "scripts\\run_sch006b_001_smoke.py"
+    },
+    {
+      "type": "report_template",
+      "path": "docs\\reports\\SCH006B-001_REPORT_TEMPLATE.md"
+    },
+    {
+      "type": "handoff_template",
+      "path": "docs\\handoffs\\SCH006B-001_HANDOFF_TEMPLATE.md"
+    }
+  ],
+  "mvp_note": "Single contract family supported. Multi-family coming later.",
+  "capability_registry_snapshot": "capabilities/milvus_capabilities.json",
+  "contract_coverage_snapshot": null
+}
