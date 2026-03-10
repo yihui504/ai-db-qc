@@ -1,0 +1,303 @@
+{
+  "contract_family": "INDEX_LIFECYCLE",
+  "version": "2.2",
+  "description": "Index lifecycle state transition contracts for vector databases",
+  "verification_summary": {
+    "date": "2026-03-10",
+    "database": "Milvus v2.6.10",
+    "mode": "REAL",
+    "run_id": "r5b-lifecycle-20260310-115857",
+    "total_contracts": 8,
+    "verified": {
+      "universal": 7,
+      "milvus_specific": 1
+    },
+    "classification": {
+      "PASS": 7,
+      "EXPECTED_FAILURE": 1,
+      "FAILED": 0
+    }
+  },
+  "state_model": {
+    "type": "two_dimensional",
+    "dimensions": {
+      "index_metadata_state": ["NO_INDEX", "INDEX_EXISTS", "INDEX_DROPPED"],
+      "collection_load_state": ["NOT_LOADED", "LOADED"]
+    },
+    "composite_states": {
+      "COLLECTION_EMPTY_NO_DATA": {
+        "index_metadata": "NO_INDEX",
+        "collection_load": "NOT_LOADED",
+        "description": "Empty collection, no data, no index"
+      },
+      "DATA_NO_INDEX": {
+        "index_metadata": "NO_INDEX",
+        "collection_load": "NOT_LOADED",
+        "description": "Has data, no index"
+      },
+      "INDEX_CREATED_UNLOADED": {
+        "index_metadata": "INDEX_EXISTS",
+        "collection_load": "NOT_LOADED",
+        "description": "Index metadata exists, collection not in memory"
+      },
+      "INDEX_LOADED": {
+        "index_metadata": "INDEX_EXISTS",
+        "collection_load": "LOADED",
+        "description": "Index exists, collection in memory, searchable"
+      },
+      "INDEX_RELEASED": {
+        "index_metadata": "INDEX_EXISTS",
+        "collection_load": "NOT_LOADED",
+        "description": "Index metadata preserved, collection released from memory"
+      },
+      "INDEX_DROPPED": {
+        "index_metadata": "INDEX_DROPPED",
+        "collection_load": "NOT_LOADED",
+        "description": "Index metadata deleted"
+      }
+    },
+    "transition_evidence": {
+      "entered_via": ["create", "load", "release", "reload", "drop"]
+    }
+  },
+  "operations": {
+    "create_index": {
+      "description": "Create index metadata",
+      "preconditions": ["collection_exists", "data_inserted"],
+      "postconditions": ["index_metadata_exists"],
+      "target_state": "INDEX_CREATED_UNLOADED"
+    },
+    "load": {
+      "description": "Load collection into memory",
+      "preconditions": ["collection_exists"],
+      "postconditions": ["collection_in_memory"],
+      "target_state": "INDEX_LOADED"
+    },
+    "search": {
+      "description": "Query collection",
+      "preconditions": ["collection_loaded"],
+      "precondition_gate": {
+        "not_loaded": "EXPECTED_FAILURE"
+      }
+    },
+    "release": {
+      "description": "Release collection from memory (collection-level operation)",
+      "preconditions": ["collection_loaded"],
+      "postconditions": ["index_metadata_preserved", "collection_not_loaded"],
+      "target_state": "INDEX_RELEASED",
+      "semantic": "Release unloads searchable state, preserves index metadata"
+    },
+    "reload": {
+      "description": "Load collection back into memory after release",
+      "preconditions": ["index_metadata_exists", "collection_not_loaded"],
+      "postconditions": ["collection_in_memory", "data_consistent"],
+      "target_state": "INDEX_LOADED",
+      "entered_via": "reload_after_release"
+    },
+    "drop_index": {
+      "description": "Delete index metadata",
+      "preconditions": ["index_metadata_exists"],
+      "postconditions": ["index_metadata_deleted"],
+      "target_state": "INDEX_DROPPED",
+      "irreversible": true
+    },
+    "get_load_state": {
+      "description": "Query official load state using utility.load_state()",
+      "returns": ["NotLoad", "Loaded", "Loading"],
+      "api": "official_only"
+    },
+    "count_entities": {
+      "description": "Count entities in storage",
+      "returns": {
+        "storage_count": "collection.num_entities (persistent)",
+        "load_state": "official utility.load_state() result"
+      },
+      "constraint": "no_fabricated_loaded_view_count"
+    }
+  },
+  "invariants": {
+    "L1_CreateLoad": {
+      "statement": "create_index → INDEX_CREATED_UNLOADED",
+      "verification": "index_metadata_exists AND load_state == NotLoad"
+    },
+    "L2_LoadedSearchable": {
+      "statement": "INDEX_LOADED → searchable",
+      "verification": "load_state == Loaded AND search_succeeds"
+    },
+    "L3_ReleasePreserves": {
+      "statement": "release → INDEX_RELEASED (data and metadata preserved)",
+      "verification": "index_metadata_exists AND load_state == NotLoad AND storage_count_unchanged"
+    },
+    "L4_ReloadRestores": {
+      "statement": "reload → INDEX_LOADED with same data",
+      "verification": "load_state == Loaded AND results_match_pre_release"
+    },
+    "L5_DropIrreversible": {
+      "statement": "drop_index → INDEX_DROPPED",
+      "verification": "index_metadata_deleted AND load_state == NotLoad"
+    }
+  },
+  "contracts": [
+    {
+      "contract_id": "ILC-001",
+      "name": "Create Index State Transition",
+      "type": "universal",
+      "statement": "create_index creates index metadata without loading collection",
+      "initial_state": "DATA_NO_INDEX",
+      "operation": "create_index",
+      "target_state": "INDEX_CREATED_UNLOADED",
+      "invariants": ["L1_CreateLoad"],
+      "oracle": {
+        "check": "index_metadata_exists AND load_state == NotLoad",
+        "classification": {
+          "pass": "metadata exists, collection not loaded",
+          "bug_candidate": "metadata not created or unexpected load state"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-002",
+      "name": "Search Precondition Gate",
+      "type": "universal",
+      "statement": "search on unloaded collection fails predictably",
+      "initial_state": "INDEX_CREATED_UNLOADED",
+      "operation": "search",
+      "expected_outcome": "EXPECTD_FAILURE",
+      "precondition_gate": {
+        "condition": "collection_not_loaded",
+        "expected": "error or empty results"
+      },
+      "oracle": {
+        "check": "load_state == NotLoad AND (search_fails OR returns_empty)",
+        "classification": {
+          "expected_failure": "precondition gate violation (intentional)",
+          "bug_candidate": "search succeeds on unloaded collection (state bug)"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-003",
+      "name": "Load State Transition",
+      "type": "universal",
+      "statement": "load loads collection into memory",
+      "initial_state": "INDEX_CREATED_UNLOADED",
+      "operation": "load",
+      "target_state": "INDEX_LOADED",
+      "invariants": ["L2_LoadedSearchable"],
+      "oracle": {
+        "check": "load_state == Loaded",
+        "classification": {
+          "pass": "collection loaded successfully",
+          "bug_candidate": "load fails or load_state != Loaded"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-004",
+      "name": "Loaded Search Baseline",
+      "type": "universal",
+      "statement": "search on loaded collection succeeds",
+      "initial_state": "INDEX_LOADED",
+      "operation": "search",
+      "expected_outcome": "PASS",
+      "oracle": {
+        "check": "search_succeeds AND results_not_empty",
+        "classification": {
+          "pass": "search returns results",
+          "bug_candidate": "search fails on loaded collection"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-005",
+      "name": "Release State Transition",
+      "type": "universal",
+      "statement": "release unloads collection while preserving index metadata",
+      "initial_state": "INDEX_LOADED",
+      "operation": "release",
+      "target_state": "INDEX_RELEASED",
+      "invariants": ["L3_ReleasePreserves"],
+      "oracle": {
+        "check": "index_metadata_exists AND load_state == NotLoad AND storage_count_unchanged",
+        "classification": {
+          "pass": "metadata preserved, collection released, data intact",
+          "bug_candidate": "metadata lost or data corrupted"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-006",
+      "name": "Reload After Release",
+      "type": "universal",
+      "statement": "reload restores searchable state with same data",
+      "initial_state": "INDEX_RELEASED",
+      "operation": "reload",
+      "target_state": "INDEX_LOADED",
+      "entered_via": "reload_after_release",
+      "invariants": ["L4_ReloadRestores"],
+      "oracle": {
+        "check": "load_state == Loaded AND results_match_pre_release_baseline",
+        "classification": {
+          "pass": "state restored, data consistent",
+          "bug_candidate": "data lost or results differ"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-007",
+      "name": "Drop Index Transition",
+      "type": "universal",
+      "statement": "drop_index deletes index metadata (irreversible)",
+      "initial_state": "INDEX_LOADED",
+      "operation": "drop_index",
+      "target_state": "INDEX_DROPPED",
+      "invariants": ["L5_DropIrreversible"],
+      "irreversible": true,
+      "universal_behavior": {
+        "expected": "drop_index deletes index metadata permanently",
+        "verified": true
+      },
+      "milvus_observed": {
+        "version": "v2.6.10",
+        "behavior": "drop_index requires release before drop",
+        "error": "vector index cannot be dropped on loaded collection",
+        "workaround": "call release() before drop_index()",
+        "classification": "MILVUS_SPECIFIC",
+        "note": "Other databases may not require release before drop"
+      },
+      "oracle": {
+        "check": "index_metadata_deleted AND load_state == NotLoad",
+        "classification": {
+          "pass": "index metadata deleted",
+          "bug_candidate": "metadata not deleted or data corrupted"
+        }
+      }
+    },
+    {
+      "contract_id": "ILC-010",
+      "name": "Documented NotLoad Behavior",
+      "type": "universal",
+      "statement": "create_collection without index results in NotLoad state",
+      "initial_state": "COLLECTION_EMPTY_NO_DATA",
+      "operation": "create_collection",
+      "target_state": "DATA_NO_INDEX",
+      "documented_behavior": true,
+      "oracle": {
+        "check": "load_state == NotLoad AND index_metadata_not_exists",
+        "classification": {
+          "pass": "documented behavior confirmed",
+          "observation": "unexpected state, document for review"
+        }
+      }
+    }
+  ],
+  "classification": {
+    "PASS": "State transition successful, invariants preserved",
+    "EXPECTED_FAILURE": "Precondition gate violation (intentional test case)",
+    "ALLOWED_DIFFERENCE": "Database-specific variance (documented)",
+    "VERSION_GUARDED": "Behavior varies by version/database",
+    "BUG_CANDIDATE": "State invariant violated",
+    "OBSERVATION": "Uncertain behavior, needs investigation",
+    "INFRA_FAILURE": "Infrastructure failure (API error, timeout, etc.)"
+  }
+}

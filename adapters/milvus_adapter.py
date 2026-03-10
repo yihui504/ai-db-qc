@@ -69,6 +69,16 @@ class MilvusAdapter(AdapterBase):
                 return self._drop_collection(params)
             elif operation == "delete":
                 return self._delete(params)
+            elif operation == "release":
+                return self._release(params)
+            elif operation == "reload":
+                return self._reload(params)
+            elif operation == "drop_index":
+                return self._drop_index(params)
+            elif operation == "get_load_state":
+                return self._get_load_state(params)
+            elif operation == "count_entities":
+                return self._count_entities(params)
             else:
                 return {
                     "status": "error",
@@ -475,4 +485,295 @@ class MilvusAdapter(AdapterBase):
                 "status": "error",
                 "error": str(e),
                 "operation": "delete"
+            }
+
+    def _release(self, params: Dict) -> Dict[str, Any]:
+        """Release collection from memory (collection-level load state operation).
+
+        Release unloads the searchable state while preserving index metadata.
+        This is a collection-level operation, not an index-specific operation.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+
+        Returns:
+            Response dict with status and load state
+        """
+        collection_name = params.get("collection_name")
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+            collection.release()
+
+            # Verify load state after release (convert LoadState enum to string)
+            from pymilvus.client.types import LoadState
+            load_state_raw = utility.load_state(collection_name, using=self.alias)
+            load_state_map = {
+                LoadState.NotLoad: "NotLoad",
+                LoadState.Loaded: "Loaded",
+                LoadState.Loading: "Loading",
+                LoadState.NotExist: "NotExist"
+            }
+            load_state = load_state_map.get(load_state_raw, str(load_state_raw))
+
+            return {
+                "status": "success",
+                "operation": "release",
+                "collection_name": collection_name,
+                "load_state": load_state,
+                "data": [{
+                    "collection_name": collection_name,
+                    "load_state": load_state,
+                    "note": "release unloads searchable state, preserves index metadata"
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "release"
+            }
+
+    def _reload(self, params: Dict) -> Dict[str, Any]:
+        """Reload collection into memory after release.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+
+        Returns:
+            Response dict with status and load state
+        """
+        collection_name = params.get("collection_name")
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+            collection.load()
+
+            # Verify load state after reload (convert LoadState enum to string)
+            from pymilvus.client.types import LoadState
+            load_state_raw = utility.load_state(collection_name, using=self.alias)
+            load_state_map = {
+                LoadState.NotLoad: "NotLoad",
+                LoadState.Loaded: "Loaded",
+                LoadState.Loading: "Loading",
+                LoadState.NotExist: "NotExist"
+            }
+            load_state = load_state_map.get(load_state_raw, str(load_state_raw))
+
+            return {
+                "status": "success",
+                "operation": "reload",
+                "collection_name": collection_name,
+                "load_state": load_state,
+                "entered_via": "reload_after_release",
+                "data": [{
+                    "collection_name": collection_name,
+                    "load_state": load_state
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "reload"
+            }
+
+    def _drop_index(self, params: Dict) -> Dict[str, Any]:
+        """Drop index metadata from collection.
+
+        This operation deletes index metadata. It is irreversible.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+
+        Returns:
+            Response dict with status
+        """
+        collection_name = params.get("collection_name")
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+
+            # Get index info before dropping (for evidence)
+            index_exists_before = False
+            index_info_before = None
+            try:
+                if hasattr(collection, 'indexes') and collection.indexes:
+                    index_exists_before = True
+                    index_info_before = collection.indexes[0].to_dict()
+            except Exception:
+                pass
+
+            # Drop the index
+            collection.drop_index()
+
+            # Verify index metadata after drop
+            index_exists_after = False
+            try:
+                if hasattr(collection, 'indexes') and collection.indexes:
+                    index_exists_after = True
+            except Exception:
+                pass
+
+            return {
+                "status": "success",
+                "operation": "drop_index",
+                "collection_name": collection_name,
+                "index_exists_before": index_exists_before,
+                "index_exists_after": index_exists_after,
+                "index_info_before": index_info_before,
+                "irreversible": True,
+                "data": [{
+                    "collection_name": collection_name,
+                    "index_dropped": True
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "drop_index"
+            }
+
+    def _get_load_state(self, params: Dict) -> Dict[str, Any]:
+        """Query official load state using utility.load_state() API.
+
+        Uses ONLY the official Milvus API. No fallback to undocumented attributes.
+        If the API returns an error or uncertain state, the result is marked accordingly.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+
+        Returns:
+            Response dict with official load state
+        """
+        collection_name = params.get("collection_name")
+
+        try:
+            # Use official API only
+            load_state_raw = utility.load_state(collection_name, using=self.alias)
+            # Returns LoadState enum: NotLoad, Loaded, Loading, or NotExist
+            # Convert enum to string for consistent serialization
+            from pymilvus.client.types import LoadState
+
+            # Map LoadState enum to string
+            load_state_map = {
+                LoadState.NotLoad: "NotLoad",
+                LoadState.Loaded: "Loaded",
+                LoadState.Loading: "Loading",
+                LoadState.NotExist: "NotExist"
+            }
+            load_state = load_state_map.get(load_state_raw, str(load_state_raw))
+
+            # If collection doesn't exist, handle explicitly
+            if load_state == "NotExist":
+                return {
+                    "status": "success",
+                    "operation": "get_load_state",
+                    "collection_name": collection_name,
+                    "load_state": "NotExist",
+                    "index_metadata_exists": False,
+                    "index_info": None,
+                    "data": [{
+                        "collection_name": collection_name,
+                        "load_state": "NotExist",
+                        "index_metadata_exists": False,
+                        "note": "Collection does not exist"
+                    }]
+                }
+
+            # Get index metadata info
+            collection = Collection(collection_name, using=self.alias)
+            index_metadata_exists = False
+            index_info = None
+
+            try:
+                if hasattr(collection, 'indexes') and collection.indexes:
+                    index_metadata_exists = True
+                    index_info = collection.indexes[0].to_dict()
+            except Exception:
+                pass
+
+            return {
+                "status": "success",
+                "operation": "get_load_state",
+                "collection_name": collection_name,
+                "load_state": load_state,
+                "index_metadata_exists": index_metadata_exists,
+                "index_info": index_info,
+                "data": [{
+                    "collection_name": collection_name,
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists,
+                    "api": "utility.load_state (official only)"
+                }]
+            }
+        except Exception as e:
+            # If official API fails, return OBSERVATION/INFRA_FAILURE
+            # Do NOT fall back to undocumented attributes
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "get_load_state",
+                "classification": "INFRA_FAILURE",
+                "note": "Official API failed, no fallback available"
+            }
+
+    def _count_entities(self, params: Dict) -> Dict[str, Any]:
+        """Count entities in storage.
+
+        Returns ONLY:
+        - storage_count: collection.num_entities (persistent storage count)
+        - load_state: official utility.load_state() result
+
+        Does NOT fabricate loaded_view_count. If loaded-view evidence is needed,
+        use query/count(*) or search success/failure to observe.
+
+        Args:
+            params: Dict with keys:
+                - collection_name (str): Collection name
+
+        Returns:
+            Response dict with storage count and load state
+        """
+        collection_name = params.get("collection_name")
+
+        try:
+            collection = Collection(collection_name, using=self.alias)
+
+            # Get storage count (persistent)
+            storage_count = collection.num_entities
+
+            # Get official load state (convert LoadState enum to string)
+            from pymilvus.client.types import LoadState
+            load_state_raw = utility.load_state(collection_name, using=self.alias)
+            load_state_map = {
+                LoadState.NotLoad: "NotLoad",
+                LoadState.Loaded: "Loaded",
+                LoadState.Loading: "Loading",
+                LoadState.NotExist: "NotExist"
+            }
+            load_state = load_state_map.get(load_state_raw, str(load_state_raw))
+
+            return {
+                "status": "success",
+                "operation": "count_entities",
+                "collection_name": collection_name,
+                "storage_count": storage_count,
+                "load_state": load_state,
+                "data": [{
+                    "storage_count": storage_count,
+                    "load_state": load_state,
+                    "note": "storage_count is persistent, load_state from official API"
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "operation": "count_entities"
             }

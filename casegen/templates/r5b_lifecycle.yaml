@@ -1,0 +1,364 @@
+# R5B Index Lifecycle Campaign Test Templates
+# Version: 2.1
+# Focus: State transition semantics, not ANN recall comparison
+
+templates:
+  # ========================================
+  # ILC-001: Create Index State Transition
+  # ========================================
+  - template_id: ilc-001
+    name: "Create Index State Transition"
+    contract_id: "ILC-001"
+    initial_state: "DATA_NO_INDEX"
+    target_state: "INDEX_CREATED_UNLOADED"
+    description: "create_index creates index metadata without loading collection"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+          metric_type: "L2"
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+          metric_type: "L2"
+      - step: 4
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "state_after_create"
+    oracle_expectation:
+      classification: "PASS"
+      check: "index_metadata_exists AND load_state == NotLoad"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-002: Search Precondition Gate
+  # ========================================
+  - template_id: ilc-002
+    name: "Search Precondition Gate (Unloaded)"
+    contract_id: "ILC-002"
+    initial_state: "INDEX_CREATED_UNLOADED"
+    target_state: "INDEX_CREATED_UNLOADED"
+    description: "search on unloaded collection fails predictably (precondition gate)"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 10
+        store_as: "search_result_unloaded"
+      - step: 5
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "load_state_after_search"
+    oracle_expectation:
+      classification: "EXPECTED_FAILURE"
+      check: "load_state == NotLoad AND (search_fails OR returns_empty)"
+      reasoning: "Precondition gate violation (intentional test case)"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-003: Load State Transition
+  # ========================================
+  - template_id: ilc-003
+    name: "Load State Transition"
+    contract_id: "ILC-003"
+    initial_state: "INDEX_CREATED_UNLOADED"
+    target_state: "INDEX_LOADED"
+    description: "load loads collection into memory"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "state_after_load"
+    oracle_expectation:
+      classification: "PASS"
+      check: "load_state == Loaded"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-004: Loaded Search Baseline
+  # ========================================
+  - template_id: ilc-004
+    name: "Loaded Search Baseline"
+    contract_id: "ILC-004"
+    initial_state: "INDEX_LOADED"
+    target_state: "INDEX_LOADED"
+    description: "search on loaded collection succeeds (baseline for comparison)"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 10
+        store_as: "baseline_results"
+    oracle_expectation:
+      classification: "PASS"
+      check: "search_succeeds AND results_not_empty"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-005: Release State Transition
+  # ========================================
+  - template_id: ilc-005
+    name: "Release State Transition"
+    contract_id: "ILC-005"
+    initial_state: "INDEX_LOADED"
+    target_state: "INDEX_RELEASED"
+    description: "release unloads collection while preserving index metadata"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: count_entities
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "count_before_release"
+      - step: 6
+        operation: release
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 7
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "state_after_release"
+      - step: 8
+        operation: count_entities
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "count_after_release"
+    oracle_expectation:
+      classification: "PASS"
+      check: "index_metadata_exists AND load_state == NotLoad AND storage_count_unchanged"
+      reasoning: "Release preserves metadata and data, unloads searchable state"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-006: Reload After Release
+  # ========================================
+  - template_id: ilc-006
+    name: "Reload After Release"
+    contract_id: "ILC-006"
+    initial_state: "INDEX_RELEASED"
+    target_state: "INDEX_LOADED"
+    entered_via: "reload_after_release"
+    description: "reload restores searchable state with same data"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 10
+        store_as: "results_pre_release"
+      - step: 6
+        operation: release
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 7
+        operation: reload
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 8
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "state_after_reload"
+      - step: 9
+        operation: search
+        param_template:
+          collection_name: "{collection_name}"
+          vector: "{query_vector_128}"
+          top_k: 10
+        store_as: "results_post_reload"
+    oracle_expectation:
+      classification: "PASS"
+      check: "load_state == Loaded AND results_match_pre_release_baseline"
+      evidence:
+        entered_via: "reload_after_release"
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-007: Drop Index Transition
+  # ========================================
+  - template_id: ilc-007
+    name: "Drop Index Transition"
+    contract_id: "ILC-007"
+    initial_state: "INDEX_LOADED"
+    target_state: "INDEX_DROPPED"
+    description: "drop_index deletes index metadata (irreversible)"
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: build_index
+        param_template:
+          collection_name: "{collection_name}"
+          index_type: "HNSW"
+      - step: 4
+        operation: load
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 5
+        operation: release
+        param_template:
+          collection_name: "{collection_name}"
+      - step: 6
+        operation: drop_index
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "drop_result"
+      - step: 7
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "state_after_drop"
+    oracle_expectation:
+      classification: "PASS"
+      check: "index_metadata_deleted AND load_state == NotLoad"
+      evidence:
+        irreversible: true
+    priority: "HIGH"
+
+  # ========================================
+  # ILC-010: Documented NotLoad Behavior
+  # ========================================
+  - template_id: ilc-010
+    name: "Documented NotLoad Behavior"
+    contract_id: "ILC-010"
+    initial_state: "COLLECTION_EMPTY_NO_DATA"
+    target_state: "DATA_NO_INDEX"
+    description: "create_collection without index results in NotLoad state (documented)"
+    documented_behavior: true
+    sequence:
+      - step: 1
+        operation: create_collection
+        param_template:
+          collection_name: "{collection_name}"
+          dimension: 128
+      - step: 2
+        operation: insert
+        param_template:
+          collection_name: "{collection_name}"
+          vectors: "{vectors_128}"
+      - step: 3
+        operation: get_load_state
+        param_template:
+          collection_name: "{collection_name}"
+        store_as: "initial_load_state"
+    oracle_expectation:
+      classification: "PASS"
+      check: "load_state == NotLoad AND index_metadata_not_exists"
+      reasoning: "Documented behavior: newly created collection is NotLoad until explicitly loaded"
+    priority: "MEDIUM"

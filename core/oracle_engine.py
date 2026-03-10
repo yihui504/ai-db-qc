@@ -15,10 +15,14 @@ from enum import Enum
 
 class Classification(Enum):
     """Classification categories for contract evaluation."""
-    PASS = "PASS"                      # Contract satisfied
-    VIOLATION = "VIOLATION"           # Contract violated (BUG)
+    PASS = "PASS"                           # Contract satisfied
+    VIOLATION = "VIOLATION"                 # Contract violated (BUG)
     ALLOWED_DIFFERENCE = "ALLOWED_DIFFERENCE"  # Architectural difference (not a bug)
-    OBSERVATION = "OBSERVATION"       # Undefined behavior
+    OBSERVATION = "OBSERVATION"             # Undefined behavior
+    EXPECTED_FAILURE = "EXPECTED_FAILURE"   # Precondition gate violation (intentional)
+    BUG_CANDIDATE = "BUG_CANDIDATE"         # Potential bug (invariant violated)
+    VERSION_GUARDED = "VERSION_GUARDED"     # Behavior varies by version/database
+    INFRA_FAILURE = "INFRA_FAILURE"         # Infrastructure failure (API error, timeout)
 
 
 @dataclass
@@ -72,7 +76,17 @@ class OracleEngine:
             "sch-001": self._oracle_data_preservation,
             "sch-002": self._oracle_query_compatibility,
             "sch-003": self._oracle_index_rebuild_after_schema,
-            "sch-004": self._oracle_metadata_accuracy
+            "sch-004": self._oracle_metadata_accuracy,
+
+            # Lifecycle Contract Oracles
+            "ilc-001": self._oracle_lifecycle_create_index,
+            "ilc-002": self._oracle_lifecycle_precondition_gate,
+            "ilc-003": self._oracle_lifecycle_load,
+            "ilc-004": self._oracle_lifecycle_loaded_search,
+            "ilc-005": self._oracle_lifecycle_release,
+            "ilc-006": self._oracle_lifecycle_reload,
+            "ilc-007": self._oracle_lifecycle_drop_index,
+            "ilc-010": self._oracle_lifecycle_notload_documented
         }
 
     def evaluate(
@@ -800,6 +814,462 @@ class OracleEngine:
             if entity_value != value:
                 return False
         return True
+
+    # ============================================================
+    # Index Lifecycle Contract Oracles
+    # ============================================================
+
+    def _oracle_lifecycle_create_index(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: create_index creates index metadata without loading collection.
+
+        ILC-001: Verify index metadata exists and collection is NotLoad after create_index.
+        """
+        state_after = result.get("state_after_create", {})
+
+        load_state = state_after.get("load_state")
+        index_metadata_exists = state_after.get("index_metadata_exists", False)
+
+        # Check invariants
+        if load_state == "NotLoad" and index_metadata_exists:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-001",
+                Classification.PASS,
+                True,
+                f"Index metadata created, collection not loaded (load_state={load_state})",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists,
+                    "target_state": "INDEX_CREATED_UNLOADED"
+                }
+            )
+        elif load_state != "NotLoad":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-001",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Unexpected load state after create_index: {load_state} (expected NotLoad)",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists
+                }
+            )
+        elif not index_metadata_exists:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-001",
+                Classification.BUG_CANDIDATE,
+                False,
+                "Index metadata not created",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists
+                }
+            )
+        else:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-001",
+                Classification.OBSERVATION,
+                False,
+                f"Unexpected state: load_state={load_state}, index_exists={index_metadata_exists}",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists
+                }
+            )
+
+    def _oracle_lifecycle_precondition_gate(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: search on unloaded collection fails predictably.
+
+        ILC-002: Verify precondition gate - unloaded collection should fail or return empty.
+        """
+        search_result = result.get("search_result_unloaded", {})
+        load_state_after = result.get("load_state_after_search", {}).get("load_state")
+
+        # Check if search was attempted on unloaded collection
+        if load_state_after != "NotLoad":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-002",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Collection loaded after search (state={load_state_after}), expected NotLoad",
+                {"load_state_after": load_state_after}
+            )
+
+        # Check search outcome
+        search_data = search_result.get("data", [])
+        search_error = search_result.get("error")
+
+        if search_error:
+            # Search failed with error (expected for precondition gate)
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-002",
+                Classification.EXPECTED_FAILURE,
+                True,
+                f"Search failed on unloaded collection (precondition gate): {search_error}",
+                {
+                    "precondition_gate": "collection_not_loaded",
+                    "expected": "error or empty",
+                    "actual": "error",
+                    "load_state": load_state_after
+                }
+            )
+        elif len(search_data) == 0:
+            # Search returned empty (expected for precondition gate)
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-002",
+                Classification.EXPECTED_FAILURE,
+                True,
+                "Search returned empty results on unloaded collection (precondition gate)",
+                {
+                    "precondition_gate": "collection_not_loaded",
+                    "expected": "error or empty",
+                    "actual": "empty",
+                    "load_state": load_state_after
+                }
+            )
+        else:
+            # Search succeeded on unloaded collection (unexpected!)
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-002",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Search succeeded on unloaded collection (state bug): returned {len(search_data)} results",
+                {
+                    "precondition_gate_violated": True,
+                    "load_state": load_state_after,
+                    "result_count": len(search_data)
+                }
+            )
+
+    def _oracle_lifecycle_load(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: load loads collection into memory.
+
+        ILC-003: Verify collection is Loaded after load operation.
+        """
+        state_after = result.get("state_after_load", {})
+        load_state = state_after.get("load_state")
+
+        if load_state == "Loaded":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-003",
+                Classification.PASS,
+                True,
+                f"Collection loaded successfully (load_state={load_state})",
+                {
+                    "load_state": load_state,
+                    "target_state": "INDEX_LOADED"
+                }
+            )
+        elif load_state == "Loading":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-003",
+                Classification.OBSERVATION,
+                False,
+                "Collection in Loading state (transient)",
+                {"load_state": load_state}
+            )
+        else:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-003",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Load failed, load_state={load_state} (expected Loaded)",
+                {"load_state": load_state}
+            )
+
+    def _oracle_lifecycle_loaded_search(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: search on loaded collection succeeds.
+
+        ILC-004: Verify search returns results when collection is loaded.
+        """
+        baseline_results = result.get("baseline_results", {})
+        search_data = baseline_results.get("data", [])
+        search_error = baseline_results.get("error")
+
+        if search_error:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-004",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Search failed on loaded collection: {search_error}",
+                {"error": search_error}
+            )
+        elif len(search_data) > 0:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-004",
+                Classification.PASS,
+                True,
+                f"Search succeeded on loaded collection: {len(search_data)} results",
+                {
+                    "result_count": len(search_data),
+                    "baseline": True
+                }
+            )
+        else:
+            # Empty results on loaded collection with data
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-004",
+                Classification.OBSERVATION,
+                False,
+                "Search returned empty results on loaded collection",
+                {"result_count": 0}
+            )
+
+    def _oracle_lifecycle_release(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: release unloads collection while preserving index metadata and data.
+
+        ILC-005: Verify metadata preserved, collection released, data intact.
+        """
+        state_after = result.get("state_after_release", {})
+        count_before = result.get("count_before_release", {})
+        count_after = result.get("count_after_release", {})
+
+        load_state = state_after.get("load_state")
+        index_metadata_exists = state_after.get("index_metadata_exists", False)
+        storage_count_before = count_before.get("storage_count")
+        storage_count_after = count_after.get("storage_count")
+
+        # Check metadata preserved
+        if not index_metadata_exists:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-005",
+                Classification.BUG_CANDIDATE,
+                False,
+                "Index metadata lost after release",
+                {"index_metadata_exists": index_metadata_exists}
+            )
+
+        # Check collection released
+        if load_state != "NotLoad":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-005",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Collection not released after release operation: load_state={load_state}",
+                {"load_state": load_state}
+            )
+
+        # Check data preserved
+        if storage_count_before is not None and storage_count_after is not None:
+            if storage_count_before != storage_count_after:
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-005",
+                    Classification.BUG_CANDIDATE,
+                    False,
+                    f"Data count changed after release: {storage_count_before} → {storage_count_after}",
+                    {
+                        "storage_count_before": storage_count_before,
+                        "storage_count_after": storage_count_after
+                    }
+                )
+
+        # All checks passed
+        return self._oracle_result(
+            contract["contract_id"] if contract else "ilc-005",
+            Classification.PASS,
+            True,
+            f"Release successful: metadata preserved, collection released (load_state={load_state})",
+            {
+                "load_state": load_state,
+                "index_metadata_exists": index_metadata_exists,
+                "storage_count_preserved": storage_count_before == storage_count_after,
+                "target_state": "INDEX_RELEASED"
+            }
+        )
+
+    def _oracle_lifecycle_reload(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: reload restores searchable state with same data.
+
+        ILC-006: Verify load_state == Loaded and results match pre-release baseline.
+        """
+        state_after = result.get("state_after_reload", {})
+        results_pre = result.get("results_pre_release", {})
+        results_post = result.get("results_post_reload", {})
+
+        load_state = state_after.get("load_state")
+        pre_data = results_pre.get("data", [])
+        post_data = results_post.get("data", [])
+
+        # Check load state
+        if load_state != "Loaded":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-006",
+                Classification.BUG_CANDIDATE,
+                False,
+                f"Reload failed, load_state={load_state} (expected Loaded)",
+                {"load_state": load_state}
+            )
+
+        # Check results consistency (basic ID overlap check)
+        pre_ids = set(r.get("id") for r in pre_data) if pre_data else set()
+        post_ids = set(r.get("id") for r in post_data) if post_data else set()
+
+        if len(pre_data) > 0 and len(post_data) > 0:
+            overlap = len(pre_ids & post_ids) / len(pre_ids) if pre_ids else 0
+
+            if overlap >= 0.5:  # At least 50% overlap for basic consistency check
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-006",
+                    Classification.PASS,
+                    True,
+                    f"Reload successful: state restored, data consistent (overlap={overlap:.2f})",
+                    {
+                        "load_state": load_state,
+                        "entered_via": "reload_after_release",
+                        "pre_result_count": len(pre_data),
+                        "post_result_count": len(post_data),
+                        "overlap_ratio": overlap
+                    }
+                )
+            else:
+                return self._oracle_result(
+                    contract["contract_id"] if contract else "ilc-006",
+                    Classification.BUG_CANDIDATE,
+                    False,
+                    f"Reload results differ from pre-release baseline (overlap={overlap:.2f})",
+                    {
+                        "load_state": load_state,
+                        "overlap_ratio": overlap
+                    }
+                )
+        else:
+            # One or both result sets empty
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-006",
+                Classification.OBSERVATION,
+                False,
+                f"Cannot verify consistency: pre_count={len(pre_data)}, post_count={len(post_data)}",
+                {
+                    "load_state": load_state,
+                    "pre_result_count": len(pre_data),
+                    "post_result_count": len(post_data)
+                }
+            )
+
+    def _oracle_lifecycle_drop_index(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: drop_index deletes index metadata.
+
+        ILC-007: Verify index metadata deleted and load_state == NotLoad.
+        """
+        state_after = result.get("state_after_drop", {})
+        drop_result = result.get("drop_result", {})
+        index_exists_before = drop_result.get("index_exists_before", False)
+        index_exists_after = drop_result.get("index_exists_after", True)
+        load_state = state_after.get("load_state")
+
+        # Check index was dropped
+        if index_exists_after:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-007",
+                Classification.BUG_CANDIDATE,
+                False,
+                "Index metadata not deleted after drop_index",
+                {
+                    "index_exists_before": index_exists_before,
+                    "index_exists_after": index_exists_after
+                }
+            )
+
+        # Check load state
+        if load_state == "NotLoad":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-007",
+                Classification.PASS,
+                True,
+                "Index dropped successfully, collection not loaded",
+                {
+                    "load_state": load_state,
+                    "index_dropped": True,
+                    "target_state": "INDEX_DROPPED",
+                    "irreversible": True
+                }
+            )
+        else:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-007",
+                Classification.OBSERVATION,
+                False,
+                f"Unexpected load_state after drop: {load_state}",
+                {
+                    "load_state": load_state,
+                    "index_dropped": True
+                }
+            )
+
+    def _oracle_lifecycle_notload_documented(
+        self,
+        result: Dict[str, Any],
+        contract: Optional[Dict[str, Any]]
+    ) -> OracleResult:
+        """Oracle: create_collection without index results in NotLoad state.
+
+        ILC-010: Verify documented behavior - newly created collection is NotLoad.
+        """
+        initial_state = result.get("initial_load_state", {})
+        load_state = initial_state.get("load_state")
+        index_metadata_exists = initial_state.get("index_metadata_exists", False)
+
+        if load_state == "NotLoad" and not index_metadata_exists:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-010",
+                Classification.PASS,
+                True,
+                "Documented behavior confirmed: collection is NotLoad until explicitly loaded",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists,
+                    "documented_behavior": True
+                }
+            )
+        elif load_state == "Loaded":
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-010",
+                Classification.ALLOWED_DIFFERENCE,
+                True,
+                "Collection auto-loaded (implementation variance from documented behavior)",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists
+                }
+            )
+        else:
+            return self._oracle_result(
+                contract["contract_id"] if contract else "ilc-010",
+                Classification.OBSERVATION,
+                False,
+                f"Unexpected state: load_state={load_state}, index_exists={index_metadata_exists}",
+                {
+                    "load_state": load_state,
+                    "index_metadata_exists": index_metadata_exists
+                }
+            )
 
 
 if __name__ == "__main__":

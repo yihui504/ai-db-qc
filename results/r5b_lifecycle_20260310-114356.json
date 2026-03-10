@@ -1,0 +1,881 @@
+{
+  "run_id": "r5b-lifecycle-20260310-114356",
+  "timestamp": "2026-03-10T11:43:56.968306",
+  "total_tests": 8,
+  "is_real_database": true,
+  "campaign": "R5B_INDEX_LIFECYCLE",
+  "version": "2.1",
+  "results": [
+    {
+      "test_id": "R5B-ILC-001",
+      "contract_id": "ILC-001",
+      "name": "Create Index State Transition",
+      "initial_state": "DATA_NO_INDEX",
+      "target_state": "INDEX_CREATED_UNLOADED",
+      "execution": {
+        "test_id": "R5B-ILC-001",
+        "contract_id": "ILC-001",
+        "name": "Create Index State Transition",
+        "initial_state": "DATA_NO_INDEX",
+        "target_state": "INDEX_CREATED_UNLOADED",
+        "timestamp": "2026-03-10T11:43:56.967758",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "state_after_create"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "BUG_CANDIDATE",
+        "passed": false,
+        "reasoning": "Index metadata not created",
+        "evidence": {
+          "load_state": "NotLoad",
+          "index_metadata_exists": false
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.967758"
+    },
+    {
+      "test_id": "R5B-ILC-002",
+      "contract_id": "ILC-002",
+      "name": "Search Precondition Gate (Unloaded)",
+      "initial_state": "INDEX_CREATED_UNLOADED",
+      "target_state": "INDEX_CREATED_UNLOADED",
+      "execution": {
+        "test_id": "R5B-ILC-002",
+        "contract_id": "ILC-002",
+        "name": "Search Precondition Gate (Unloaded)",
+        "initial_state": "INDEX_CREATED_UNLOADED",
+        "target_state": "INDEX_CREATED_UNLOADED",
+        "timestamp": "2026-03-10T11:43:56.967758",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "search",
+            "result": {
+              "data": [
+                {
+                  "id": 0,
+                  "distance": 0.0
+                },
+                {
+                  "id": 1,
+                  "distance": 0.1
+                },
+                {
+                  "id": 2,
+                  "distance": 0.2
+                },
+                {
+                  "id": 3,
+                  "distance": 0.30000000000000004
+                },
+                {
+                  "id": 4,
+                  "distance": 0.4
+                }
+              ],
+              "status": "success"
+            },
+            "status": "mock",
+            "store_as": "search_result_unloaded"
+          },
+          {
+            "step": 5,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "load_state_after_search"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "BUG_CANDIDATE",
+        "passed": false,
+        "reasoning": "Search succeeded on unloaded collection (state bug): returned 5 results",
+        "evidence": {
+          "precondition_gate_violated": true,
+          "load_state": "NotLoad",
+          "result_count": 5
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.967758"
+    },
+    {
+      "test_id": "R5B-ILC-003",
+      "contract_id": "ILC-003",
+      "name": "Load State Transition",
+      "initial_state": "INDEX_CREATED_UNLOADED",
+      "target_state": "INDEX_LOADED",
+      "execution": {
+        "test_id": "R5B-ILC-003",
+        "contract_id": "ILC-003",
+        "name": "Load State Transition",
+        "initial_state": "INDEX_CREATED_UNLOADED",
+        "target_state": "INDEX_LOADED",
+        "timestamp": "2026-03-10T11:43:56.967758",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "load",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 5,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "state_after_load"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "BUG_CANDIDATE",
+        "passed": false,
+        "reasoning": "Load failed, load_state=NotLoad (expected Loaded)",
+        "evidence": {
+          "load_state": "NotLoad"
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.967758"
+    },
+    {
+      "test_id": "R5B-ILC-004",
+      "contract_id": "ILC-004",
+      "name": "Loaded Search Baseline",
+      "initial_state": "INDEX_LOADED",
+      "target_state": "INDEX_LOADED",
+      "execution": {
+        "test_id": "R5B-ILC-004",
+        "contract_id": "ILC-004",
+        "name": "Loaded Search Baseline",
+        "initial_state": "INDEX_LOADED",
+        "target_state": "INDEX_LOADED",
+        "timestamp": "2026-03-10T11:43:56.967758",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "load",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 5,
+            "operation": "search",
+            "result": {
+              "data": [
+                {
+                  "id": 0,
+                  "distance": 0.0
+                },
+                {
+                  "id": 1,
+                  "distance": 0.1
+                },
+                {
+                  "id": 2,
+                  "distance": 0.2
+                },
+                {
+                  "id": 3,
+                  "distance": 0.30000000000000004
+                },
+                {
+                  "id": 4,
+                  "distance": 0.4
+                }
+              ],
+              "status": "success"
+            },
+            "status": "mock",
+            "store_as": "baseline_results"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Search succeeded on loaded collection: 5 results",
+        "evidence": {
+          "result_count": 5,
+          "baseline": true
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.967758"
+    },
+    {
+      "test_id": "R5B-ILC-005",
+      "contract_id": "ILC-005",
+      "name": "Release State Transition",
+      "initial_state": "INDEX_LOADED",
+      "target_state": "INDEX_RELEASED",
+      "execution": {
+        "test_id": "R5B-ILC-005",
+        "contract_id": "ILC-005",
+        "name": "Release State Transition",
+        "initial_state": "INDEX_LOADED",
+        "target_state": "INDEX_RELEASED",
+        "timestamp": "2026-03-10T11:43:56.967758",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "load",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 5,
+            "operation": "count_entities",
+            "result": {
+              "storage_count": 100,
+              "load_state": "Loaded",
+              "status": "success"
+            },
+            "status": "mock",
+            "store_as": "count_before_release"
+          },
+          {
+            "step": 6,
+            "operation": "release",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 7,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "state_after_release"
+          },
+          {
+            "step": 8,
+            "operation": "count_entities",
+            "result": {
+              "storage_count": 100,
+              "load_state": "Loaded",
+              "status": "success"
+            },
+            "status": "mock",
+            "store_as": "count_after_release"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "BUG_CANDIDATE",
+        "passed": false,
+        "reasoning": "Index metadata lost after release",
+        "evidence": {
+          "index_metadata_exists": false
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.967758"
+    },
+    {
+      "test_id": "R5B-ILC-006",
+      "contract_id": "ILC-006",
+      "name": "Reload After Release",
+      "initial_state": "INDEX_RELEASED",
+      "target_state": "INDEX_LOADED",
+      "execution": {
+        "test_id": "R5B-ILC-006",
+        "contract_id": "ILC-006",
+        "name": "Reload After Release",
+        "initial_state": "INDEX_RELEASED",
+        "target_state": "INDEX_LOADED",
+        "timestamp": "2026-03-10T11:43:56.968306",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "load",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 5,
+            "operation": "search",
+            "result": {
+              "data": [
+                {
+                  "id": 0,
+                  "distance": 0.0
+                },
+                {
+                  "id": 1,
+                  "distance": 0.1
+                },
+                {
+                  "id": 2,
+                  "distance": 0.2
+                },
+                {
+                  "id": 3,
+                  "distance": 0.30000000000000004
+                },
+                {
+                  "id": 4,
+                  "distance": 0.4
+                }
+              ],
+              "status": "success"
+            },
+            "status": "mock",
+            "store_as": "results_pre_release"
+          },
+          {
+            "step": 6,
+            "operation": "release",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 7,
+            "operation": "reload",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 8,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "state_after_reload"
+          },
+          {
+            "step": 9,
+            "operation": "search",
+            "result": {
+              "data": [
+                {
+                  "id": 0,
+                  "distance": 0.0
+                },
+                {
+                  "id": 1,
+                  "distance": 0.1
+                },
+                {
+                  "id": 2,
+                  "distance": 0.2
+                },
+                {
+                  "id": 3,
+                  "distance": 0.30000000000000004
+                },
+                {
+                  "id": 4,
+                  "distance": 0.4
+                }
+              ],
+              "status": "success"
+            },
+            "status": "mock",
+            "store_as": "results_post_reload"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "BUG_CANDIDATE",
+        "passed": false,
+        "reasoning": "Reload failed, load_state=NotLoad (expected Loaded)",
+        "evidence": {
+          "load_state": "NotLoad"
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.968306"
+    },
+    {
+      "test_id": "R5B-ILC-007",
+      "contract_id": "ILC-007",
+      "name": "Drop Index Transition",
+      "initial_state": "INDEX_LOADED",
+      "target_state": "INDEX_DROPPED",
+      "execution": {
+        "test_id": "R5B-ILC-007",
+        "contract_id": "ILC-007",
+        "name": "Drop Index Transition",
+        "initial_state": "INDEX_LOADED",
+        "target_state": "INDEX_DROPPED",
+        "timestamp": "2026-03-10T11:43:56.968306",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "build_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 4,
+            "operation": "load",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 5,
+            "operation": "drop_index",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 6,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "state_after_drop"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "BUG_CANDIDATE",
+        "passed": false,
+        "reasoning": "Index metadata not deleted after drop_index",
+        "evidence": {
+          "index_exists_before": false,
+          "index_exists_after": true
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.968306"
+    },
+    {
+      "test_id": "R5B-ILC-010",
+      "contract_id": "ILC-010",
+      "name": "Documented NotLoad Behavior",
+      "initial_state": "COLLECTION_EMPTY_NO_DATA",
+      "target_state": "DATA_NO_INDEX",
+      "execution": {
+        "test_id": "R5B-ILC-010",
+        "contract_id": "ILC-010",
+        "name": "Documented NotLoad Behavior",
+        "initial_state": "COLLECTION_EMPTY_NO_DATA",
+        "target_state": "DATA_NO_INDEX",
+        "timestamp": "2026-03-10T11:43:56.968306",
+        "is_real_database": false,
+        "steps": [
+          {
+            "step": 1,
+            "operation": "create_collection",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 2,
+            "operation": "insert",
+            "result": {
+              "status": "success",
+              "data": []
+            },
+            "status": "mock"
+          },
+          {
+            "step": 3,
+            "operation": "get_load_state",
+            "result": {
+              "load_state": "NotLoad",
+              "index_metadata_exists": false,
+              "data": [
+                {
+                  "load_state": "NotLoad"
+                }
+              ]
+            },
+            "status": "mock",
+            "store_as": "initial_load_state"
+          }
+        ],
+        "status": "mock",
+        "error": null
+      },
+      "oracle": {
+        "classification": "PASS",
+        "passed": true,
+        "reasoning": "Documented behavior confirmed: collection is NotLoad until explicitly loaded",
+        "evidence": {
+          "load_state": "NotLoad",
+          "index_metadata_exists": false,
+          "documented_behavior": true
+        }
+      },
+      "timestamp": "2026-03-10T11:43:56.968306"
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "by_classification": {
+      "BUG_CANDIDATE": 6,
+      "PASS": 2
+    },
+    "by_contract": {
+      "ILC-001": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "ILC-002": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "ILC-003": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "ILC-004": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "ILC-005": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "ILC-006": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "ILC-007": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "ILC-010": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      }
+    },
+    "by_state_transition": {
+      "DATA_NO_INDEX \u2192 INDEX_CREATED_UNLOADED": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "INDEX_CREATED_UNLOADED \u2192 INDEX_CREATED_UNLOADED": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "INDEX_CREATED_UNLOADED \u2192 INDEX_LOADED": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "INDEX_LOADED \u2192 INDEX_LOADED": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      },
+      "INDEX_LOADED \u2192 INDEX_RELEASED": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "INDEX_RELEASED \u2192 INDEX_LOADED": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "INDEX_LOADED \u2192 INDEX_DROPPED": {
+        "passed": 0,
+        "failed": 1,
+        "total": 1
+      },
+      "COLLECTION_EMPTY_NO_DATA \u2192 DATA_NO_INDEX": {
+        "passed": 1,
+        "failed": 0,
+        "total": 1
+      }
+    },
+    "passed": 2,
+    "failed": 6
+  }
+}
