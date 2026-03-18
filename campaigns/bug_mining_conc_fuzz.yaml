@@ -1,0 +1,159 @@
+# Bug Mining Campaign: CONC + Fuzzing
+# Target: Discover new bugs using concurrent testing and fuzzing strategies
+
+name: "Bug Mining: CONC + Fuzzing"
+description: "Comprehensive bug mining campaign using concurrent test contracts and 6 fuzzing strategies"
+
+# Campaign metadata
+campaign_id: "BUG_MINING_2025_001"
+start_date: "2025-03-17"
+target_databases:
+  - milvus
+  - qdrant
+  - weaviate
+  - pgvector
+
+# Phase 1: Concurrent Testing Configuration
+concurrent_testing:
+  enabled: true
+  contracts:
+    - contract_id: "CONC-001"
+      name: "Concurrent Insert Count Consistency"
+      priority: high
+      thread_configs:
+        - threads: 4
+          vectors_per_thread: 100
+        - threads: 8
+          vectors_per_thread: 100
+        - threads: 16
+          vectors_per_thread: 50
+      databases:
+        - milvus
+        - qdrant
+        - weaviate
+        - pgvector
+      
+    - contract_id: "CONC-002"
+      name: "Concurrent Search Isolation"
+      priority: high
+      thread_configs:
+        - readers: 4
+          deleters: 2
+          duration: 60
+        - readers: 8
+          deleters: 4
+          duration: 60
+      databases:
+        - milvus
+        - qdrant
+        
+    - contract_id: "CONC-003"
+      name: "Delete-Search Cross Consistency"
+      priority: medium
+      thread_configs:
+        - searchers: 4
+          deleters: 2
+          duration: 90
+      databases:
+        - milvus
+        - qdrant
+
+# Phase 2: Fuzzing Configuration
+fuzzing:
+  enabled: true
+  strategies:
+    - name: "random"
+      weight: 1.0
+      max_iterations: 100
+    - name: "boundary"
+      weight: 1.5
+      max_iterations: 50
+    - name: "arithmetic"
+      weight: 1.0
+      max_iterations: 50
+    - name: "dictionary"
+      weight: 1.0
+      max_iterations: 50
+    - name: "splicing"
+      weight: 0.8
+      max_iterations: 30
+    - name: "crossover"
+      weight: 0.8
+      max_iterations: 30
+  
+  selection_mode: "adaptive"  # random, round_robin, feedback_driven, adaptive
+  
+  # Target contracts for fuzzing
+  target_contracts:
+    - family: "ANN"
+      contracts: ["ANN-001", "ANN-002", "ANN-003", "ANN-004", "ANN-005"]
+    - family: "SCHEMA"
+      contracts: ["SCH-001", "SCH-002", "SCH-004"]
+    - family: "HYBRID"
+      contracts: ["HYB-001", "HYB-002", "HYB-003"]
+  
+  # Parameters to fuzz
+  fuzz_parameters:
+    - top_k:
+        min: 0
+        max: 1000
+        special_values: [0, 1, -1, 10000]
+    - dimension:
+        min: 1
+        max: 4096
+        special_values: [0, 1, -1, 10000]
+    - metric_type:
+        values: ["L2", "IP", "COSINE"]
+    - collection_name:
+        special_values: ["", "_", "test", "very_long_name_256_chars"]
+
+# Phase 3: Regression Testing
+regression_testing:
+  enabled: true
+  # Test if new optimizations can detect known DEF types
+  target_defs:
+    - def_id: "DEF-001"
+      type: "count_inconsistency"
+      contract: "CONC-001"
+    - def_id: "DEF-003"
+      type: "filter_false_positive"
+      fuzzing_strategy: "boundary"
+    - def_id: "DEF-005"
+      type: "filter_false_negative"
+      fuzzing_strategy: "dictionary"
+
+# Output Configuration
+output:
+  base_dir: "results/bug_mining_2025_001"
+  formats:
+    - json
+    - markdown
+    - html
+  
+  # Report sections
+  reports:
+    - name: "summary"
+      type: "executive_summary"
+    - name: "conc_results"
+      type: "concurrent_test_report"
+    - name: "fuzzing_results"
+      type: "fuzzing_campaign_report"
+    - name: "new_bugs"
+      type: "bug_classification"
+      cc_classification: true
+    - name: "coverage"
+      type: "contract_coverage_update"
+
+# Success Criteria
+success_criteria:
+  min_new_bugs: 1
+  min_contracts_validated: 2
+  min_strategies_effective: 2
+  cc_classification_complete: true
+
+# Execution Settings
+execution:
+  parallel: true
+  max_workers: 4
+  timeout_per_test: 300
+  retry_count: 2

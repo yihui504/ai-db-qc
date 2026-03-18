@@ -1,0 +1,518 @@
+{
+  "run_id": "r6-differential-20260316-195104",
+  "r6a": [
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 0
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 0
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        18,
+        271,
+        278,
+        146,
+        260
+      ],
+      "qdrant_top_ids": [
+        18,
+        271,
+        278,
+        146,
+        260
+      ],
+      "query_idx": 0
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 1
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 1
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        28,
+        155,
+        31,
+        1,
+        213
+      ],
+      "qdrant_top_ids": [
+        28,
+        155,
+        31,
+        1,
+        213
+      ],
+      "query_idx": 1
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 2
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 2
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        31,
+        70,
+        125,
+        210,
+        119
+      ],
+      "qdrant_top_ids": [
+        31,
+        70,
+        125,
+        210,
+        119
+      ],
+      "query_idx": 2
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 3
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 3
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        3,
+        179,
+        139,
+        56,
+        13
+      ],
+      "qdrant_top_ids": [
+        3,
+        179,
+        139,
+        56,
+        13
+      ],
+      "query_idx": 3
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 4
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 4
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        244,
+        232,
+        230,
+        195,
+        105
+      ],
+      "qdrant_top_ids": [
+        244,
+        232,
+        230,
+        195,
+        105
+      ],
+      "query_idx": 4
+    }
+  ],
+  "r6b": [
+    {
+      "contract": "HYB-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "milvus_filtered_count": 10,
+      "qdrant_filtered_count": 10,
+      "category_count": 150,
+      "query_idx": 0
+    },
+    {
+      "contract": "HYB-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "milvus_filtered_count": 10,
+      "qdrant_filtered_count": 10,
+      "category_count": 150,
+      "query_idx": 1
+    },
+    {
+      "contract": "HYB-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "milvus_filtered_count": 10,
+      "qdrant_filtered_count": 10,
+      "category_count": 150,
+      "query_idx": 2
+    }
+  ],
+  "r6c": [
+    {
+      "contract": "DATA-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "n_inserted": 200,
+      "milvus_count": 200,
+      "qdrant_count": 200
+    }
+  ],
+  "all": [
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 0
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 0
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        18,
+        271,
+        278,
+        146,
+        260
+      ],
+      "qdrant_top_ids": [
+        18,
+        271,
+        278,
+        146,
+        260
+      ],
+      "query_idx": 0
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 1
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 1
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        28,
+        155,
+        31,
+        1,
+        213
+      ],
+      "qdrant_top_ids": [
+        28,
+        155,
+        31,
+        1,
+        213
+      ],
+      "query_idx": 1
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 2
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 2
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        31,
+        70,
+        125,
+        210,
+        119
+      ],
+      "qdrant_top_ids": [
+        31,
+        70,
+        125,
+        210,
+        119
+      ],
+      "query_idx": 2
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 3
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 3
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        3,
+        179,
+        139,
+        56,
+        13
+      ],
+      "qdrant_top_ids": [
+        3,
+        179,
+        139,
+        56,
+        13
+      ],
+      "query_idx": 3
+    },
+    {
+      "contract": "ANN-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "top_k": 10,
+      "milvus_count": 10,
+      "qdrant_count": 10,
+      "query_idx": 4
+    },
+    {
+      "contract": "ANN-002",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "query_idx": 4
+    },
+    {
+      "contract": "DIFF-OVERLAP",
+      "classification": "CONCORDANCE",
+      "recall_qdrant_vs_milvus": 1.0,
+      "milvus_top_ids": [
+        244,
+        232,
+        230,
+        195,
+        105
+      ],
+      "qdrant_top_ids": [
+        244,
+        232,
+        230,
+        195,
+        105
+      ],
+      "query_idx": 4
+    },
+    {
+      "contract": "HYB-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "milvus_filtered_count": 10,
+      "qdrant_filtered_count": 10,
+      "category_count": 150,
+      "query_idx": 0
+    },
+    {
+      "contract": "HYB-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "milvus_filtered_count": 10,
+      "qdrant_filtered_count": 10,
+      "category_count": 150,
+      "query_idx": 1
+    },
+    {
+      "contract": "HYB-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "milvus_filtered_count": 10,
+      "qdrant_filtered_count": 10,
+      "category_count": 150,
+      "query_idx": 2
+    },
+    {
+      "contract": "DATA-001",
+      "classification": "CONCORDANCE",
+      "per_db": {
+        "milvus": "PASS",
+        "qdrant": "PASS"
+      },
+      "n_inserted": 200,
+      "milvus_count": 200,
+      "qdrant_count": 200
+    }
+  ],
+  "summary": {
+    "CONCORDANCE": 19
+  }
+}

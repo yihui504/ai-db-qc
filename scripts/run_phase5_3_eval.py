@@ -8,6 +8,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+# Ensure project root is on the path when invoked as a subprocess
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 try:
     from casegen.generators.instantiator import load_templates, instantiate_all
     from contracts.core.loader import get_default_contract
@@ -64,9 +67,14 @@ def create_adapter_with_fallback(
     port: int,
     require_real: bool = False,
     diagnostic_quality: str = "full",
-    response_mode: str = "success"
+    response_mode: str = "success",
+    qdrant_url: str = "http://localhost:6333",
+    weaviate_host: str = "localhost",
+    weaviate_port: int = 8080,
+    pgvector_container: str = "pgvector",
+    pgvector_db: str = "vectordb",
 ) -> tuple[Any, VariantFlags, Dict[str, str]]:
-    """Create adapter with Milvus fallback to mock."""
+    """Create adapter with fallback to mock. Supports mock/milvus/qdrant/weaviate/pgvector."""
     variant_flags = VariantFlags()
     adapter_requested = adapter_choice
 
@@ -95,6 +103,108 @@ def create_adapter_with_fallback(
             }
         )
 
+    if adapter_choice == "qdrant":
+        try:
+            from adapters.qdrant_adapter import QdrantAdapter
+            adapter = QdrantAdapter({"url": qdrant_url})
+            if adapter.health_check():
+                print(f"Successfully connected to Qdrant at {qdrant_url}")
+                return (
+                    adapter,
+                    variant_flags,
+                    {
+                        "adapter_requested": adapter_requested,
+                        "adapter_actual": "qdrant",
+                        "adapter_fallback": False,
+                        "fallback_reason": None
+                    }
+                )
+            raise Exception("Qdrant health check failed")
+        except Exception as e:
+            error_msg = str(e)
+            print(f"ERROR: Qdrant connection failed: {error_msg}")
+            if require_real:
+                raise SystemExit(1) from e
+            print("WARNING: Falling back to mock adapter")
+            variant_flags.adapter_fallback = True
+            variant_flags.adapter_fallback_reason = error_msg
+            return (
+                MockAdapter(response_mode=ResponseMode.SUCCESS),
+                variant_flags,
+                {"adapter_requested": adapter_requested, "adapter_actual": "mock",
+                 "adapter_fallback": True, "fallback_reason": error_msg}
+            )
+
+    if adapter_choice == "weaviate":
+        try:
+            from adapters.weaviate_adapter import WeaviateAdapter
+            adapter = WeaviateAdapter({"host": weaviate_host, "port": weaviate_port})
+            if adapter.health_check():
+                print(f"Successfully connected to Weaviate at {weaviate_host}:{weaviate_port}")
+                return (
+                    adapter,
+                    variant_flags,
+                    {
+                        "adapter_requested": adapter_requested,
+                        "adapter_actual": "weaviate",
+                        "adapter_fallback": False,
+                        "fallback_reason": None
+                    }
+                )
+            raise Exception("Weaviate health check failed")
+        except Exception as e:
+            error_msg = str(e)
+            print(f"ERROR: Weaviate connection failed: {error_msg}")
+            if require_real:
+                raise SystemExit(1) from e
+            print("WARNING: Falling back to mock adapter")
+            variant_flags.adapter_fallback = True
+            variant_flags.adapter_fallback_reason = error_msg
+            return (
+                MockAdapter(response_mode=ResponseMode.SUCCESS),
+                variant_flags,
+                {"adapter_requested": adapter_requested, "adapter_actual": "mock",
+                 "adapter_fallback": True, "fallback_reason": error_msg}
+            )
+
+    if adapter_choice == "pgvector":
+        try:
+            from adapters.pgvector_adapter import PgvectorAdapter
+            adapter = PgvectorAdapter({
+                "container": pgvector_container,
+                "database": pgvector_db,
+                "user": "postgres",
+                "password": "pgvector",
+            })
+            if adapter.health_check():
+                print(f"Successfully connected to pgvector at {pgvector_container}/{pgvector_db}")
+                return (
+                    adapter,
+                    variant_flags,
+                    {
+                        "adapter_requested": adapter_requested,
+                        "adapter_actual": "pgvector",
+                        "adapter_fallback": False,
+                        "fallback_reason": None
+                    }
+                )
+            raise Exception("pgvector health check failed")
+        except Exception as e:
+            error_msg = str(e)
+            print(f"ERROR: pgvector connection failed: {error_msg}")
+            if require_real:
+                raise SystemExit(1) from e
+            print("WARNING: Falling back to mock adapter")
+            variant_flags.adapter_fallback = True
+            variant_flags.adapter_fallback_reason = error_msg
+            return (
+                MockAdapter(response_mode=ResponseMode.SUCCESS),
+                variant_flags,
+                {"adapter_requested": adapter_requested, "adapter_actual": "mock",
+                 "adapter_fallback": True, "fallback_reason": error_msg}
+            )
+
+    # Default: milvus
     try:
         print(f"Connecting to Milvus at {host}:{port}...")
         connection_config = {
@@ -169,7 +279,7 @@ def main():
     parser.add_argument(
         "--adapter",
         default="milvus",
-        choices=["mock", "milvus"],
+        choices=["mock", "milvus", "qdrant", "weaviate", "pgvector"],
         help="Adapter to use (default: milvus)"
     )
     parser.add_argument(
@@ -182,6 +292,32 @@ def main():
         type=int,
         default=19530,
         help="Milvus port (default: 19530)"
+    )
+    parser.add_argument(
+        "--qdrant-url",
+        default="http://localhost:6333",
+        help="Qdrant URL (default: http://localhost:6333)"
+    )
+    parser.add_argument(
+        "--weaviate-host",
+        default="localhost",
+        help="Weaviate host (default: localhost)"
+    )
+    parser.add_argument(
+        "--weaviate-port",
+        type=int,
+        default=8080,
+        help="Weaviate port (default: 8080)"
+    )
+    parser.add_argument(
+        "--pgvector-container",
+        default="pgvector",
+        help="pgvector Docker container name (default: pgvector)"
+    )
+    parser.add_argument(
+        "--pgvector-db",
+        default="vectordb",
+        help="pgvector database name (default: vectordb)"
     )
     parser.add_argument(
         "--no-gate",
@@ -271,7 +407,12 @@ def main():
 
     # Create adapter with fallback
     adapter, adapter_flags, adapter_info = create_adapter_with_fallback(
-        args.adapter, args.host, args.port, args.require_real, args.diagnostic_quality, args.response_mode
+        args.adapter, args.host, args.port, args.require_real, args.diagnostic_quality, args.response_mode,
+        qdrant_url=args.qdrant_url,
+        weaviate_host=args.weaviate_host,
+        weaviate_port=args.weaviate_port,
+        pgvector_container=args.pgvector_container,
+        pgvector_db=args.pgvector_db,
     )
 
     variant_flags.adapter_fallback = adapter_flags.adapter_fallback
@@ -291,7 +432,7 @@ def main():
         except Exception as e:
             print(f"WARNING: Could not capture fingerprint: {e}")
     else:
-        print("Using mock adapter")
+        print(f"Using {adapter_info['adapter_actual']} adapter")
     print()
 
     # Create executor with oracles

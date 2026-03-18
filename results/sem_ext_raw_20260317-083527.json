@@ -1,0 +1,853 @@
+{
+  "run_timestamp": "20260317-083527",
+  "adapter": "pgvector",
+  "embed_backend": "hash-fallback",
+  "domains": [
+    "finance",
+    "medical",
+    "legal",
+    "code"
+  ],
+  "results": {
+    "finance": {
+      "MR-01": {
+        "records": [
+          {
+            "pair_id": "finance-positive-0000",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The company reported strong quarterly earnings growth.",
+            "text_b": "The firm achieved significant profit increases this quarter."
+          },
+          {
+            "pair_id": "finance-positive-0001",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The company reported strong quarterly earnings growth.",
+            "text_b": "The firm achieved significant profit increases this quarter."
+          },
+          {
+            "pair_id": "finance-positive-0002",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The stock price fell sharply after the earnings report.",
+            "text_b": "Share prices dropped significantly following the earnings an"
+          },
+          {
+            "pair_id": "finance-positive-0003",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "Interest rates were raised by the central bank.",
+            "text_b": "The central bank increased its benchmark interest rate."
+          },
+          {
+            "pair_id": "finance-positive-0004",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "Interest rates were raised by the central bank.",
+            "text_b": "The central bank increased its benchmark interest rate."
+          },
+          {
+            "pair_id": "finance-positive-0005",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "Interest rates were raised by the central bank.",
+            "text_b": "The central bank increased its benchmark interest rate."
+          },
+          {
+            "pair_id": "finance-positive-0006",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The company reported strong quarterly earnings growth.",
+            "text_b": "The firm achieved significant profit increases this quarter."
+          },
+          {
+            "pair_id": "finance-positive-0007",
+            "overlap": 0.25,
+            "classification": "VIOLATION",
+            "text_a": "Market volatility increased due to geopolitical uncertainty.",
+            "text_b": "Geopolitical tensions led to higher market fluctuations."
+          },
+          {
+            "pair_id": "finance-positive-0008",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The company reported strong quarterly earnings growth.",
+            "text_b": "The firm achieved significant profit increases this quarter."
+          },
+          {
+            "pair_id": "finance-positive-0009",
+            "overlap": 0.25,
+            "classification": "VIOLATION",
+            "text_a": "Market volatility increased due to geopolitical uncertainty.",
+            "text_b": "Geopolitical tensions led to higher market fluctuations."
+          }
+        ],
+        "summary": {
+          "VIOLATION": 10
+        }
+      },
+      "MR-03": {
+        "records": [
+          {
+            "pair_id": "finance-hard_negative-0015",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "notes": "approved vs blocked",
+            "text_a": "The merger was approved by regulators.",
+            "text_b": "The merger was blocked by regulators."
+          },
+          {
+            "pair_id": "finance-hard_negative-0016",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "upgrade vs downgrade",
+            "text_a": "The credit rating was upgraded to AA.",
+            "text_b": "The credit rating was downgraded to BB."
+          },
+          {
+            "pair_id": "finance-hard_negative-0017",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "upgrade vs downgrade",
+            "text_a": "The credit rating was upgraded to AA.",
+            "text_b": "The credit rating was downgraded to BB."
+          },
+          {
+            "pair_id": "finance-hard_negative-0018",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "rise vs fall",
+            "text_a": "The bond yield rose to 5%.",
+            "text_b": "The bond yield fell to 5%."
+          },
+          {
+            "pair_id": "finance-hard_negative-0019",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "upgrade vs downgrade",
+            "text_a": "The credit rating was upgraded to AA.",
+            "text_b": "The credit rating was downgraded to BB."
+          },
+          {
+            "pair_id": "finance-hard_negative-0020",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "notes": "approved vs blocked",
+            "text_a": "The merger was approved by regulators.",
+            "text_b": "The merger was blocked by regulators."
+          },
+          {
+            "pair_id": "finance-hard_negative-0021",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "upgrade vs downgrade",
+            "text_a": "The credit rating was upgraded to AA.",
+            "text_b": "The credit rating was downgraded to BB."
+          },
+          {
+            "pair_id": "finance-hard_negative-0022",
+            "rank": 9,
+            "classification": "OBSERVATION",
+            "notes": "opposite financial health",
+            "text_a": "The company is profitable and expanding.",
+            "text_b": "The company is losing money and contracting."
+          },
+          {
+            "pair_id": "finance-hard_negative-0023",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "notes": "approved vs blocked",
+            "text_a": "The merger was approved by regulators.",
+            "text_b": "The merger was blocked by regulators."
+          },
+          {
+            "pair_id": "finance-hard_negative-0024",
+            "rank": 9,
+            "classification": "OBSERVATION",
+            "notes": "opposite financial health",
+            "text_a": "The company is profitable and expanding.",
+            "text_b": "The company is losing money and contracting."
+          }
+        ],
+        "summary": {
+          "OBSERVATION": 5,
+          "PASS": 5
+        }
+      },
+      "MR-04": {
+        "records": [
+          {
+            "pair_id": "finance-negative-0010",
+            "rank": 8,
+            "classification": "OBSERVATION",
+            "text_a": "Interest rates are rising globally.",
+            "text_b": "Advances in quantum computing are accelerating."
+          },
+          {
+            "pair_id": "finance-negative-0011",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The company reported strong quarterly earnings.",
+            "text_b": "The weather forecast calls for rain this weekend."
+          },
+          {
+            "pair_id": "finance-negative-0012",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The company reported strong quarterly earnings.",
+            "text_b": "The weather forecast calls for rain this weekend."
+          },
+          {
+            "pair_id": "finance-negative-0013",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The company reported strong quarterly earnings.",
+            "text_b": "The weather forecast calls for rain this weekend."
+          },
+          {
+            "pair_id": "finance-negative-0014",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The company reported strong quarterly earnings.",
+            "text_b": "The weather forecast calls for rain this weekend."
+          }
+        ],
+        "summary": {
+          "OBSERVATION": 1,
+          "PASS": 4
+        }
+      }
+    },
+    "medical": {
+      "MR-01": {
+        "records": [
+          {
+            "pair_id": "medical-positive-0000",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "The drug inhibits tumor cell proliferation.",
+            "text_b": "The medication prevents cancer cells from dividing."
+          },
+          {
+            "pair_id": "medical-positive-0001",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The patient is recovering well after surgery.",
+            "text_b": "The patient shows good post-operative progress."
+          },
+          {
+            "pair_id": "medical-positive-0002",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The patient is recovering well after surgery.",
+            "text_b": "The patient shows good post-operative progress."
+          },
+          {
+            "pair_id": "medical-positive-0003",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "The drug inhibits tumor cell proliferation.",
+            "text_b": "The medication prevents cancer cells from dividing."
+          },
+          {
+            "pair_id": "medical-positive-0004",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "Hypertension increases the risk of stroke.",
+            "text_b": "High blood pressure is a major risk factor for cerebrovascul"
+          },
+          {
+            "pair_id": "medical-positive-0005",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The patient is recovering well after surgery.",
+            "text_b": "The patient shows good post-operative progress."
+          },
+          {
+            "pair_id": "medical-positive-0006",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The patient is recovering well after surgery.",
+            "text_b": "The patient shows good post-operative progress."
+          },
+          {
+            "pair_id": "medical-positive-0007",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The patient is recovering well after surgery.",
+            "text_b": "The patient shows good post-operative progress."
+          },
+          {
+            "pair_id": "medical-positive-0008",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "The drug inhibits tumor cell proliferation.",
+            "text_b": "The medication prevents cancer cells from dividing."
+          },
+          {
+            "pair_id": "medical-positive-0009",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The patient is recovering well after surgery.",
+            "text_b": "The patient shows good post-operative progress."
+          }
+        ],
+        "summary": {
+          "VIOLATION": 10
+        }
+      },
+      "MR-03": {
+        "records": [
+          {
+            "pair_id": "medical-hard_negative-0015",
+            "rank": 5,
+            "classification": "OBSERVATION",
+            "notes": "benign vs malignant",
+            "text_a": "The biopsy results were benign.",
+            "text_b": "The biopsy results were malignant."
+          },
+          {
+            "pair_id": "medical-hard_negative-0016",
+            "rank": 5,
+            "classification": "OBSERVATION",
+            "notes": "benign vs malignant",
+            "text_a": "The biopsy results were benign.",
+            "text_b": "The biopsy results were malignant."
+          },
+          {
+            "pair_id": "medical-hard_negative-0017",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "effective vs contraindicated",
+            "text_a": "The medication is effective for treating hypertension.",
+            "text_b": "The medication is contraindicated for patients with hyperten"
+          },
+          {
+            "pair_id": "medical-hard_negative-0018",
+            "rank": 5,
+            "classification": "OBSERVATION",
+            "notes": "benign vs malignant",
+            "text_a": "The biopsy results were benign.",
+            "text_b": "The biopsy results were malignant."
+          },
+          {
+            "pair_id": "medical-hard_negative-0019",
+            "rank": 8,
+            "classification": "OBSERVATION",
+            "notes": "minimal vs severe",
+            "text_a": "The drug has minimal side effects.",
+            "text_b": "The drug has severe side effects."
+          },
+          {
+            "pair_id": "medical-hard_negative-0020",
+            "rank": 5,
+            "classification": "OBSERVATION",
+            "notes": "benign vs malignant",
+            "text_a": "The biopsy results were benign.",
+            "text_b": "The biopsy results were malignant."
+          },
+          {
+            "pair_id": "medical-hard_negative-0021",
+            "rank": 8,
+            "classification": "OBSERVATION",
+            "notes": "minimal vs severe",
+            "text_a": "The drug has minimal side effects.",
+            "text_b": "The drug has severe side effects."
+          },
+          {
+            "pair_id": "medical-hard_negative-0022",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "improved vs deteriorated",
+            "text_a": "The patient's condition improved significantly.",
+            "text_b": "The patient's condition deteriorated significantly."
+          },
+          {
+            "pair_id": "medical-hard_negative-0023",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "effective vs contraindicated",
+            "text_a": "The medication is effective for treating hypertension.",
+            "text_b": "The medication is contraindicated for patients with hyperten"
+          },
+          {
+            "pair_id": "medical-hard_negative-0024",
+            "rank": 5,
+            "classification": "OBSERVATION",
+            "notes": "benign vs malignant",
+            "text_a": "The biopsy results were benign.",
+            "text_b": "The biopsy results were malignant."
+          }
+        ],
+        "summary": {
+          "OBSERVATION": 7,
+          "VIOLATION": 2,
+          "PASS": 1
+        }
+      },
+      "MR-04": {
+        "records": [
+          {
+            "pair_id": "medical-negative-0010",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The patient has been diagnosed with diabetes.",
+            "text_b": "The algorithm achieved state-of-the-art performance on bench"
+          },
+          {
+            "pair_id": "medical-negative-0011",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "Blood pressure should be monitored regularly.",
+            "text_b": "The latest smartphone features an improved camera."
+          },
+          {
+            "pair_id": "medical-negative-0012",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The patient has been diagnosed with diabetes.",
+            "text_b": "The algorithm achieved state-of-the-art performance on bench"
+          },
+          {
+            "pair_id": "medical-negative-0013",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The patient has been diagnosed with diabetes.",
+            "text_b": "The algorithm achieved state-of-the-art performance on bench"
+          },
+          {
+            "pair_id": "medical-negative-0014",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The patient has been diagnosed with diabetes.",
+            "text_b": "The algorithm achieved state-of-the-art performance on bench"
+          }
+        ],
+        "summary": {
+          "PASS": 5
+        }
+      }
+    },
+    "legal": {
+      "MR-01": {
+        "records": [
+          {
+            "pair_id": "legal-positive-0000",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0001",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0002",
+            "overlap": 0.25,
+            "classification": "VIOLATION",
+            "text_a": "The court issued an injunction to halt the proceedings.",
+            "text_b": "A court order was granted to stop the action."
+          },
+          {
+            "pair_id": "legal-positive-0003",
+            "overlap": 0.25,
+            "classification": "VIOLATION",
+            "text_a": "The contract was terminated due to breach.",
+            "text_b": "The agreement was voided following a violation of its terms."
+          },
+          {
+            "pair_id": "legal-positive-0004",
+            "overlap": 0.25,
+            "classification": "VIOLATION",
+            "text_a": "The contract was terminated due to breach.",
+            "text_b": "The agreement was voided following a violation of its terms."
+          },
+          {
+            "pair_id": "legal-positive-0005",
+            "overlap": 0.25,
+            "classification": "VIOLATION",
+            "text_a": "The contract was terminated due to breach.",
+            "text_b": "The agreement was voided following a violation of its terms."
+          },
+          {
+            "pair_id": "legal-positive-0006",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0007",
+            "overlap": 0.5384615384615384,
+            "classification": "PASS",
+            "text_a": "The statute of limitations has expired.",
+            "text_b": "The legal time limit for filing the claim has passed."
+          },
+          {
+            "pair_id": "legal-positive-0008",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0009",
+            "overlap": 0.5384615384615384,
+            "classification": "PASS",
+            "text_a": "The statute of limitations has expired.",
+            "text_b": "The legal time limit for filing the claim has passed."
+          }
+        ],
+        "summary": {
+          "VIOLATION": 8,
+          "PASS": 2
+        }
+      },
+      "MR-03": {
+        "records": [
+          {
+            "pair_id": "legal-hard_negative-0015",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "enforceable vs unenforceable",
+            "text_a": "The contract is enforceable under current law.",
+            "text_b": "The contract is unenforceable under current law."
+          },
+          {
+            "pair_id": "legal-hard_negative-0016",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          },
+          {
+            "pair_id": "legal-hard_negative-0017",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          },
+          {
+            "pair_id": "legal-hard_negative-0018",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "liable vs not liable",
+            "text_a": "The defendant is liable for the damages.",
+            "text_b": "The defendant is not liable for the damages."
+          },
+          {
+            "pair_id": "legal-hard_negative-0019",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          },
+          {
+            "pair_id": "legal-hard_negative-0020",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "enforceable vs unenforceable",
+            "text_a": "The contract is enforceable under current law.",
+            "text_b": "The contract is unenforceable under current law."
+          },
+          {
+            "pair_id": "legal-hard_negative-0021",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "reversed vs upheld",
+            "text_a": "The appeal was successful and the verdict was reversed.",
+            "text_b": "The appeal was unsuccessful and the verdict was upheld."
+          },
+          {
+            "pair_id": "legal-hard_negative-0022",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "reversed vs upheld",
+            "text_a": "The appeal was successful and the verdict was reversed.",
+            "text_b": "The appeal was unsuccessful and the verdict was upheld."
+          },
+          {
+            "pair_id": "legal-hard_negative-0023",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "reversed vs upheld",
+            "text_a": "The appeal was successful and the verdict was reversed.",
+            "text_b": "The appeal was unsuccessful and the verdict was upheld."
+          },
+          {
+            "pair_id": "legal-hard_negative-0024",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          }
+        ],
+        "summary": {
+          "PASS": 6,
+          "OBSERVATION": 4
+        }
+      },
+      "MR-04": {
+        "records": [
+          {
+            "pair_id": "legal-negative-0010",
+            "rank": 10,
+            "classification": "OBSERVATION",
+            "text_a": "The jury returned a verdict of not guilty.",
+            "text_b": "The algorithm converged after 100 epochs."
+          },
+          {
+            "pair_id": "legal-negative-0011",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          },
+          {
+            "pair_id": "legal-negative-0012",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          },
+          {
+            "pair_id": "legal-negative-0013",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          },
+          {
+            "pair_id": "legal-negative-0014",
+            "rank": 6,
+            "classification": "OBSERVATION",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          }
+        ],
+        "summary": {
+          "OBSERVATION": 5
+        }
+      }
+    },
+    "code": {
+      "MR-01": {
+        "records": [
+          {
+            "pair_id": "code-positive-0000",
+            "overlap": 0.17647058823529413,
+            "classification": "VIOLATION",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0001",
+            "overlap": 0.17647058823529413,
+            "classification": "VIOLATION",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0002",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "The variable is declared as a constant and cannot be reassig",
+            "text_b": "The identifier is defined as immutable and its value cannot "
+          },
+          {
+            "pair_id": "code-positive-0003",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The loop iterates over each element in the list.",
+            "text_b": "The for-loop processes every item in the array."
+          },
+          {
+            "pair_id": "code-positive-0004",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The loop iterates over each element in the list.",
+            "text_b": "The for-loop processes every item in the array."
+          },
+          {
+            "pair_id": "code-positive-0005",
+            "overlap": 0.1111111111111111,
+            "classification": "VIOLATION",
+            "text_a": "The loop iterates over each element in the list.",
+            "text_b": "The for-loop processes every item in the array."
+          },
+          {
+            "pair_id": "code-positive-0006",
+            "overlap": 0.17647058823529413,
+            "classification": "VIOLATION",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0007",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The recursive function calls itself until the base case is r",
+            "text_b": "The self-referential function terminates when it hits the st"
+          },
+          {
+            "pair_id": "code-positive-0008",
+            "overlap": 0.17647058823529413,
+            "classification": "VIOLATION",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0009",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The recursive function calls itself until the base case is r",
+            "text_b": "The self-referential function terminates when it hits the st"
+          }
+        ],
+        "summary": {
+          "VIOLATION": 10
+        }
+      },
+      "MR-03": {
+        "records": [
+          {
+            "pair_id": "code-hard_negative-0015",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "True vs False termination",
+            "text_a": "The loop terminates when the condition is True.",
+            "text_b": "The loop terminates when the condition is False."
+          },
+          {
+            "pair_id": "code-hard_negative-0016",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          },
+          {
+            "pair_id": "code-hard_negative-0017",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          },
+          {
+            "pair_id": "code-hard_negative-0018",
+            "rank": 4,
+            "classification": "OBSERVATION",
+            "notes": "raises vs silent",
+            "text_a": "The function raises an exception when the file is not found.",
+            "text_b": "The function silently returns None when the file is not foun"
+          },
+          {
+            "pair_id": "code-hard_negative-0019",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          },
+          {
+            "pair_id": "code-hard_negative-0020",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "True vs False termination",
+            "text_a": "The loop terminates when the condition is True.",
+            "text_b": "The loop terminates when the condition is False."
+          },
+          {
+            "pair_id": "code-hard_negative-0021",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "sync vs async",
+            "text_a": "The API call is synchronous and blocks until completion.",
+            "text_b": "The API call is asynchronous and returns a promise immediate"
+          },
+          {
+            "pair_id": "code-hard_negative-0022",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "sync vs async",
+            "text_a": "The API call is synchronous and blocks until completion.",
+            "text_b": "The API call is asynchronous and returns a promise immediate"
+          },
+          {
+            "pair_id": "code-hard_negative-0023",
+            "rank": 7,
+            "classification": "OBSERVATION",
+            "notes": "sync vs async",
+            "text_a": "The API call is synchronous and blocks until completion.",
+            "text_b": "The API call is asynchronous and returns a promise immediate"
+          },
+          {
+            "pair_id": "code-hard_negative-0024",
+            "rank": null,
+            "classification": "PASS",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          }
+        ],
+        "summary": {
+          "PASS": 6,
+          "OBSERVATION": 4
+        }
+      },
+      "MR-04": {
+        "records": [
+          {
+            "pair_id": "code-negative-0010",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The class inherits from the base interface.",
+            "text_b": "The patient's blood pressure is elevated."
+          },
+          {
+            "pair_id": "code-negative-0011",
+            "rank": 10,
+            "classification": "OBSERVATION",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          },
+          {
+            "pair_id": "code-negative-0012",
+            "rank": 10,
+            "classification": "OBSERVATION",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          },
+          {
+            "pair_id": "code-negative-0013",
+            "rank": 10,
+            "classification": "OBSERVATION",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          },
+          {
+            "pair_id": "code-negative-0014",
+            "rank": 10,
+            "classification": "OBSERVATION",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          }
+        ],
+        "summary": {
+          "PASS": 1,
+          "OBSERVATION": 4
+        }
+      }
+    }
+  }
+}

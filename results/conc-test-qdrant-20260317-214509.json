@@ -1,0 +1,63 @@
+{
+  "run_id": "conc-test-20260317-214509",
+  "timestamp": "2026-03-17T21:45:09.788068",
+  "target": "qdrant",
+  "host": "localhost",
+  "port": 19530,
+  "config": {
+    "threads": 4,
+    "readers": 4,
+    "deleters": 1,
+    "searchers": 4,
+    "vectors_per_thread": 50,
+    "dim": 64,
+    "duration": 10,
+    "top_k": 10,
+    "profile": false
+  },
+  "summary": {
+    "total": 1,
+    "passes": 0,
+    "violations": 1,
+    "errors": 0
+  },
+  "results": {
+    "CONC-001": {
+      "contract_id": "CONC-001",
+      "classification": "VIOLATION",
+      "violations": [
+        {
+          "contract_id": "CONC-001",
+          "violation_type": "count_mismatch",
+          "description": "Count mismatch: expected 200, got 50",
+          "severity": "high",
+          "details": {
+            "expected": 200,
+            "actual": 50,
+            "difference": -150
+          }
+        }
+      ],
+      "metrics": {
+        "total_operations": 4,
+        "successful_operations": 4,
+        "failed_operations": 0,
+        "throughput_ops_per_sec": 146.85,
+        "latency_ms": {
+          "p50": 16.0,
+          "p95": 16.0,
+          "p99": 16.0,
+          "min": 16.0,
+          "max": 16.0
+        }
+      },
+      "metadata": {
+        "n_threads": 4,
+        "vectors_per_thread": 50,
+        "expected_total": 200,
+        "final_count": 50,
+        "insert_errors": 0
+      }
+    }
+  }
+}

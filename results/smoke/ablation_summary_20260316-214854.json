@@ -1,0 +1,88 @@
+{
+  "run_timestamp": "20260316-214854",
+  "adapter": "mock",
+  "variants": [
+    {
+      "variant": {
+        "id": "V1",
+        "name": "Full System",
+        "description": "Gate=ON, Oracle=ON, Triage=Diagnostic (baseline)",
+        "flags": []
+      },
+      "metrics": {
+        "total_cases": 15,
+        "bugs_found": 11,
+        "success_count": 15,
+        "failure_count": 0,
+        "precision": 0.7333333333333333,
+        "noise_rate": 0.26666666666666666,
+        "bug_types": {},
+        "adapter_actual": "mock",
+        "adapter_fallback": false
+      }
+    },
+    {
+      "variant": {
+        "id": "V2",
+        "name": "No Gate",
+        "description": "Gate=OFF — all cases reach executor regardless of preconditions",
+        "flags": [
+          "--no-gate"
+        ]
+      },
+      "metrics": {
+        "total_cases": 15,
+        "bugs_found": 11,
+        "success_count": 15,
+        "failure_count": 0,
+        "precision": 0.7333333333333333,
+        "noise_rate": 0.26666666666666666,
+        "bug_types": {},
+        "adapter_actual": "mock",
+        "adapter_fallback": false
+      }
+    },
+    {
+      "variant": {
+        "id": "V3",
+        "name": "No Oracle",
+        "description": "Oracle=OFF — only structural triage, no behavioral checking",
+        "flags": [
+          "--no-oracle"
+        ]
+      },
+      "metrics": {
+        "total_cases": 15,
+        "bugs_found": 11,
+        "success_count": 15,
+        "failure_count": 0,
+        "precision": 0.7333333333333333,
+        "noise_rate": 0.26666666666666666,
+        "bug_types": {},
+        "adapter_actual": "mock",
+        "adapter_fallback": false
+      }
+    },
+    {
+      "variant": {
+        "id": "V4",
+        "name": "Naive Triage",
+        "description": "Triage=Naive — all illegal-fail classified as Type-2 without diagnostic check",
+        "flags": [
+          "--naive-triage"
+        ]
+      },
+      "metrics": {
+        "total_cases": 15,
+        "bugs_found": 11,
+        "success_count": 15,
+        "failure_count": 0,
+        "precision": 0.7333333333333333,
+        "noise_rate": 0.26666666666666666,
+        "bug_types": {},
+        "adapter_actual": "mock",
+        "adapter_fallback": false
+      }
+    }
+  ]
+}

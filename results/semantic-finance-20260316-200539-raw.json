@@ -1,0 +1,476 @@
+{
+  "run_id": "semantic-finance-20260316-200539",
+  "domain": "finance",
+  "results": {
+    "MR-01": [
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0000",
+        "pair_type": "positive",
+        "text_a_preview": "The company reported strong quarterly earnings growth.",
+        "text_b_preview": "The firm achieved significant profit increases this quarter.",
+        "ids_a": [
+          8,
+          6,
+          13,
+          14,
+          7,
+          12,
+          15,
+          19,
+          2,
+          0
+        ],
+        "ids_b": [
+          13,
+          8,
+          6,
+          14,
+          12,
+          7,
+          19,
+          17,
+          16,
+          1
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.7,
+          "metrics": {
+            "overlap": 0.7,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.700 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0001",
+        "pair_type": "positive",
+        "text_a_preview": "The company reported strong quarterly earnings growth.",
+        "text_b_preview": "The firm achieved significant profit increases this quarter.",
+        "ids_a": [
+          8,
+          6,
+          13,
+          14,
+          7,
+          12,
+          15,
+          19,
+          2,
+          0
+        ],
+        "ids_b": [
+          13,
+          8,
+          6,
+          14,
+          12,
+          7,
+          19,
+          17,
+          16,
+          1
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.7,
+          "metrics": {
+            "overlap": 0.7,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.700 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0002",
+        "pair_type": "positive",
+        "text_a_preview": "The stock price fell sharply after the earnings report.",
+        "text_b_preview": "Share prices dropped significantly following the earnings announcement.",
+        "ids_a": [
+          7,
+          12,
+          6,
+          8,
+          10,
+          16,
+          13,
+          3,
+          17,
+          4
+        ],
+        "ids_b": [
+          12,
+          7,
+          6,
+          8,
+          10,
+          13,
+          16,
+          17,
+          3,
+          4
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 1.0,
+          "metrics": {
+            "overlap": 1.0,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=1.000 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0003",
+        "pair_type": "positive",
+        "text_a_preview": "Interest rates were raised by the central bank.",
+        "text_b_preview": "The central bank increased its benchmark interest rate.",
+        "ids_a": [
+          1,
+          19,
+          5,
+          15,
+          10,
+          17,
+          21,
+          2,
+          3,
+          0
+        ],
+        "ids_b": [
+          19,
+          1,
+          5,
+          15,
+          17,
+          13,
+          10,
+          2,
+          0,
+          8
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.8,
+          "metrics": {
+            "overlap": 0.8,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.800 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0004",
+        "pair_type": "positive",
+        "text_a_preview": "Interest rates were raised by the central bank.",
+        "text_b_preview": "The central bank increased its benchmark interest rate.",
+        "ids_a": [
+          1,
+          19,
+          5,
+          15,
+          10,
+          17,
+          21,
+          2,
+          3,
+          0
+        ],
+        "ids_b": [
+          19,
+          1,
+          5,
+          15,
+          17,
+          13,
+          10,
+          2,
+          0,
+          8
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.8,
+          "metrics": {
+            "overlap": 0.8,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.800 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0005",
+        "pair_type": "positive",
+        "text_a_preview": "Interest rates were raised by the central bank.",
+        "text_b_preview": "The central bank increased its benchmark interest rate.",
+        "ids_a": [
+          1,
+          19,
+          5,
+          15,
+          10,
+          17,
+          21,
+          2,
+          3,
+          0
+        ],
+        "ids_b": [
+          19,
+          1,
+          5,
+          15,
+          17,
+          13,
+          10,
+          2,
+          0,
+          8
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.8,
+          "metrics": {
+            "overlap": 0.8,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.800 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0006",
+        "pair_type": "positive",
+        "text_a_preview": "The company reported strong quarterly earnings growth.",
+        "text_b_preview": "The firm achieved significant profit increases this quarter.",
+        "ids_a": [
+          8,
+          6,
+          13,
+          14,
+          7,
+          12,
+          15,
+          19,
+          2,
+          0
+        ],
+        "ids_b": [
+          13,
+          8,
+          6,
+          14,
+          12,
+          7,
+          19,
+          17,
+          16,
+          1
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.7,
+          "metrics": {
+            "overlap": 0.7,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.700 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "finance-positive-0007",
+        "pair_type": "positive",
+        "text_a_preview": "Market volatility increased due to geopolitical uncertainty.",
+        "text_b_preview": "Geopolitical tensions led to higher market fluctuations.",
+        "ids_a": [
+          4,
+          17,
+          5,
+          12,
+          13,
+          7,
+          1,
+          14,
+          19,
+          15
+        ],
+        "ids_b": [
+          17,
+          4,
+          5,
+          1,
+          19,
+          2,
+          12,
+          13,
+          7,
+          11
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.8,
+          "metrics": {
+            "overlap": 0.8,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.800 >= 0.6"
+        },
+        "classification": "PASS"
+      }
+    ],
+    "MR-03": [
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0013",
+        "text_a_preview": "The bond yield rose to 5%.",
+        "text_b_preview": "The bond yield fell to 5%.",
+        "semantic_notes": "rise vs fall",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0014",
+        "text_a_preview": "The merger was approved by regulators.",
+        "text_b_preview": "The merger was blocked by regulators.",
+        "semantic_notes": "approved vs blocked",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0015",
+        "text_a_preview": "The merger was approved by regulators.",
+        "text_b_preview": "The merger was blocked by regulators.",
+        "semantic_notes": "approved vs blocked",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0016",
+        "text_a_preview": "The credit rating was upgraded to AA.",
+        "text_b_preview": "The credit rating was downgraded to BB.",
+        "semantic_notes": "upgrade vs downgrade",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0017",
+        "text_a_preview": "The credit rating was upgraded to AA.",
+        "text_b_preview": "The credit rating was downgraded to BB.",
+        "semantic_notes": "upgrade vs downgrade",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0018",
+        "text_a_preview": "The bond yield rose to 5%.",
+        "text_b_preview": "The bond yield fell to 5%.",
+        "semantic_notes": "rise vs fall",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0019",
+        "text_a_preview": "The credit rating was upgraded to AA.",
+        "text_b_preview": "The credit rating was downgraded to BB.",
+        "semantic_notes": "upgrade vs downgrade",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "finance-hard_negative-0020",
+        "text_a_preview": "The merger was approved by regulators.",
+        "text_b_preview": "The merger was blocked by regulators.",
+        "semantic_notes": "approved vs blocked",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      }
+    ],
+    "MR-04": [
+      {
+        "mr": "MR-04",
+        "pair_id": "finance-negative-0008",
+        "text_a_preview": "The company reported strong quarterly earnings.",
+        "text_b_preview": "The weather forecast calls for rain this weekend.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "finance-negative-0009",
+        "text_a_preview": "Inflation has reached a 40-year high.",
+        "text_b_preview": "The team won the championship game.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "finance-negative-0010",
+        "text_a_preview": "Interest rates are rising globally.",
+        "text_b_preview": "Advances in quantum computing are accelerating.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "finance-negative-0011",
+        "text_a_preview": "The company reported strong quarterly earnings.",
+        "text_b_preview": "The weather forecast calls for rain this weekend.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "finance-negative-0012",
+        "text_a_preview": "The company reported strong quarterly earnings.",
+        "text_b_preview": "The weather forecast calls for rain this weekend.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "run_id": "idx-003-20260311-000908",
+  "timestamp": "2026-03-11T00:09:08.855740",
+  "contract_id": "IDX-003",
+  "total_tests": 3,
+  "results": [
+    {
+      "test_id": "idx-003_illegal_001",
+      "contract_id": "IDX-003",
+      "timestamp": "2026-03-11T00:09:03.499706",
+      "steps": [
+        {
+          "step": "create_collection",
+          "status": "success"
+        },
+        {
+          "step": "insert",
+          "count": 100
+        },
+        {
+          "step": "execute_test",
+          "params": {
+            "index_type": "INVALID_TYPE"
+          },
+          "result": {
+            "status": "error",
+            "error": "Unknown operation: execute_test"
+          },
+          "status": "error"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "test_id": "idx-003_illegal_002",
+      "contract_id": "IDX-003",
+      "timestamp": "2026-03-11T00:09:05.319072",
+      "steps": [
+        {
+          "step": "create_collection",
+          "status": "success"
+        },
+        {
+          "step": "insert",
+          "count": 100
+        },
+        {
+          "step": "execute_test",
+          "params": {
+            "index_type": "HNSW",
+            "M": -1
+          },
+          "result": {
+            "status": "error",
+            "error": "Unknown operation: execute_test"
+          },
+          "status": "error"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "test_id": "idx-003_illegal_003",
+      "contract_id": "IDX-003",
+      "timestamp": "2026-03-11T00:09:07.080708",
+      "steps": [
+        {
+          "step": "create_collection",
+          "status": "success"
+        },
+        {
+          "step": "insert",
+          "count": 100
+        },
+        {
+          "step": "execute_test",
+          "params": {
+            "index_type": "IVF",
+            "nlist": 0
+          },
+          "result": {
+            "status": "error",
+            "error": "Unknown operation: execute_test"
+          },
+          "status": "error"
+        }
+      ],
+      "status": "unknown"
+    }
+  ],
+  "summary": {
+    "PASS": 0,
+    "VIOLATION": 0,
+    "ERROR": 0
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "run_timestamp": "20260317-113906",
+  "results": [
+    {
+      "adapter": "qdrant",
+      "run_id": "20260317_113906",
+      "config": {
+        "n_base": 1000,
+        "n_drift": 500,
+        "n_probes": 20,
+        "dim": 64,
+        "top_k": 10,
+        "recall_tolerance": 0.05
+      },
+      "recalls": {
+        "phase1_baseline": 0.325,
+        "phase3_post_drift": 0.325,
+        "phase4_recovery": 0.325,
+        "drift_delta": 0.0,
+        "recovery_delta": 0.0
+      },
+      "violations": [],
+      "classification": "PASS"
+    },
+    {
+      "adapter": "weaviate",
+      "run_id": "20260317_113906",
+      "config": {
+        "n_base": 1000,
+        "n_drift": 500,
+        "n_probes": 20,
+        "dim": 64,
+        "top_k": 10,
+        "recall_tolerance": 0.05
+      },
+      "recalls": {
+        "phase1_baseline": 0.325,
+        "phase3_post_drift": 0.325,
+        "phase4_recovery": 0.325,
+        "drift_delta": 0.0,
+        "recovery_delta": 0.0
+      },
+      "violations": [],
+      "classification": "PASS"
+    },
+    {
+      "adapter": "pgvector",
+      "run_id": "20260317_113906",
+      "config": {
+        "n_base": 1000,
+        "n_drift": 500,
+        "n_probes": 20,
+        "dim": 64,
+        "top_k": 10,
+        "recall_tolerance": 0.05
+      },
+      "recalls": {
+        "phase1_baseline": 0.125,
+        "phase3_post_drift": 0.125,
+        "phase4_recovery": 0.125,
+        "drift_delta": 0.0,
+        "recovery_delta": 0.0
+      },
+      "violations": [],
+      "classification": "PASS"
+    }
+  ]
+}

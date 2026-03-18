@@ -1,0 +1,81 @@
+{
+  "run_id": "r8-seekdb-20260316-214414",
+  "timestamp": "2026-03-16T21:44:14.528263",
+  "mode": "offline",
+  "target": "seekdb_mock",
+  "config": {
+    "host": "localhost",
+    "port": 2881,
+    "dim": 16,
+    "n_base": 60,
+    "n_drift": 30,
+    "n_probes": 5
+  },
+  "milvus_baseline": {
+    "DRIFT-001": {
+      "avg_recall": 1.0,
+      "classification": "PASS"
+    },
+    "DRIFT-002": {
+      "baseline_recall": 1.0,
+      "classification": "PASS"
+    },
+    "DRIFT-003": {
+      "classification": "PASS"
+    },
+    "DRIFT-004": {
+      "avg_recall_post_reinsert": 1.0,
+      "classification": "PASS"
+    }
+  },
+  "results": {
+    "DRIFT-001": {
+      "contract": "DRIFT-001",
+      "n_base": 60,
+      "n_probes": 5,
+      "avg_recall": 1.0,
+      "min_recall": 1.0,
+      "threshold": 0.99,
+      "classification": "PASS",
+      "violation_detail": null
+    },
+    "DRIFT-002": {
+      "contract": "DRIFT-002",
+      "baseline_recall": 1.0,
+      "threshold_multiplier": 0.95,
+      "degradation_curve": [
+        {
+          "total_vectors": 60,
+          "avg_recall": 1.0
+        },
+        {
+          "total_vectors": 90,
+          "avg_recall": 1.0
+        },
+        {
+          "total_vectors": 120,
+          "avg_recall": 1.0
+        }
+      ],
+      "violations": [],
+      "classification": "PASS"
+    },
+    "DRIFT-003": {
+      "contract": "DRIFT-003",
+      "classification": "ARCHITECTURAL_NA",
+      "reason": "SeekDB manages indexing automatically; manual index rebuild via build_index/load is a no-op. DRIFT-003 is not applicable."
+    },
+    "DRIFT-004": {
+      "contract": "DRIFT-004",
+      "deleted_count": 60,
+      "count_after_delete": 60,
+      "count_final": 120,
+      "expected_final": 120,
+      "avg_recall_post_reinsert": 0.34,
+      "violations": [
+        "Post-reinsert recall=0.3400 < 0.95"
+      ],
+      "classification": "VIOLATION"
+    }
+  }
+}

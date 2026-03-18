@@ -1,0 +1,63 @@
+{
+  "run_id": "conc-test-20260317-210933",
+  "timestamp": "2026-03-17T21:09:33.684039",
+  "target": "weaviate",
+  "host": "localhost",
+  "port": 19530,
+  "config": {
+    "threads": 4,
+    "readers": 4,
+    "deleters": 1,
+    "searchers": 4,
+    "vectors_per_thread": 100,
+    "dim": 64,
+    "duration": 10,
+    "top_k": 10,
+    "profile": false
+  },
+  "summary": {
+    "total": 1,
+    "passes": 0,
+    "violations": 1,
+    "errors": 0
+  },
+  "results": {
+    "CONC-001": {
+      "contract_id": "CONC-001",
+      "classification": "VIOLATION",
+      "violations": [
+        {
+          "contract_id": "CONC-001",
+          "violation_type": "count_mismatch",
+          "description": "Count mismatch: expected 400, got 1",
+          "severity": "high",
+          "details": {
+            "expected": 400,
+            "actual": 1,
+            "difference": -399
+          }
+        }
+      ],
+      "metrics": {
+        "total_operations": 4,
+        "successful_operations": 4,
+        "failed_operations": 0,
+        "throughput_ops_per_sec": 45.32,
+        "latency_ms": {
+          "p50": 47.0,
+          "p95": 62.0,
+          "p99": 62.0,
+          "min": 31.0,
+          "max": 62.0
+        }
+      },
+      "metadata": {
+        "n_threads": 4,
+        "vectors_per_thread": 100,
+        "expected_total": 400,
+        "final_count": 1,
+        "insert_errors": 0
+      }
+    }
+  }
+}

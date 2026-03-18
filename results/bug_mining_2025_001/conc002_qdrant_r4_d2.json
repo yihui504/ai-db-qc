@@ -1,0 +1,50 @@
+{
+  "run_id": "conc-test-20260317-211307",
+  "timestamp": "2026-03-17T21:13:07.957961",
+  "target": "qdrant",
+  "host": "localhost",
+  "port": 19530,
+  "config": {
+    "threads": 4,
+    "readers": 4,
+    "deleters": 2,
+    "searchers": 4,
+    "vectors_per_thread": 100,
+    "dim": 64,
+    "duration": 60,
+    "top_k": 10,
+    "profile": false
+  },
+  "summary": {
+    "total": 1,
+    "passes": 1,
+    "violations": 0,
+    "errors": 0
+  },
+  "results": {
+    "CONC-002": {
+      "contract_id": "CONC-002",
+      "classification": "PASS",
+      "violations": [],
+      "metrics": {
+        "total_operations": 16050,
+        "successful_operations": 7838,
+        "failed_operations": 8212,
+        "throughput_ops_per_sec": 267.22,
+        "latency_ms": {
+          "p50": 16.0,
+          "p95": 32.0,
+          "p99": 47.0,
+          "min": 0.0,
+          "max": 63.0
+        }
+      },
+      "metadata": {
+        "n_readers": 4,
+        "n_deleters": 2,
+        "duration_seconds": 60,
+        "search_violations": 0
+      }
+    }
+  }
+}

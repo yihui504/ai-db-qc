@@ -1,0 +1,88 @@
+{
+  "run_id": "r5d-schema-pgvector-20260317-112958",
+  "timestamp": "2026-03-17T11:30:10.391307",
+  "mode": "milvus",
+  "config": {
+    "host": "localhost",
+    "port": 19530,
+    "offline": false,
+    "dim": 64,
+    "n_base": 200,
+    "n_tagged": 100,
+    "n_rebuild": 300,
+    "n0": 150,
+    "n1": 100,
+    "n_delete": 50,
+    "recall_threshold": 0.99,
+    "contracts": [
+      "SCH-001",
+      "SCH-002",
+      "SCH-003",
+      "SCH-004"
+    ]
+  },
+  "summary": {
+    "total": 4,
+    "passes": 2,
+    "violations": 2,
+    "skipped": 0
+  },
+  "results": {
+    "SCH-001": {
+      "test_id": "SCH-001",
+      "classification": "PASS",
+      "entities_verified": 300,
+      "returned_count": 300
+    },
+    "SCH-002": {
+      "test_id": "SCH-002",
+      "classification": "VIOLATION",
+      "violation_type": "SCH-002-FN",
+      "violation_details": {
+        "returned": 0,
+        "expected_min": 80,
+        "false_negatives": [
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219
+        ]
+      },
+      "reason": "Filtered search returned only 0/100 tagged entities"
+    },
+    "SCH-003": {
+      "test_id": "SCH-003",
+      "classification": "VIOLATION",
+      "violation_type": "SCH-003",
+      "violation_details": {
+        "recall_before": 0.19,
+        "recall_after": 0.185,
+        "threshold": 0.99,
+        "regression": 0.005
+      },
+      "reason": "Recall after index rebuild=0.1850 < threshold=0.99"
+    },
+    "SCH-004": {
+      "test_id": "SCH-004",
+      "classification": "PASS",
+      "expected_count": 200,
+      "actual_count": 200
+    }
+  }
+}

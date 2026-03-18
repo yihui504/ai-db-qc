@@ -1,0 +1,218 @@
+{
+  "results": [
+    {
+      "test": "HYB-001 Range Filter",
+      "violations": [
+        {
+          "filter": "score > 50",
+          "returned_id": 50,
+          "actual_score": 50,
+          "issue": "Filter not applied - returned entity with score <= 50"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 76,
+          "actual_score": 76,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 96,
+          "actual_score": 96,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 79,
+          "actual_score": 79,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 74,
+          "actual_score": 74,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 85,
+          "actual_score": 85,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 94,
+          "actual_score": 94,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 88,
+          "actual_score": 88,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 86,
+          "actual_score": 86,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 98,
+          "actual_score": 98,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 91,
+          "actual_score": 91,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 92,
+          "actual_score": 92,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 73,
+          "actual_score": 73,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 78,
+          "actual_score": 78,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 82,
+          "actual_score": 82,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 95,
+          "actual_score": 95,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 84,
+          "actual_score": 84,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 80,
+          "actual_score": 80,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 99,
+          "actual_score": 99,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 97,
+          "actual_score": 97,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 75,
+          "actual_score": 75,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 89,
+          "actual_score": 89,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 83,
+          "actual_score": 83,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 81,
+          "actual_score": 81,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 87,
+          "actual_score": 87,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 90,
+          "actual_score": 90,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 93,
+          "actual_score": 93,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 71,
+          "actual_score": 71,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 72,
+          "actual_score": 72,
+          "issue": "Range filter not applied"
+        },
+        {
+          "filter": "30 <= score <= 70",
+          "returned_id": 77,
+          "actual_score": 77,
+          "issue": "Range filter not applied"
+        }
+      ],
+      "passed": [
+        "gt filter: 50 results",
+        "lt filter: 50 results",
+        "range filter: 29 results"
+      ]
+    },
+    {
+      "test": "HYB-002 Filter Consistency",
+      "violations": [],
+      "passed": [
+        "category filter: 50 results",
+        "IN filter: 100 results"
+      ]
+    },
+    {
+      "test": "DATETIME Filter Edge Cases",
+      "violations": [],
+      "passed": [
+        "invalid date '2025-01-01 00:00:00+00:00': inserted, filter result: 1"
+      ]
+    },
+    {
+      "test": "Null Filter Handling",
+      "violations": [],
+      "passed": []
+    }
+  ],
+  "summary": {
+    "total_violations": 30,
+    "tests_run": 4
+  }
+}

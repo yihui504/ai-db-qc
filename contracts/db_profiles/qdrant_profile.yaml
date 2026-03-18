@@ -1,0 +1,86 @@
+# Qdrant database profile
+profile_name: qdrant-latest
+db_type: qdrant
+db_version: "latest"
+description: Qdrant vector database profile
+
+# Supported operations
+supported_operations:
+  - create_collection
+  - drop_collection
+  - insert
+  - delete
+  - search
+  - filtered_search
+
+# Operation mappings (core op -> Qdrant API)
+operation_mappings:
+  create_collection:
+    core_operation: create_collection
+    db_operation: create_collection
+    api_endpoint: /collections/{collection_name}
+    parameter_mapping:
+      collection_name: collection_name
+      dimension: vectors.size
+      metric_type: vectors.distance
+
+  drop_collection:
+    core_operation: drop_collection
+    db_operation: delete_collection
+    api_endpoint: /collections/{collection_name}
+
+  insert:
+    core_operation: insert
+    db_operation: upsert
+    api_endpoint: /collections/{collection_name}/points
+    parameter_mapping:
+      collection_name: collection_name
+      vectors: vectors
+      ids: ids
+
+  delete:
+    core_operation: delete
+    db_operation: delete
+    api_endpoint: /collections/{collection_name}/points/delete
+    parameter_mapping:
+      collection_name: collection_name
+      ids: points
+
+  search:
+    core_operation: search
+    db_operation: search
+    api_endpoint: /collections/{collection_name}/points/search
+    parameter_mapping:
+      collection_name: collection_name
+      vector: vector
+      top_k: limit
+
+  filtered_search:
+    core_operation: filtered_search
+    db_operation: search
+    api_endpoint: /collections/{collection_name}/points/search
+    parameter_mapping:
+      collection_name: collection_name
+      vector: vector
+      filter: filter
+      top_k: limit
+
+# Parameter relaxations (override core constraints)
+parameter_relaxations:
+  search:
+    top_k:
+      max_value: 1000
+      min_value: 1
+
+# Supported features
+supported_features:
+  - HNSW
+  - FILTERED_SEARCH
+  - PAYLOAD_INDEX
+  - BULK_OPERATIONS
+
+# Environment requirements
+environment_requirements:
+  service: qdrant
+  min_memory: 1GB
+  min_disk: 5GB

@@ -1,0 +1,42 @@
+{
+  "run_id": "phase5.3-ablation-v4-20260316-214854-20260316-214857",
+  "run_tag": "ablation-v4-20260316-214854",
+  "timestamp": "2026-03-16T21:48:57.354926",
+  "phase": "5.3",
+  "adapter": "mock",
+  "adapter_requested": "mock",
+  "adapter_actual": "mock",
+  "adapter_fallback": false,
+  "fallback_reason": null,
+  "response_mode": "success",
+  "diagnostic_quality": "full",
+  "variant_flags": {
+    "no_gate": false,
+    "no_oracle": false,
+    "naive_triage": true,
+    "adapter_fallback": false,
+    "adapter_fallback_reason": ""
+  },
+  "templates": "casegen/templates/test_phase5_comprehensive.yaml",
+  "case_count": 15,
+  "bug_count": 11,
+  "success_count": 15,
+  "failure_count": 0,
+  "runtime_context": {
+    "collections": [
+      "test_collection"
+    ],
+    "indexed_collections": [
+      "test_collection"
+    ],
+    "loaded_collections": [
+      "test_collection"
+    ],
+    "connected": true,
+    "target_collection": "test_collection",
+    "supported_features": [
+      "IVF_FLAT",
+      "HNSW"
+    ]
+  }
+}

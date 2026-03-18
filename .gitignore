@@ -38,3 +38,7 @@ htmlcov/
 Thumbs.db
 runs/
 *.log
+
+# Temporary debug files
+tmp_*
+*.tmp

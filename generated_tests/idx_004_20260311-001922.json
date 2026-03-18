@@ -1,0 +1,69 @@
+{
+  "suite_name": "idx_004",
+  "generated_at": "2026-03-11T00:19:22.856604",
+  "total_tests": 1,
+  "contracts_covered": [
+    "IDX-004"
+  ],
+  "tests": [
+    {
+      "test_id": "idx-004_seq_001",
+      "contract_id": "IDX-004",
+      "name": "Multiple Index Behavior - Sequence: Create multiple indexes, then search",
+      "description": "Sequence test for Multiple Index Behavior",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert data",
+          "description": "Step 1: insert data"
+        },
+        {
+          "step": 2,
+          "operation": "create index type HNSW",
+          "description": "Step 2: create index type HNSW"
+        },
+        {
+          "step": 3,
+          "operation": "create index type IVF",
+          "description": "Step 3: create index type IVF"
+        },
+        {
+          "step": 4,
+          "operation": "search",
+          "description": "Step 4: search"
+        },
+        {
+          "step": 5,
+          "operation": "verify which index used",
+          "description": "Step 5: verify which index used"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": null,
+      "oracle": {
+        "check": "index_selection_is_deterministic",
+        "verification": "execute_multiple_times(); assert same_index_used",
+        "classification": {
+          "violation": "BUG (non-deterministic)",
+          "compliant": "PASS",
+          "allowed_difference": "different_index_selection_strategies"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    }
+  ]
+}

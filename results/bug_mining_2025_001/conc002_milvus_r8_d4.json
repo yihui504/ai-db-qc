@@ -1,0 +1,50 @@
+{
+  "run_id": "conc-test-20260317-211205",
+  "timestamp": "2026-03-17T21:12:05.879440",
+  "target": "milvus",
+  "host": "localhost",
+  "port": 19530,
+  "config": {
+    "threads": 4,
+    "readers": 8,
+    "deleters": 4,
+    "searchers": 4,
+    "vectors_per_thread": 100,
+    "dim": 64,
+    "duration": 60,
+    "top_k": 10,
+    "profile": false
+  },
+  "summary": {
+    "total": 1,
+    "passes": 1,
+    "violations": 0,
+    "errors": 0
+  },
+  "results": {
+    "CONC-002": {
+      "contract_id": "CONC-002",
+      "classification": "PASS",
+      "violations": [],
+      "metrics": {
+        "total_operations": 8240,
+        "successful_operations": 8240,
+        "failed_operations": 0,
+        "throughput_ops_per_sec": 137.15,
+        "latency_ms": {
+          "p50": 62.0,
+          "p95": 110.0,
+          "p99": 141.0,
+          "min": 0.0,
+          "max": 281.0
+        }
+      },
+      "metadata": {
+        "n_readers": 8,
+        "n_deleters": 4,
+        "duration_seconds": 60,
+        "search_violations": 0
+      }
+    }
+  }
+}

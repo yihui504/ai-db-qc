@@ -1,0 +1,1103 @@
+{
+  "experiment": "V5_ablation",
+  "domain": "legal",
+  "timestamp": "20260317_1039",
+  "sem_backend": "sentence_transformers",
+  "dim": 384,
+  "top_k": 10,
+  "rng_seed": null,
+  "V_Sem": {
+    "metrics": {
+      "total": 20,
+      "mr01": {
+        "n": 10,
+        "pass_rate": 0.8,
+        "violation_rate": 0.2
+      },
+      "mr03": {
+        "n": 10,
+        "violation_rate": 1.0,
+        "pass_rate": 0.0
+      }
+    },
+    "results": [
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0000",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          21,
+          2,
+          23,
+          20,
+          16,
+          0,
+          17,
+          14,
+          4,
+          13
+        ],
+        "ids_b": [
+          16,
+          2,
+          20,
+          21,
+          14,
+          6,
+          4,
+          13,
+          23,
+          22
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0001",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          21,
+          2,
+          23,
+          20,
+          16,
+          0,
+          17,
+          14,
+          4,
+          13
+        ],
+        "ids_b": [
+          16,
+          2,
+          20,
+          21,
+          14,
+          6,
+          4,
+          13,
+          23,
+          22
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0002",
+        "pair_type": "positive",
+        "text_a_preview": "The court issued an injunction to halt the proceedings.",
+        "text_b_preview": "A court order was granted to stop the action.",
+        "ids_a": [
+          5,
+          10,
+          18,
+          11,
+          13,
+          4,
+          0,
+          22,
+          19,
+          12
+        ],
+        "ids_b": [
+          11,
+          5,
+          18,
+          13,
+          10,
+          22,
+          0,
+          4,
+          19,
+          6
+        ],
+        "overlap": 0.8182,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0003",
+        "pair_type": "positive",
+        "text_a_preview": "The contract was terminated due to breach.",
+        "text_b_preview": "The agreement was voided following a violation of its terms.",
+        "ids_a": [
+          12,
+          19,
+          1,
+          7,
+          5,
+          11,
+          10,
+          15,
+          18,
+          9
+        ],
+        "ids_b": [
+          19,
+          12,
+          1,
+          10,
+          5,
+          11,
+          15,
+          4,
+          18,
+          13
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0004",
+        "pair_type": "positive",
+        "text_a_preview": "The contract was terminated due to breach.",
+        "text_b_preview": "The agreement was voided following a violation of its terms.",
+        "ids_a": [
+          12,
+          19,
+          1,
+          7,
+          5,
+          11,
+          10,
+          15,
+          18,
+          9
+        ],
+        "ids_b": [
+          19,
+          12,
+          1,
+          10,
+          5,
+          11,
+          15,
+          4,
+          18,
+          13
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0005",
+        "pair_type": "positive",
+        "text_a_preview": "The contract was terminated due to breach.",
+        "text_b_preview": "The agreement was voided following a violation of its terms.",
+        "ids_a": [
+          12,
+          19,
+          1,
+          7,
+          5,
+          11,
+          10,
+          15,
+          18,
+          9
+        ],
+        "ids_b": [
+          19,
+          12,
+          1,
+          10,
+          5,
+          11,
+          15,
+          4,
+          18,
+          13
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0006",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          21,
+          2,
+          23,
+          20,
+          16,
+          0,
+          17,
+          14,
+          4,
+          13
+        ],
+        "ids_b": [
+          16,
+          2,
+          20,
+          21,
+          14,
+          6,
+          4,
+          13,
+          23,
+          22
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0007",
+        "pair_type": "positive",
+        "text_a_preview": "The statute of limitations has expired.",
+        "text_b_preview": "The legal time limit for filing the claim has passed.",
+        "ids_a": [
+          15,
+          9,
+          19,
+          1,
+          12,
+          7,
+          11,
+          4,
+          5,
+          2
+        ],
+        "ids_b": [
+          9,
+          15,
+          0,
+          11,
+          23,
+          18,
+          10,
+          19,
+          12,
+          17
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0008",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          21,
+          2,
+          23,
+          20,
+          16,
+          0,
+          17,
+          14,
+          4,
+          13
+        ],
+        "ids_b": [
+          16,
+          2,
+          20,
+          21,
+          14,
+          6,
+          4,
+          13,
+          23,
+          22
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0009",
+        "pair_type": "positive",
+        "text_a_preview": "The statute of limitations has expired.",
+        "text_b_preview": "The legal time limit for filing the claim has passed.",
+        "ids_a": [
+          15,
+          9,
+          19,
+          1,
+          12,
+          7,
+          11,
+          4,
+          5,
+          2
+        ],
+        "ids_b": [
+          9,
+          15,
+          0,
+          11,
+          23,
+          18,
+          10,
+          19,
+          12,
+          17
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0015",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The contract is enforceable under current law.",
+        "text_b_preview": "The contract is unenforceable under current law.",
+        "top3_a": [
+          7,
+          1,
+          12
+        ],
+        "top3_b": [
+          1,
+          7,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0016",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          18,
+          10,
+          5
+        ],
+        "top3_b": [
+          10,
+          18,
+          5
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0017",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          18,
+          10,
+          5
+        ],
+        "top3_b": [
+          10,
+          18,
+          5
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0018",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The defendant is liable for the damages.",
+        "text_b_preview": "The defendant is not liable for the damages.",
+        "top3_a": [
+          23,
+          17,
+          21
+        ],
+        "top3_b": [
+          17,
+          23,
+          21
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0019",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          18,
+          10,
+          5
+        ],
+        "top3_b": [
+          10,
+          18,
+          5
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0020",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The contract is enforceable under current law.",
+        "text_b_preview": "The contract is unenforceable under current law.",
+        "top3_a": [
+          7,
+          1,
+          12
+        ],
+        "top3_b": [
+          1,
+          7,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0021",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The appeal was successful and the verdict was reversed.",
+        "text_b_preview": "The appeal was unsuccessful and the verdict was upheld.",
+        "top3_a": [
+          6,
+          4,
+          14
+        ],
+        "top3_b": [
+          4,
+          6,
+          13
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0022",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The appeal was successful and the verdict was reversed.",
+        "text_b_preview": "The appeal was unsuccessful and the verdict was upheld.",
+        "top3_a": [
+          6,
+          4,
+          14
+        ],
+        "top3_b": [
+          4,
+          6,
+          13
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0023",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The appeal was successful and the verdict was reversed.",
+        "text_b_preview": "The appeal was unsuccessful and the verdict was upheld.",
+        "top3_a": [
+          6,
+          4,
+          14
+        ],
+        "top3_b": [
+          4,
+          6,
+          13
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0024",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          18,
+          10,
+          5
+        ],
+        "top3_b": [
+          10,
+          18,
+          5
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      }
+    ]
+  },
+  "V_Rnd": {
+    "metrics": {
+      "total": 20,
+      "mr01": {
+        "n": 10,
+        "pass_rate": 0.0,
+        "violation_rate": 1.0
+      },
+      "mr03": {
+        "n": 10,
+        "violation_rate": 0.1,
+        "pass_rate": 0.9
+      }
+    },
+    "results": [
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0000",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          10,
+          17,
+          5,
+          6,
+          16,
+          14,
+          20,
+          3,
+          18,
+          12
+        ],
+        "ids_b": [
+          17,
+          16,
+          4,
+          15,
+          18,
+          13,
+          12,
+          5,
+          6,
+          3
+        ],
+        "overlap": 0.5385,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0001",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          5,
+          12,
+          0,
+          15,
+          10,
+          11,
+          9,
+          16,
+          3,
+          21
+        ],
+        "ids_b": [
+          12,
+          6,
+          7,
+          14,
+          4,
+          16,
+          0,
+          21,
+          10,
+          22
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0002",
+        "pair_type": "positive",
+        "text_a_preview": "The court issued an injunction to halt the proceedings.",
+        "text_b_preview": "A court order was granted to stop the action.",
+        "ids_a": [
+          3,
+          9,
+          14,
+          16,
+          19,
+          6,
+          13,
+          18,
+          10,
+          7
+        ],
+        "ids_b": [
+          21,
+          16,
+          5,
+          11,
+          4,
+          7,
+          17,
+          1,
+          10,
+          9
+        ],
+        "overlap": 0.25,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0003",
+        "pair_type": "positive",
+        "text_a_preview": "The contract was terminated due to breach.",
+        "text_b_preview": "The agreement was voided following a violation of its terms.",
+        "ids_a": [
+          12,
+          4,
+          22,
+          15,
+          5,
+          2,
+          1,
+          6,
+          16,
+          19
+        ],
+        "ids_b": [
+          1,
+          11,
+          6,
+          15,
+          22,
+          8,
+          23,
+          16,
+          12,
+          21
+        ],
+        "overlap": 0.4286,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0004",
+        "pair_type": "positive",
+        "text_a_preview": "The contract was terminated due to breach.",
+        "text_b_preview": "The agreement was voided following a violation of its terms.",
+        "ids_a": [
+          18,
+          4,
+          7,
+          3,
+          2,
+          10,
+          23,
+          6,
+          19,
+          17
+        ],
+        "ids_b": [
+          23,
+          15,
+          21,
+          8,
+          10,
+          17,
+          20,
+          16,
+          22,
+          4
+        ],
+        "overlap": 0.25,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0005",
+        "pair_type": "positive",
+        "text_a_preview": "The contract was terminated due to breach.",
+        "text_b_preview": "The agreement was voided following a violation of its terms.",
+        "ids_a": [
+          12,
+          23,
+          18,
+          20,
+          16,
+          6,
+          15,
+          22,
+          2,
+          14
+        ],
+        "ids_b": [
+          10,
+          17,
+          6,
+          18,
+          22,
+          3,
+          15,
+          23,
+          5,
+          21
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0006",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          8,
+          13,
+          18,
+          2,
+          16,
+          5,
+          21,
+          3,
+          22,
+          19
+        ],
+        "ids_b": [
+          4,
+          20,
+          15,
+          19,
+          11,
+          2,
+          23,
+          8,
+          13,
+          12
+        ],
+        "overlap": 0.25,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0007",
+        "pair_type": "positive",
+        "text_a_preview": "The statute of limitations has expired.",
+        "text_b_preview": "The legal time limit for filing the claim has passed.",
+        "ids_a": [
+          20,
+          21,
+          1,
+          8,
+          18,
+          12,
+          7,
+          6,
+          17,
+          19
+        ],
+        "ids_b": [
+          8,
+          13,
+          2,
+          11,
+          10,
+          7,
+          14,
+          15,
+          22,
+          23
+        ],
+        "overlap": 0.1111,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0008",
+        "pair_type": "positive",
+        "text_a_preview": "The defendant was found guilty of the charges.",
+        "text_b_preview": "The court convicted the accused on all counts.",
+        "ids_a": [
+          12,
+          15,
+          16,
+          14,
+          4,
+          3,
+          10,
+          7,
+          1,
+          0
+        ],
+        "ids_b": [
+          10,
+          14,
+          23,
+          6,
+          9,
+          1,
+          20,
+          3,
+          12,
+          11
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "legal-positive-0009",
+        "pair_type": "positive",
+        "text_a_preview": "The statute of limitations has expired.",
+        "text_b_preview": "The legal time limit for filing the claim has passed.",
+        "ids_a": [
+          17,
+          18,
+          21,
+          19,
+          23,
+          1,
+          12,
+          8,
+          22,
+          11
+        ],
+        "ids_b": [
+          16,
+          4,
+          15,
+          9,
+          14,
+          1,
+          20,
+          12,
+          13,
+          10
+        ],
+        "overlap": 0.1111,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0015",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The contract is enforceable under current law.",
+        "text_b_preview": "The contract is unenforceable under current law.",
+        "top3_a": [
+          14,
+          17,
+          2
+        ],
+        "top3_b": [
+          2,
+          18,
+          8
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0016",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          3,
+          19,
+          0
+        ],
+        "top3_b": [
+          2,
+          22,
+          20
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0017",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          23,
+          19,
+          17
+        ],
+        "top3_b": [
+          4,
+          15,
+          18
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": 3,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0018",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The defendant is liable for the damages.",
+        "text_b_preview": "The defendant is not liable for the damages.",
+        "top3_a": [
+          0,
+          6,
+          5
+        ],
+        "top3_b": [
+          17,
+          3,
+          22
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0019",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          4,
+          14,
+          11
+        ],
+        "top3_b": [
+          19,
+          12,
+          8
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0020",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The contract is enforceable under current law.",
+        "text_b_preview": "The contract is unenforceable under current law.",
+        "top3_a": [
+          9,
+          20,
+          2
+        ],
+        "top3_b": [
+          18,
+          0,
+          9
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0021",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The appeal was successful and the verdict was reversed.",
+        "text_b_preview": "The appeal was unsuccessful and the verdict was upheld.",
+        "top3_a": [
+          1,
+          5,
+          16
+        ],
+        "top3_b": [
+          12,
+          11,
+          7
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0022",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The appeal was successful and the verdict was reversed.",
+        "text_b_preview": "The appeal was unsuccessful and the verdict was upheld.",
+        "top3_a": [
+          19,
+          7,
+          20
+        ],
+        "top3_b": [
+          9,
+          23,
+          8
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0023",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The appeal was successful and the verdict was reversed.",
+        "text_b_preview": "The appeal was unsuccessful and the verdict was upheld.",
+        "top3_a": [
+          23,
+          3,
+          16
+        ],
+        "top3_b": [
+          17,
+          15,
+          14
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "legal-hard_negative-0024",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The injunction was granted by the judge.",
+        "text_b_preview": "The injunction was denied by the judge.",
+        "top3_a": [
+          20,
+          12,
+          15
+        ],
+        "top3_b": [
+          0,
+          5,
+          20
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      }
+    ]
+  }
+}

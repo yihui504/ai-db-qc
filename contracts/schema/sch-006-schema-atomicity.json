@@ -1,0 +1,77 @@
+{
+  "contract_id": "SCH-006",
+  "name": "Schema Operation Atomicity",
+  "family": "SCHEMA",
+  "type": "universal",
+  "statement": "Schema operations must be atomic - either fully succeed or fully fail without partial state",
+  "rationale": "Partial schema changes can lead to inconsistent state and corruption",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["alter_collection", "drop_field", "rename_field"],
+    "conditions": ["schema_modification"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "schema_defined"
+  ],
+  "postconditions": [
+    "either_success_complete_or_rollback_complete",
+    "no_intermediate_state_visible"
+  ],
+  "invariants": [
+    "Schema state consistency",
+    "Transaction isolation"
+  ],
+  "violation_criteria": {
+    "condition": "partial_change_detected OR intermediate_state_visible OR inconsistent_metadata",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "edge_case",
+    "cases": [
+      {
+        "name": "Failed schema operation rollback",
+        "sequence": [
+          "create collection with schema",
+          "insert N entities",
+          "attempt invalid schema change",
+          "verify original schema intact",
+          "verify all data accessible"
+        ]
+      },
+      {
+        "name": "Concurrent schema operations",
+        "sequence": [
+          "create collection",
+          "insert data",
+          "concurrent schema modification attempts",
+          "verify only one succeeds",
+          "verify schema remains consistent"
+        ]
+      },
+      {
+        "name": "Schema change during active queries",
+        "sequence": [
+          "start long-running query",
+          "attempt schema change",
+          "verify atomicity maintained",
+          "check query results consistency"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "atomicity_preserved AND no_partial_state",
+    "verification": "check schema state before and after failed operations; verify no intermediate states",
+    "classification": {
+      "violation": "BUG (atomicity_violation)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["SCH-001"],
+    "test_complexity": "high",
+    "version": "1.0"
+  }
+}

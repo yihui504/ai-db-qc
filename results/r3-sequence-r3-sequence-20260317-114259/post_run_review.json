@@ -1,0 +1,104 @@
+{
+  "cases_reviewed": 11,
+  "classifications": {
+    "issue_ready": [],
+    "observation": [
+      {
+        "template_id": "seq-001",
+        "type": "primary",
+        "state_property": "Delete idempotency",
+        "validly_exercised": true,
+        "classification": "observation",
+        "reasoning": "State property tested, no anomaly detected"
+      },
+      {
+        "template_id": "seq-002",
+        "type": "primary",
+        "state_property": "Index state dependency",
+        "validly_exercised": true,
+        "classification": "observation",
+        "reasoning": "State property tested, no anomaly detected"
+      },
+      {
+        "template_id": "seq-003",
+        "type": "primary",
+        "state_property": "Deleted entity visibility",
+        "validly_exercised": true,
+        "classification": "observation",
+        "reasoning": "State property tested, no anomaly detected"
+      },
+      {
+        "template_id": "seq-004",
+        "type": "primary",
+        "state_property": "Post-drop state bug",
+        "validly_exercised": true,
+        "classification": "observation",
+        "reasoning": "State property tested, no anomaly detected"
+      },
+      {
+        "template_id": "seq-005",
+        "type": "primary",
+        "state_property": "Load-insert-search visibility",
+        "validly_exercised": true,
+        "classification": "observation",
+        "reasoning": "State property tested, no anomaly detected"
+      },
+      {
+        "template_id": "seq-006",
+        "type": "primary",
+        "state_property": "Multi-delete state consistency",
+        "validly_exercised": true,
+        "classification": "observation",
+        "reasoning": "State property tested, no anomaly detected"
+      }
+    ],
+    "calibration": [
+      {
+        "template_id": "cal-seq-001",
+        "type": "calibration",
+        "state_property": "Known-good full lifecycle",
+        "validly_exercised": true,
+        "classification": "calibration",
+        "reasoning": "Calibration case - validates known-good behavior"
+      },
+      {
+        "template_id": "cal-seq-002",
+        "type": "calibration",
+        "state_property": "Duplicate creation documented behavior",
+        "validly_exercised": true,
+        "classification": "calibration",
+        "reasoning": "Calibration case - validates known-good behavior"
+      },
+      {
+        "template_id": "cal-seq-003",
+        "type": "calibration",
+        "state_property": "Basic insert-search",
+        "validly_exercised": true,
+        "classification": "calibration",
+        "reasoning": "Calibration case - validates known-good behavior"
+      }
+    ],
+    "exploratory": [
+      {
+        "template_id": "exp-seq-001",
+        "type": "exploratory",
+        "state_property": "Empty collection edge case",
+        "validly_exercised": true,
+        "classification": "exploratory",
+        "reasoning": "Exploratory case - documents edge case behavior"
+      },
+      {
+        "template_id": "exp-seq-002",
+        "type": "exploratory",
+        "state_property": "Delete non-existent entity edge case",
+        "validly_exercised": true,
+        "classification": "exploratory",
+        "reasoning": "Exploratory case - documents edge case behavior"
+      }
+    ]
+  },
+  "minimum_success_met": true,
+  "findings": [],
+  "primary_cases_completed": 6,
+  "issue_ready_count": 0
+}

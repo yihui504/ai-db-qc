@@ -1,0 +1,48 @@
+
+============================================================
+  IDX-003 + IDX-004 Contract Testing
+  Run ID: idx003-idx004-20260316-201653
+  Target: localhost:19530  dim=64
+============================================================
+  Milvus connected OK
+
+
+--- IDX-003: Parameter Validation Contract ---
+2026-03-16 20:16:56,510 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=invalid parameter[expected=valid index][actual=invalid index type: NONEXISTENT])>, <Time:{'RPC start': '2026-03-16 20:16:56.461518', 'RPC error': '2026-03-16 20:16:56.510808'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-01: Invalid index type 'NONEXISTENT'
+2026-03-16 20:16:59,454 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'M' (0) should be in range [2, 2048]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:16:59.403531', 'RPC error': '2026-03-16 20:16:59.454620'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-02: HNSW M=0 (must be >= 1)
+2026-03-16 20:17:02,216 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'M' (-1) should be in range [2, 2048]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:17:02.213168', 'RPC error': '2026-03-16 20:17:02.216069'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-03: HNSW M=-1 (negative, must be rejected)
+2026-03-16 20:17:04,920 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'nlist' (0) should be in range [1, 65536]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:17:04.873437', 'RPC error': '2026-03-16 20:17:04.920620'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-04: IVF_FLAT nlist=0 (must be >= 1)
+2026-03-16 20:17:07,636 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'nlist' (-5) should be in range [1, 65536]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:17:07.586592', 'RPC error': '2026-03-16 20:17:07.636526'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-05: IVF_FLAT nlist=-5 (negative, must be rejected)
+  [PASS]  IDX-003-LEGAL-01: HNSW M=8, efConstruction=100 (valid)
+  [PASS]  IDX-003-LEGAL-02: IVF_FLAT nlist=64 (valid)
+  [PASS]  IDX-003-LEGAL-03: FLAT (no algorithm params, always exact)
+
+--- IDX-004: Index Rebuild Idempotency Contract ---
+    IDX-004-SEQ-01 step1_IVF_FLAT: recall=1.000 (threshold=0.7) -> PASS
+    IDX-004-SEQ-01 step2_HNSW: recall=1.000 (threshold=0.7) -> PASS
+  [PASS]  IDX-004-SEQ-01: IVF_FLAT -> HNSW index change
+    IDX-004-SEQ-02 step1_HNSW: recall=1.000 (threshold=0.7) -> PASS
+    IDX-004-SEQ-02 step2_IVF_FLAT: recall=1.000 (threshold=0.7) -> PASS
+  [PASS]  IDX-004-SEQ-02: HNSW -> IVF_FLAT index change (reverse)
+    IDX-004-SEQ-03 step1_HNSW: recall=1.000 (threshold=0.7) -> PASS
+    IDX-004-SEQ-03 step2_HNSW: recall=1.000 (threshold=0.7) -> PASS
+  [PASS]  IDX-004-SEQ-03: HNSW M=8 -> HNSW M=32 (same type, param change)
+    IDX-004-SEQ-04 step1_FLAT: recall=1.000 (threshold=0.99) -> PASS
+    IDX-004-SEQ-04 step2_IVF_FLAT: recall=1.000 (threshold=0.7) -> PASS
+    IDX-004-SEQ-04 step3_HNSW: recall=1.000 (threshold=0.7) -> PASS
+  [PASS]  IDX-004-SEQ-04: 3-step chain: FLAT -> IVF_FLAT -> HNSW
+
+============================================================
+  RESULTS SUMMARY
+  Total tests:  12
+  PASS:         12
+  VIOLATIONS:   0
+
+  Results saved: results\idx003-idx004-20260316-201653-results.json
+============================================================
+

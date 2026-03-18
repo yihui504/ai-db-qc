@@ -1,276 +1,194 @@
 # AI-DB-QC: Contract-Driven Vector Database QA Framework
 
-A **contract-driven, adapter-based, evidence-backed** system for automated testing and semantic defect discovery in AI databases (vector and hybrid retrieval databases).
+A **contract-driven, adapter-based, evidence-backed** system for automated testing and semantic defect discovery in vector databases.
 
 ---
 
-## What is AI-DB-QC?
+## Overview
 
-AI-DB-QC is a research framework that automates the discovery of semantic bugs, API violations, and correctness issues in vector databases like Milvus, Qdrant, and Weaviate. It uses **formal contracts** to define expected behavior and **semantic oracles** to classify test results.
+AI-DB-QC automates the discovery of semantic bugs, API violations, and correctness issues across multiple vector databases. Rather than writing manual tests, users define **formal contracts** that specify expected behavior. The framework generates test cases from those contracts, executes them against real databases, and classifies results using a multi-layer oracle system.
 
-### Key Innovation: Contract-Driven Testing
+The framework has been validated against four major vector databases at their latest versions, discovering **22 bugs** across boundary conditions, schema operations, and stress testing -- with **8 confirmed issues** backed by complete documentation-behavior-analysis evidence chains.
 
-Instead of writing manual tests, you define **contracts** - formal specifications of correct behavior. The framework automatically generates test cases, executes them against real databases, and classifies results as:
+### Supported Databases
 
-- **PASS**: Contract satisfied
-- **VIOLATION**: Bug discovered
-- **ALLOWED_DIFFERENCE**: Architectural variance (not a bug)
-- **OBSERVATION**: Needs investigation
-
-### Why Vector Databases?
-
-Vector databases power RAG (Retrieval Augmented Generation), semantic search, and recommendation systems. They have unique testing challenges:
-
-- **Approximate algorithms**: ANN trades accuracy for speed
-- **Complex semantics**: Vector similarity, metric types, hybrid queries
-- **Vendor fragmentation**: Different APIs and behaviors
-- **Rapidly evolving**: New features, insufficient testing
-
-**AI-DB-QC addresses these gaps** with systematic, automated, evidence-backed testing.
+| Database | Version Tested | Adapter | Status |
+|----------|---------------|---------|--------|
+| **Milvus** | v2.6.12 | `milvus_adapter.py` | Full support |
+| **Qdrant** | v1.17.0 | `qdrant_adapter.py` | Full support |
+| **Weaviate** | v1.36.5 | `weaviate_adapter.py` | Full support |
+| **Pgvector** | v0.8.2 (pg17) | `pgvector_adapter.py` | Full support |
+| **SeekDB** | - | `seekdb_adapter.py` | Experimental |
+| **Mock** | - | `mock.py` | In-memory reference |
 
 ---
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.11+
+- Docker (for running databases)
+- Git
+
 ### Installation
 
 ```bash
-# Clone repository
-git clone https://github.com/your-org/ai-db-qc.git
+git clone https://github.com/yihui504/ai-db-qc.git
 cd ai-db-qc
-
-# Install dependencies
 pip install -e .
+```
 
-# Verify installation
+### Launch Databases
+
+```bash
+docker compose up -d
+```
+
+This starts Milvus, Qdrant, Weaviate, and PostgreSQL (with pgvector) as defined in `docker-compose.yml`.
+
+### Run a Test Campaign
+
+```bash
+# Run boundary condition tests
+python scripts/run_boundary_tests.py
+
+# Run stress tests
+python scripts/run_stress_tests.py
+
+# Run schema evolution tests
+python scripts/run_schema_evolution.py
+
+# Run the full bug mining pipeline
+python scripts/run_bug_mining.py
+```
+
+### Verify Installation
+
+```bash
 python -c "from core.oracle_engine import OracleEngine; print('OK')"
+python -c "from adapters.milvus_adapter import MilvusAdapter; print('OK')"
 ```
-
-### Define a Contract
-
-```json
-// contracts/ann/ann-001-top-k-cardinality.json
-{
-  "contract_id": "ANN-001",
-  "name": "Top-K Cardinality Correctness",
-  "statement": "Search with top_k parameter must return at most K results",
-  "type": "universal",
-  "scope": {
-    "databases": ["all"],
-    "operations": ["search"]
-  },
-  "violation_criteria": {
-    "condition": "length(search_results) > top_k",
-    "severity": "high"
-  }
-}
-```
-
-### Generate Tests
-
-```python
-from core.contract_test_generator import ContractTestGenerator
-
-generator = ContractTestGenerator()
-tests = generator.generate_by_family("ann")
-generator.save_tests(tests, "ann_tests")
-
-# Output: generated_tests/ann_tests_TIMESTAMP.json
-```
-
-### Execute Tests
-
-```python
-from adapters.milvus_adapter import MilvusAdapter
-from core.oracle_engine import OracleEngine
-
-# Initialize adapter
-adapter = MilvusAdapter({"host": "localhost", "port": 19530})
-
-# Execute tests
-results = []
-for test in tests:
-    result = execute_test_sequence(test, adapter)
-    results.append(result)
-
-# Evaluate with oracle
-oracle = OracleEngine()
-for test, result in zip(tests, results):
-    oracle_result = oracle.evaluate(test.contract_id, result)
-    print(f"{test.test_id}: {oracle_result.classification.value}")
-```
-
----
-
-## Current Status
-
-### Completed Milestones
-
-| Milestone | Focus | Tests | Bugs Found | Status |
-|-----------|-------|-------|------------|--------|
-| **R1** | Parameter Boundary Testing | 50 | 3 | ✅ Complete |
-| **R2** | API Validation / Usability | 40 | 2 | ✅ Complete |
-| **R3** | Sequence & State Testing | 30 | 1 | ✅ Complete |
-| **R4** | Differential Semantic Testing | 100+ | 4* | ✅ Complete |
-| **R5A** | ANN Contract Testing | 10 | 0 | ✅ Complete |
-| **R5C** | Hybrid Query Contract Testing | 14 | 0 | ✅ Complete |
-
-*Most R4 findings were ALLOWED_DIFFERENCE (architectural variance)
-
-**Total**: 244 tests executed, 10 contract violations discovered
-
-### Current Focus: R5B (Index Contracts)
-
-**Status**: Design complete, implementation pending
-
-**Scope**: 6 tests (revised from 16 after pre-implementation audit)
-
-**Key Improvement**: Refined IDX-001 oracle separates hard contract checks from ANN approximation tolerance
-
-**Documentation**:
-- [R5B Design](docs/R5B_INDEX_PILOT_REVISED.md)
-- [Pre-Implementation Audit](docs/R5B_PREIMPLEMENTATION_AUDIT.md)
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                          AI-DB-QC Framework                            │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐         │
-│  │   Contract   │────▶│    Test      │────▶│  Execution   │         │
-│  │   Registry   │     │   Generator  │     │   Pipeline   │         │
-│  └──────────────┘     └──────────────┘     └───────┬──────┘         │
-│         │                      │                     │                │
-│         ▼                      ▼                     ▼                │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐       │
-│  │   Contract   │     │   Generated   │────▶│    Adapter    │       │
-│  │    Files     │     │    Tests      │     │    Layer      │       │
-│  └──────────────┘     └──────────────┘     └───────┬──────┘       │
-│                                                     │                │
-│                                                     ▼                │
-│                                              ┌──────────────┐       │
-│                                              │   Database    │       │
-│                                              │   (Milvus)    │       │
-│                                              └──────────────┘       │
-│                                                     │                │
-│                                                     ▼                │
-│                                              ┌──────────────┐       │
-│                                              │   Oracle     │       │
-│                                              │   Engine     │       │
-│                                              └───────┬──────┘       │
-│                                                      │              │
-│                                                      ▼              │
-│                                              ┌──────────────┐       │
-│                                              │ Classification│       │
-│                                              │ PASS/VIOL.   │       │
-│                                              └──────────────┘       │
-└─────────────────────────────────────────────────────────────────────────┘
+Contracts (JSON/YAML)
+    |
+    v
+Test Generator (casegen/)
+    |
+    v
+Generated Tests (generated_tests/)
+    |
+    v
+Adapter Layer (adapters/)  --->  Database Instances
+    |
+    v
+Multi-Layer Oracle (oracles/)
+    |
+    v
+Classification: PASS | VIOLATION | ALLOWED_DIFFERENCE | OBSERVATION
 ```
 
 ### Core Components
 
-- **Contract Registry**: Loads and indexes contract definitions
-- **Test Generator**: Creates test cases from contracts
-- **Adapter Layer**: Abstracts database-specific operations
-- **Execution Pipeline**: Orchestrates test execution
-- **Oracle Engine**: Evaluates results against contracts
-
-### Supported Databases
-
-| Database | Status | Operations |
-|----------|--------|------------|
-| **Milvus** | ✅ Full | create, insert, build_index, search, filtered_search, drop |
-| **Mock** | ✅ Full | All operations (in-memory) |
-| **SeekDB** | ⚠️ Experimental | Basic operations |
-| **Qdrant** | ❌ Planned | - |
+| Component | Location | Description |
+|-----------|----------|-------------|
+| **Contract Registry** | `core/contract_registry.py` | Loads and indexes contract definitions |
+| **Test Generator** | `core/contract_test_generator.py` | Creates test cases from contracts |
+| **Case Generators** | `casegen/` | Fuzzing, boundary, and discovery generators |
+| **Adapter Layer** | `adapters/` | Abstracts database-specific operations |
+| **Oracle Engine** | `core/oracle_engine.py` | Primary evaluation engine |
+| **Multi-Layer Oracles** | `oracles/` | Differential, metamorphic, recall, monotonicity, trivalent, filter strictness, write-read consistency, sequence assertion |
+| **Schemas** | `schemas/` | Pydantic data models for tests and results |
+| **Pipeline** | `pipeline/` | Execution orchestration |
 
 ---
 
 ## Contract Library
 
-### 16 Contracts Across 4 Families
+Contracts are organized into families covering different testing dimensions:
 
-| Family | Contracts | Focus |
-|--------|-----------|-------|
-| **ANN** | 5 | Search correctness (top-k, distance, metrics, NN inclusion) |
-| **Index** | 4 | Index behavior (semantic neutrality, data preservation) |
-| **Hybrid** | 3 | Filter + vector search interaction |
-| **Schema** | 4 | Schema evolution and metadata accuracy |
+| Family | Directory | Contracts | Focus |
+|--------|-----------|-----------|-------|
+| **ANN** | `contracts/ann/` | 5 | Search correctness: top-k cardinality, distance metrics, NN inclusion |
+| **Index** | `contracts/index/` | 4 | Index behavior: semantic neutrality, data preservation |
+| **Hybrid** | `contracts/hybrid/` | 3 | Filter + vector search interaction |
+| **Schema** | `contracts/schema/` | 15 | Schema evolution, boundary conditions, stress testing |
+| **Concurrency** | `contracts/conc/` | - | Concurrent operation contracts |
+| **Constraints** | `contracts/cons/` | - | Constraint validation contracts |
 
 ### Contract Format
 
 ```json
 {
-  "contract_id": "ANN-001",
-  "name": "Top-K Cardinality Correctness",
-  "family": "ANN",
+  "contract_id": "BND-001",
+  "name": "Dimension Boundaries",
   "type": "universal",
-  "statement": "Search with top_k must return at most K results",
-  "preconditions": ["collection_exists", "top_k >= 0"],
-  "postconditions": ["length(results) <= top_k"],
+  "statement": "Vector dimensions must be validated against documented limits",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["create_collection", "insert"]
+  },
   "violation_criteria": {
-    "condition": "length(search_results) > top_k",
+    "condition": "invalid_dimension_accepted",
     "severity": "high"
   },
-  "test_generation": {
-    "strategy": "boundary",
-    "parameters": {"top_k": [0, 1, 10, 100]}
-  },
   "oracle": {
-    "check": "count(results) <= top_k"
+    "check": "dimension_within_valid_range"
   }
 }
 ```
 
 ---
 
-## Bug Classification
+## Bug Discovery Results
 
-Findings are classified into four types:
+### Latest Campaign: AGGRESSIVE_BUG_MINING_2025_001
+
+Tested against the latest versions of all four databases using 8 contracts and 48 test cases across schema evolution, boundary conditions, and stress testing.
+
+**Summary**: 22 bugs discovered, 8 filed as confirmed issues with complete evidence chains.
+
+| Severity | Count | Details |
+|----------|-------|---------|
+| **Critical** | 1 | Qdrant 502 crash under load (ISSUE-002) |
+| **High** | 3 | Weaviate/Pgvector dimension & top-k issues (ISSUE-005, 007, 008) |
+| **Medium** | 4 | Metric validation, naming, top-k issues (ISSUE-001, 003, 004, 006) |
+
+### Key Findings
+
+**Qdrant** exhibited the most severe issues, including a critical 502 Bad Gateway crash at just 1000 RPS (ISSUE-002), along with missing metric validation (ISSUE-004) and lenient collection naming rules (ISSUE-003).
+
+**Weaviate** and **Pgvector** both accepted clearly invalid dimensions (0, -1, 100000) without rejection (ISSUE-005, ISSUE-007), and both produced internal errors rather than graceful error messages when given top_k=0 (ISSUE-006, ISSUE-008).
+
+**Milvus** showed the fewest issues -- only one confirmed bug (ISSUE-001) for accepting unsupported metric types. Its strict validation on dimensions and top_k was generally correct per documentation.
+
+See `results/issues/` for detailed evidence-chain reports on each confirmed issue.
+
+### Bug Classification
 
 | Type | Description | Severity |
 |------|-------------|----------|
-| **Type-1** | Illegal operation succeeded | HIGH |
-| **Type-2** | Illegal operation failed without diagnostic error | MEDIUM |
-| **Type-3** | Legal operation failed/crashed | HIGH |
-| **Type-4** | Legal operation succeeded but violates semantic invariant | MEDIUM |
-
-### Example Bugs Found
-
-1. **issue_001**: Invalid metric_type "INVALID" accepted (Type-1)
-2. **issue_002**: Invalid index_type accepted (Type-1)
-3. **issue_003**: Invalid top_k returns unclear error (Type-2)
-4. **issue_004**: Silent parameter ignoring (Type-2)
-
-See [docs/issues/](docs/issues/) for full details.
+| **TYPE-1** | Invalid input accepted (no rejection) | HIGH |
+| **TYPE-2** | Valid input rejected (poor diagnostics) | MEDIUM |
+| **TYPE-3** | Valid input causes crash / internal error | HIGH |
+| **TYPE-4** | Operation succeeds but violates semantic invariant | MEDIUM |
 
 ---
 
-## Documentation
+## Evidence Chain Methodology
 
-### Core Documents
+Each confirmed bug follows a three-part evidence chain:
 
-- **[PROJECT_OVERVIEW](docs/PROJECT_OVERVIEW.md)**: Project introduction and goals
-- **[PROJECT_PROGRESS_SUMMARY](docs/PROJECT_PROGRESS_SUMMARY.md)**: Campaign history and results
-- **[FRAMEWORK_ARCHITECTURE](docs/FRAMEWORK_ARCHITECTURE.md)**: Technical architecture
-- **[CURRENT_CHALLENGES](docs/CURRENT_CHALLENGES.md)**: Known limitations
-- **[NEXT_ROADMAP](docs/NEXT_ROADMAP.md)**: Future direction
+1. **Documentation Evidence** -- Official documentation quotes and URLs establishing the expected behavior
+2. **Actual Behavior** -- Raw test results from automated execution showing the observed behavior
+3. **Analysis** -- Impact assessment, root cause analysis, and recommended fix
 
-### Design Documents
-
-- **[CONTRACT_MODEL](docs/CONTRACT_MODEL.md)**: Contract specification format
-- **[CONTRACT_DRIVEN_FRAMEWORK_DESIGN](docs/CONTRACT_DRIVEN_FRAMEWORK_DESIGN.md)**: Framework design
-- **[BUG_TAXONOMY](docs/BUG_TAXONOMY.md)**: Classification system
-
-### Campaign Reports
-
-- **[R5A_ANN_PILOT_REPORT](docs/R5A_ANN_PILOT_REPORT.md)**: ANN contract testing results
-- **[R5C_HYBRID_PILOT_REPORT](docs/R5C_HYBRID_PILOT_REPORT.md)**: Hybrid query testing results
-- **[R4_FULL_REPORT](docs/R4_FULL_REPORT.md)**: Differential testing results
+Bugs where documentation evidence is ambiguous or confirms the behavior is expected are **not** filed as issues. This rigorous filtering ensures that every filed issue is backed by a genuine documentation-behavior contradiction.
 
 ---
 
@@ -278,90 +196,42 @@ See [docs/issues/](docs/issues/) for full details.
 
 ```
 ai-db-qc/
-├── contracts/              # Contract definitions (JSON)
-│   ├── ann/               # ANN contracts (5)
-│   ├── index/             # Index contracts (4)
-│   ├── hybrid/            # Hybrid contracts (3)
-│   └── schema/            # Schema contracts (4)
-│
-├── core/                  # Framework core
-│   ├── contract_registry.py
-│   ├── contract_test_generator.py
-│   └── oracle_engine.py
-│
-├── adapters/              # Database adapters
-│   ├── milvus_adapter.py
-│   ├── mock.py
-│   └── base.py
-│
-├── pipeline/              # Execution pipeline
-│   ├── execute.py
-│   └── preconditions.py
-│
-├── schemas/               # Pydantic schemas
-│   └── *.py
-│
-├── scripts/               # Execution scripts
-│   ├── run_ann_pilot.py
-│   └── run_hybrid_pilot.py
-│
-├── docs/                  # Documentation
-│   └── *.md
-│
-├── generated_tests/       # Generated test cases
-└── results/               # Test execution results
-```
-
----
-
-## Usage Examples
-
-### Example 1: Test ANN Correctness
-
-```python
-from core.contract_registry import get_registry
-from core.contract_test_generator import ContractTestGenerator
-from adapters.milvus_adapter import MilvusAdapter
-from core.oracle_engine import OracleEngine
-
-# Load contracts
-registry = get_registry()
-registry.load_all()
-
-# Generate ANN tests
-generator = ContractTestGenerator()
-ann_tests = generator.generate_by_family("ann")
-
-# Execute on Milvus
-adapter = MilvusAdapter({"host": "localhost", "port": 19530})
-oracle = OracleEngine()
-
-for test in ann_tests:
-    result = execute_test_sequence(test, adapter)
-    oracle_result = oracle.evaluate(test.contract_id, result)
-    print(f"{test.test_id}: {oracle_result.classification.value}")
-```
-
-### Example 2: Define Custom Contract
-
-```python
-# Create contract file: contracts/custom/cust-001.json
-{
-  "contract_id": "CUST-001",
-  "name": "Custom Index Behavior",
-  "family": "INDEX",
-  "type": "database_specific",
-  "statement": "Index creation must not affect data count",
-  "violation_criteria": {
-    "condition": "count_before != count_after",
-    "severity": "critical"
-  }
-}
-
-# Generate and test
-generator = ContractTestGenerator()
-tests = generator.generate_by_contract("CUST-001")
-# ... execute as above
+├── adapters/                # Database adapters (Milvus, Qdrant, Weaviate, Pgvector, SeekDB, Mock)
+├── ai_db_qa/               # Semantic data generation, embedding, multi-layer oracle
+├── archive/                 # Historical artifacts (v1 issues, old reports)
+├── campaigns/               # Campaign configurations (YAML)
+├── capabilities/            # Capability descriptions (JSON)
+├── casegen/                 # Test case generators
+│   ├── fuzzing/             # Fuzzing strategies
+│   ├── generators/          # Discovery and hybrid generators
+│   └── templates/           # Contract templates (YAML)
+├── configs/                 # Database connection configs
+├── contracts/               # Contract definitions
+│   ├── ann/                 # ANN correctness contracts
+│   ├── conc/                # Concurrency contracts
+│   ├── cons/                # Constraint contracts
+│   ├── core/                # Core contract definitions
+│   ├── db_profiles/         # Per-database profiles
+│   ├── hybrid/              # Hybrid query contracts
+│   ├── index/               # Index behavior contracts
+│   └── schema/              # Schema, boundary, stress contracts
+├── core/                    # Framework core (registry, generator, oracle engine)
+├── docs/                    # Documentation, design docs, reports, paper materials
+├── evidence/                # Bug evidence collection utilities
+├── generated_tests/         # Generated test case files (JSON)
+├── oracles/                 # Multi-layer oracle system
+├── pipeline/                # Execution pipeline
+├── results/                 # Test results, bug mining reports, filed issues
+│   ├── issues/              # Evidence-chain issue files
+│   ├── boundary_*/          # Boundary test results
+│   ├── stress_*/            # Stress test results
+│   └── schema_evolution_*/  # Schema evolution results
+├── schemas/                 # Pydantic schemas for tests and results
+├── scripts/                 # Execution and analysis scripts
+├── tests/                   # Unit and integration tests
+├── docker-compose.yml       # Database deployment configuration
+├── pyproject.toml           # Python project configuration
+└── requirements.txt         # Python dependencies
 ```
 
 ---
@@ -372,88 +242,36 @@ tests = generator.generate_by_contract("CUST-001")
 
 ```bash
 # Unit tests
-pytest tests/unit/ -v
+pytest tests/ -v
 
-# Integration tests
-pytest tests/integration/ -v
-
-# Oracle tests
-pytest tests/test_oracle.py -v
+# Specific test modules
+pytest tests/test_fuzzing_strategies.py -v
 ```
 
-### Verify Installation
+### Run a Smoke Test
 
 ```bash
-python -c "from core.oracle_engine import OracleEngine; print('OK')"
-python -c "from adapters.milvus_adapter import MilvusAdapter; print('OK')"
-python -c "from core.contract_registry import get_registry; print('OK')"
+python run_smoke.py
+```
+
+### Database Health Checks
+
+```bash
+python scripts/_health_check.py
 ```
 
 ---
 
-## Contributing
+## Documentation
 
-We welcome contributions in these areas:
+Key documents are organized under `docs/`:
 
-1. **Database Adapters**: Add support for Qdrant, Weaviate, Pinecone
-2. **Contract Library**: Expand coverage (concurrency, transactions)
-3. **Oracle Engine**: Improve semantic oracles
-4. **Test Generation**: Property-based testing, combinatorial strategies
-
-See [docs/NEXT_ROADMAP.md](docs/NEXT_ROADMAP.md) for detailed plans.
-
----
-
-## Key Findings
-
-### Milvus Quality Assessment
-
-After 244 tests across 6 campaigns:
-
-- **Core Operations**: Robust and correct
-- **ANN Search**: No contract violations (R5A)
-- **Hybrid Queries**: No contract violations (R5C)
-- **Parameter Validation**: Some gaps (invalid metric_type accepted)
-
-**Conclusion**: Milvus is a mature, well-tested database for core operations.
-
-### Framework Validation
-
-The contract-driven approach is **validated and effective**:
-
-- ✅ Automated test generation works
-- ✅ Oracle evaluation is sound
-- ✅ End-to-end execution is reliable
-- ⚠️ Bug-yield is low on mature databases
-
----
-
-## Current Challenges
-
-1. **Low Bug-Yield**: Milvus core operations are well-tested
-2. **ANN Approximation**: Distinguishing bugs from allowed differences
-3. **Adapter Limitations**: Hardcoded parameters, missing operations
-4. **Oracle Complexity**: Sophisticated contracts need complex oracles
-
-See [docs/CURRENT_CHALLENGES.md](docs/CURRENT_CHALLENGES.md) for detailed analysis.
-
----
-
-## Next Steps
-
-### Short-Term (R5B)
-
-Complete index behavior contract testing with refined oracle design.
-
-### Medium-Term
-
-Expand to multiple databases (Qdrant, Weaviate) for higher bug-yield.
-
-### Long-Term
-
-Evolve into general AI database QA framework supporting vector, graph, and time-series databases.
-
-See [docs/NEXT_ROADMAP.md](docs/NEXT_ROADMAP.md) for complete roadmap.
+- [Project Scope & Theory](docs/PROJECT_SCOPE.md) | [Theory](docs/THEORY.md)
+- [Framework Architecture](docs/FRAMEWORK_ARCHITECTURE.md) | [Contract Model](docs/CONTRACT_MODEL.md)
+- [Oracle Methodology](docs/oracle_methodology.md) | [Bug Taxonomy](docs/BUG_TAXONOMY.md)
+- [Concurrency Contract Design](docs/CONCURRENCY_CONTRACT_DESIGN.md)
+- [Bug Mining Execution Report](results/BUG_MINING_REPORT_v2.md) | [Issues Summary](results/issues/ISSUES_SUMMARY.md)
+- [Historical Bugs Analysis](docs/historical_bugs_analysis.md) | [Defect Analysis](docs/defect_analysis_report.md)
 
 ---
 
@@ -466,7 +284,7 @@ If you use this framework in your research, please cite:
   title = {AI-DB-QC: Contract-Driven Vector Database QA Framework},
   author = {AI-DB-QC Framework Team},
   year = {2026},
-  url = {https://github.com/your-org/ai-db-qc}
+  url = {https://github.com/yihui504/ai-db-qc}
 }
 ```
 
@@ -474,19 +292,4 @@ If you use this framework in your research, please cite:
 
 ## License
 
-MIT License - Research prototype for academic and industrial use
-
----
-
-## Acknowledgments
-
-- **Milvus**: Open-source vector database (primary testing target)
-- **Qdrant**: Rust-based vector database (planned support)
-- **Anthropic**: Claude AI for assistance in framework development
-
----
-
-**Project Status**: Active Development (Milestone: R1-R5C Complete)
-**Last Updated**: 2026-03-10
-**Next Milestone**: R5B (Index Behavior Contracts)
-**Contact**: See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
+MIT License - Research prototype for academic and industrial use.

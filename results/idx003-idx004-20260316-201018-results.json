@@ -1,0 +1,193 @@
+{
+  "run_id": "idx003-idx004-20260316-201018",
+  "timestamp": "2026-03-16T20:11:37.506601",
+  "summary": {
+    "total": 12,
+    "violations": 4,
+    "passes": 8,
+    "violation_rate": "33.3%"
+  },
+  "idx003": [
+    {
+      "test_id": "IDX-003-ILLEGAL-01",
+      "contract": "IDX-003",
+      "subtype": "illegal",
+      "desc": "Invalid index type 'NONEXISTENT'",
+      "index_type": "NONEXISTENT",
+      "idx_params": {},
+      "classification": "PASS",
+      "reason": "Correctly rejected with diagnostic: '<MilvusException: (code=1100, message=invalid parameter[expected=valid index][actual=invalid index type: NONEXISTENT])>'"
+    },
+    {
+      "test_id": "IDX-003-ILLEGAL-02",
+      "contract": "IDX-003",
+      "subtype": "illegal",
+      "desc": "HNSW M=0 (must be >= 1)",
+      "index_type": "HNSW",
+      "idx_params": {
+        "M": 0,
+        "efConstruction": 200
+      },
+      "classification": "PASS",
+      "reason": "Correctly rejected with diagnostic: '<MilvusException: (code=1100, message=Out of range in json: param 'M' (0) should be in range [2, 2048]: invalid paramete'"
+    },
+    {
+      "test_id": "IDX-003-ILLEGAL-03",
+      "contract": "IDX-003",
+      "subtype": "illegal",
+      "desc": "HNSW M=-1 (negative, must be rejected)",
+      "index_type": "HNSW",
+      "idx_params": {
+        "M": -1,
+        "efConstruction": 200
+      },
+      "classification": "PASS",
+      "reason": "Correctly rejected with diagnostic: '<MilvusException: (code=1100, message=Out of range in json: param 'M' (-1) should be in range [2, 2048]: invalid paramet'"
+    },
+    {
+      "test_id": "IDX-003-ILLEGAL-04",
+      "contract": "IDX-003",
+      "subtype": "illegal",
+      "desc": "IVF_FLAT nlist=0 (must be >= 1)",
+      "index_type": "IVF_FLAT",
+      "idx_params": {
+        "nlist": 0
+      },
+      "classification": "PASS",
+      "reason": "Correctly rejected with diagnostic: '<MilvusException: (code=1100, message=Out of range in json: param 'nlist' (0) should be in range [1, 65536]: invalid par'"
+    },
+    {
+      "test_id": "IDX-003-ILLEGAL-05",
+      "contract": "IDX-003",
+      "subtype": "illegal",
+      "desc": "IVF_FLAT nlist=-5 (negative, must be rejected)",
+      "index_type": "IVF_FLAT",
+      "idx_params": {
+        "nlist": -5
+      },
+      "classification": "PASS",
+      "reason": "Correctly rejected with diagnostic: '<MilvusException: (code=1100, message=Out of range in json: param 'nlist' (-5) should be in range [1, 65536]: invalid pa'"
+    },
+    {
+      "test_id": "IDX-003-LEGAL-01",
+      "contract": "IDX-003",
+      "subtype": "legal",
+      "desc": "HNSW M=8, efConstruction=100 (valid)",
+      "index_type": "HNSW",
+      "idx_params": {
+        "M": 8,
+        "efConstruction": 100
+      },
+      "classification": "PASS",
+      "reason": "Build+load+search succeeded (10 results)"
+    },
+    {
+      "test_id": "IDX-003-LEGAL-02",
+      "contract": "IDX-003",
+      "subtype": "legal",
+      "desc": "IVF_FLAT nlist=64 (valid)",
+      "index_type": "IVF_FLAT",
+      "idx_params": {
+        "nlist": 64
+      },
+      "classification": "PASS",
+      "reason": "Build+load+search succeeded (10 results)"
+    },
+    {
+      "test_id": "IDX-003-LEGAL-03",
+      "contract": "IDX-003",
+      "subtype": "legal",
+      "desc": "FLAT (no algorithm params, always exact)",
+      "index_type": "FLAT",
+      "idx_params": {},
+      "classification": "PASS",
+      "reason": "Build+load+search succeeded (10 results)"
+    }
+  ],
+  "idx004": [
+    {
+      "test_id": "IDX-004-SEQ-01",
+      "contract": "IDX-004",
+      "desc": "IVF_FLAT → HNSW index change",
+      "steps": [
+        {
+          "step": "step1_IVF_FLAT",
+          "index_type": "IVF_FLAT",
+          "recall": 0.0,
+          "threshold": 0.7,
+          "status": "ALLOWED_DIFF"
+        },
+        {
+          "step": "step2_HNSW",
+          "status": "FAILED",
+          "reason": "step2_HNSW: build/load failed: <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>"
+        }
+      ],
+      "classification": "VIOLATION",
+      "reason": "Exception: 'list' object has no attribute 'get'"
+    },
+    {
+      "test_id": "IDX-004-SEQ-02",
+      "contract": "IDX-004",
+      "desc": "HNSW → IVF_FLAT index change (reverse)",
+      "steps": [
+        {
+          "step": "step1_HNSW",
+          "index_type": "HNSW",
+          "recall": 0.0,
+          "threshold": 0.7,
+          "status": "ALLOWED_DIFF"
+        },
+        {
+          "step": "step2_IVF_FLAT",
+          "status": "FAILED",
+          "reason": "step2_IVF_FLAT: build/load failed: <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>"
+        }
+      ],
+      "classification": "VIOLATION",
+      "reason": "Exception: 'list' object has no attribute 'get'"
+    },
+    {
+      "test_id": "IDX-004-SEQ-03",
+      "contract": "IDX-004",
+      "desc": "HNSW M=8 → HNSW M=32 (same type, param change)",
+      "steps": [
+        {
+          "step": "step1_HNSW",
+          "index_type": "HNSW",
+          "recall": 0.0,
+          "threshold": 0.7,
+          "status": "ALLOWED_DIFF"
+        },
+        {
+          "step": "step2_HNSW",
+          "status": "FAILED",
+          "reason": "step2_HNSW: build/load failed: <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>"
+        }
+      ],
+      "classification": "VIOLATION",
+      "reason": "Exception: 'list' object has no attribute 'get'"
+    },
+    {
+      "test_id": "IDX-004-SEQ-04",
+      "contract": "IDX-004",
+      "desc": "3-step chain: FLAT → IVF_FLAT → HNSW",
+      "steps": [
+        {
+          "step": "step1_FLAT",
+          "index_type": "FLAT",
+          "recall": 0.0,
+          "threshold": 0.99,
+          "status": "ALLOWED_DIFF"
+        },
+        {
+          "step": "step2_IVF_FLAT",
+          "status": "FAILED",
+          "reason": "step2_IVF_FLAT: build/load failed: <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>"
+        }
+      ],
+      "classification": "VIOLATION",
+      "reason": "Exception: 'list' object has no attribute 'get'"
+    }
+  ]
+}

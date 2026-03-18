@@ -1,0 +1,17 @@
+{
+  "run_timestamp": "20260317-075150",
+  "adapter": "weaviate",
+  "embed_backend": "hash-fallback",
+  "domains": [
+    "finance",
+    "medical"
+  ],
+  "results": {
+    "finance": {
+      "error": "collection setup failed"
+    },
+    "medical": {
+      "error": "collection setup failed"
+    }
+  }
+}

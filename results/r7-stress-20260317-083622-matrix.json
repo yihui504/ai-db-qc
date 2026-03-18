@@ -1,0 +1,126 @@
+{
+  "run_id": "r7-stress-20260317-083622",
+  "timestamp": "2026-03-17T08:36:48.138368",
+  "mode": "stress_matrix",
+  "config": {
+    "targets": [
+      "qdrant",
+      "weaviate",
+      "pgvector"
+    ],
+    "thread_counts": [
+      8,
+      16,
+      32
+    ],
+    "dim": 64,
+    "queries_per_thread": 20
+  },
+  "matrix": {
+    "qdrant": [
+      {
+        "threads": 8,
+        "total_queries": 160,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 15.0,
+        "p95_ms": 16.0,
+        "p99_ms": 31.0,
+        "max_ms": 31.0,
+        "classification": "PASS"
+      },
+      {
+        "threads": 16,
+        "total_queries": 320,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 16.0,
+        "p95_ms": 32.0,
+        "p99_ms": 32.0,
+        "max_ms": 32.0,
+        "classification": "PASS"
+      },
+      {
+        "threads": 32,
+        "total_queries": 640,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 47.0,
+        "p95_ms": 63.0,
+        "p99_ms": 78.0,
+        "max_ms": 94.0,
+        "classification": "PASS"
+      }
+    ],
+    "weaviate": [
+      {
+        "threads": 8,
+        "total_queries": 160,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 15.0,
+        "p95_ms": 31.0,
+        "p99_ms": 32.0,
+        "max_ms": 32.0,
+        "classification": "PASS"
+      },
+      {
+        "threads": 16,
+        "total_queries": 320,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 16.0,
+        "p95_ms": 32.0,
+        "p99_ms": 46.0,
+        "max_ms": 47.0,
+        "classification": "PASS"
+      },
+      {
+        "threads": 32,
+        "total_queries": 640,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 32.0,
+        "p95_ms": 62.0,
+        "p99_ms": 63.0,
+        "max_ms": 78.0,
+        "classification": "PASS"
+      }
+    ],
+    "pgvector": [
+      {
+        "threads": 8,
+        "total_queries": 160,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 156.0,
+        "p95_ms": 188.0,
+        "p99_ms": 203.0,
+        "max_ms": 219.0,
+        "classification": "PASS"
+      },
+      {
+        "threads": 16,
+        "total_queries": 320,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 188.0,
+        "p95_ms": 219.0,
+        "p99_ms": 219.0,
+        "max_ms": 235.0,
+        "classification": "PASS"
+      },
+      {
+        "threads": 32,
+        "total_queries": 640,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 313.0,
+        "p95_ms": 406.0,
+        "p99_ms": 453.0,
+        "max_ms": 531.0,
+        "classification": "PASS"
+      }
+    ]
+  }
+}

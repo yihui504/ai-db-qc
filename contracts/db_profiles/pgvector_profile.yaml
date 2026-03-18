@@ -1,0 +1,89 @@
+# pgvector database profile
+profile_name: pgvector-pg16
+db_type: pgvector
+db_version: "pg16"
+description: pgvector PostgreSQL extension profile
+
+# Supported operations
+supported_operations:
+  - create_collection
+  - drop_collection
+  - insert
+  - delete
+  - build_index
+  - search
+  - filtered_search
+
+# Operation mappings (core op -> pgvector SQL)
+operation_mappings:
+  create_collection:
+    core_operation: create_collection
+    db_operation: CREATE TABLE
+    sql_template: |
+      CREATE TABLE IF NOT EXISTS {collection_name} (
+        id SERIAL PRIMARY KEY,
+        embedding VECTOR({dimension})
+      )
+
+  drop_collection:
+    core_operation: drop_collection
+    db_operation: DROP TABLE
+    sql_template: DROP TABLE IF EXISTS {collection_name}
+
+  insert:
+    core_operation: insert
+    db_operation: INSERT
+    sql_template: |
+      INSERT INTO {collection_name} (embedding) VALUES {values}
+
+  delete:
+    core_operation: delete
+    db_operation: DELETE
+    sql_template: DELETE FROM {collection_name} WHERE id IN ({ids})
+
+  build_index:
+    core_operation: build_index
+    db_operation: CREATE INDEX
+    sql_template: |
+      CREATE INDEX IF NOT EXISTS idx_{collection_name}_embedding 
+      ON {collection_name} USING ivfflat (embedding {metric_type})
+
+  search:
+    core_operation: search
+    db_operation: SELECT
+    sql_template: |
+      SELECT id, embedding {operator} '{vector}'::vector AS distance 
+      FROM {collection_name} 
+      ORDER BY embedding {operator} '{vector}'::vector 
+      LIMIT {top_k}
+
+  filtered_search:
+    core_operation: filtered_search
+    db_operation: SELECT
+    sql_template: |
+      SELECT id, embedding {operator} '{vector}'::vector AS distance 
+      FROM {collection_name} 
+      WHERE {filter}
+      ORDER BY embedding {operator} '{vector}'::vector 
+      LIMIT {top_k}
+
+# Parameter relaxations (override core constraints)
+parameter_relaxations:
+  search:
+    top_k:
+      max_value: 100000
+      min_value: 1
+
+# Supported features
+supported_features:
+  - IVFFlat
+  - HNSW
+  - FILTERED_SEARCH
+  - SQL_OPERATORS
+
+# Environment requirements
+environment_requirements:
+  service: postgresql
+  extension: pgvector
+  min_memory: 1GB
+  min_disk: 5GB

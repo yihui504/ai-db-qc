@@ -1,0 +1,25 @@
+# Database connection configurations for testing
+# These configs are used by all test scripts to connect to different vector databases
+
+milvus:
+  host: "localhost"
+  port: 19530
+  alias: "default"
+  timeout: 10
+
+qdrant:
+  host: "localhost"
+  port: 6333
+  timeout: 30
+
+weaviate:
+  url: "http://localhost:8080"
+  timeout: 30
+
+pgvector:
+  host: "localhost"
+  port: 5432
+  database: "postgres"
+  user: "postgres"
+  password: "postgres"
+  timeout: 30

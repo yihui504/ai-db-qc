@@ -1,0 +1,458 @@
+# Aggressive Bug Mining Campaign
+# =================================
+# Comprehensive campaign for discovering bugs using schema, boundary, and stress contracts
+# with targeted fuzzing strategies
+
+name: "Aggressive Bug Mining: Schema, Boundary & Stress"
+description: "Aggressive bug mining campaign combining schema evolution, boundary conditions, and stress testing with targeted fuzzing"
+
+# Campaign metadata
+campaign_id: "AGGRESSIVE_BUG_MINING_2025_001"
+start_date: "2025-03-17"
+priority: "high"
+
+# Target databases
+target_databases:
+  - milvus
+  - qdrant
+  - weaviate
+  - pgvector
+
+# ==============================================================================
+# Phase 1: Schema Evolution Contracts (SCH-005, SCH-006)
+# ==============================================================================
+schema_evolution_testing:
+  enabled: true
+  contracts:
+    - contract_id: "SCH-005"
+      name: "Schema Extension Backward Compatibility"
+      description: "Schema extensions must maintain backward compatibility for existing queries"
+      priority: high
+      test_count: 50
+      fuzzing_enabled: true
+      fuzzer_type: "schema_fuzzer"
+      focus_areas:
+        - backward_compatibility
+        - query_stability
+        - result_consistency
+
+    - contract_id: "SCH-006"
+      name: "Schema Operation Atomicity"
+      description: "Schema operations must be atomic - all or nothing"
+      priority: high
+      test_count: 50
+      fuzzing_enabled: true
+      fuzzer_type: "schema_fuzzer"
+      focus_areas:
+        - atomicity
+        - rollback
+        - concurrent_operations
+
+  test_script: "scripts/run_schema_evolution.py"
+  output_dir: "results/schema_evolution_2025_001"
+
+# ==============================================================================
+# Phase 2: Boundary Condition Contracts (BND-001 ~ BND-004)
+# ==============================================================================
+boundary_testing:
+  enabled: true
+  contracts:
+    - contract_id: "BND-001"
+      name: "Vector Dimension Boundaries"
+      description: "Vector dimensions must be validated with clear error messages"
+      priority: high
+      test_count: 30
+      fuzzing_enabled: true
+      fuzzer_type: "targeted_fuzzer"
+      focus_parameters: ["dimension"]
+      mutation_types: ["boundary", "type"]
+
+    - contract_id: "BND-002"
+      name: "Top-K Parameter Boundaries"
+      description: "Top-K parameter must be validated with proper edge case handling"
+      priority: high
+      test_count: 30
+      fuzzing_enabled: true
+      fuzzer_type: "targeted_fuzzer"
+      focus_parameters: ["top_k"]
+      mutation_types: ["boundary"]
+
+    - contract_id: "BND-003"
+      name: "Metric Type Validation"
+      description: "Metric types must be validated with case-sensitivity handling"
+      priority: medium
+      test_count: 25
+      fuzzing_enabled: true
+      fuzzer_type: "targeted_fuzzer"
+      focus_parameters: ["metric_type"]
+      mutation_types: ["type", "format"]
+
+    - contract_id: "BND-004"
+      name: "Collection Name Boundaries"
+      description: "Collection names must be validated against naming constraints"
+      priority: medium
+      test_count: 25
+      fuzzing_enabled: true
+      fuzzer_type: "targeted_fuzzer"
+      focus_parameters: ["collection_name"]
+      mutation_types: ["type", "format"]
+
+  test_script: "scripts/run_boundary_tests.py"
+  output_dir: "results/boundary_2025_001"
+
+# ==============================================================================
+# Phase 3: Stress Test Contracts (STR-001 ~ STR-002)
+# ==============================================================================
+stress_testing:
+  enabled: true
+  contracts:
+    - contract_id: "STR-001"
+      name: "High Throughput Stress Test"
+      description: "Database stability under high request rates"
+      priority: high
+      test_count: 20
+      fuzzing_enabled: true
+      fuzzer_type: "stress_fuzzer"
+      throughput_levels:
+        - name: low
+          rps: 100
+          duration: 60
+        - name: medium
+          rps: 1000
+          duration: 60
+        - name: high
+          rps: 5000
+          duration: 60
+
+    - contract_id: "STR-002"
+      name: "Large Dataset Stress Test"
+      description: "Database scalability with millions of vectors"
+      priority: high
+      test_count: 15
+      fuzzing_enabled: true
+      fuzzer_type: "stress_fuzzer"
+      dataset_sizes:
+        - name: small
+          vectors: 10000
+          dimension: 128
+        - name: medium
+          vectors: 100000
+          dimension: 128
+        - name: large
+          vectors: 1000000
+          dimension: 128
+
+  test_script: "scripts/run_stress_tests.py"
+  output_dir: "results/stress_2025_001"
+
+# ==============================================================================
+# Phase 4: Targeted Fuzzing
+# ==============================================================================
+targeted_fuzzing:
+  enabled: true
+
+  # Schema-focused fuzzing
+  schema_fuzzing:
+    enabled: true
+    fuzzer: "SchemaFuzzer"
+    target_contracts: ["SCH-005", "SCH-006"]
+    max_iterations: 300
+    mutation_types:
+      - field_addition
+      - field_removal
+      - field_modification
+      - concurrent_operations
+      - invalid_operations
+      - state_transitions
+    focus_areas:
+      - atomicity
+      - backward_compatibility
+      - data_preservation
+
+  # Boundary-focused fuzzing
+  boundary_fuzzing:
+    enabled: true
+    fuzzer: "TargetedFuzzer"
+    target_contracts: ["BND-001", "BND-002", "BND-003", "BND-004"]
+    max_iterations: 500
+    mutation_types:
+      - boundary
+      - type
+      - format
+    focus_parameters:
+      - dimension
+      - top_k
+      - metric_type
+      - collection_name
+
+  # Stress-focused fuzzing
+  stress_fuzzing:
+    enabled: true
+    fuzzer: "TargetedFuzzer"
+    target_contracts: ["STR-001", "STR-002"]
+    max_iterations: 200
+    mutation_types:
+      - boundary
+      - concurrent
+    focus_areas:
+      - throughput
+      - volume
+
+# ==============================================================================
+# Phase 5: Cross-Contract Integration Testing
+# ==============================================================================
+integration_testing:
+  enabled: true
+
+  # Test schema changes under stress
+  schema_under_stress:
+    enabled: true
+    description: "Test schema evolution while under high throughput"
+    test_cases:
+      - name: "Schema change during high insert rate"
+        scenario:
+          - setup: create collection with 100K vectors
+          - load: 1000 RPS insert operations
+          - action: add new field to schema
+          - verify: no corruption, schema consistent
+
+      - name: "Schema change during search operations"
+        scenario:
+          - setup: create collection with 1M vectors and index
+          - load: 500 RPS search operations
+          - action: modify schema
+          - verify: queries continue, data intact
+
+  # Test boundary conditions with large datasets
+  boundary_at_scale:
+    enabled: true
+    description: "Test boundary parameters with large collections"
+    test_cases:
+      - name: "Top-K boundary with 1M vectors"
+        scenario:
+          - setup: 1M vectors
+          - test: top_k values [0, 1, 1000, 10000, 1000000, 10000000]
+          - verify: proper validation, no crashes
+
+      - name: "Dimension mismatch at scale"
+        scenario:
+          - setup: 100K vectors with dim=128
+          - test: insert 256-dim vectors
+          - verify: proper rejection
+
+# ==============================================================================
+# Execution Configuration
+# ==============================================================================
+execution:
+  # Parallel execution
+  parallel: true
+  max_workers: 4
+  timeout_per_test: 600  # 10 minutes max per test
+  retry_count: 3
+
+  # Test order
+  execution_order: "systematic"  # systematic, random, prioritized
+  prioritization: "risk_based"  # risk_based, coverage_based, random
+
+  # Database connection
+  connection_pool:
+    max_connections: 10
+    timeout: 30
+    retry_on_failure: true
+    max_retries: 3
+
+# ==============================================================================
+# Output Configuration
+# ==============================================================================
+output:
+  base_dir: "results/aggressive_bug_mining_2025_001"
+  formats:
+    - json
+    - markdown
+    - html
+
+  # Report sections
+  reports:
+    - name: "executive_summary"
+      type: "executive_summary"
+      include:
+        - total_tests
+        - bugs_found
+        - critical_bugs
+        - databases_tested
+        - overall_pass_rate
+
+    - name: "schema_evolution_results"
+      type: "contract_test_report"
+      contracts: ["SCH-005", "SCH-006"]
+      include:
+        - test_cases
+        - failures
+        - bugs
+        - coverage
+
+    - name: "boundary_results"
+      type: "contract_test_report"
+      contracts: ["BND-001", "BND-002", "BND-003", "BND-004"]
+      include:
+        - test_cases
+        - violations
+        - type1_bugs
+        - type2_bugs
+
+    - name: "stress_results"
+      type: "contract_test_report"
+      contracts: ["STR-001", "STR-002"]
+      include:
+        - performance_metrics
+        - throughput_stats
+        - volume_stats
+        - failures
+
+    - name: "fuzzing_results"
+      type: "fuzzing_campaign_report"
+      include:
+        - fuzzer_stats
+        - mutations_generated
+        - bugs_triggered
+        - coverage_info
+
+    - name: "bug_classification"
+      type: "bug_classification_report"
+      cc_classification: true
+      include:
+        - type1_bugs
+        - type2_bugs
+        - type3_bugs
+        - type4_bugs
+        - type2_pf_bugs
+        - severity_distribution
+
+    - name: "database_comparison"
+      type: "differential_report"
+      include:
+        - pass_rates_by_db
+        - bug_counts_by_db
+        - performance_comparison
+        - strictness_analysis
+
+# ==============================================================================
+# Success Criteria
+# ==============================================================================
+success_criteria:
+  # Overall
+  min_total_tests: 500
+  min_bugs_found: 5
+  min_critical_bugs: 1
+
+  # Contract coverage
+  min_contracts_validated: 8  # All contracts tested
+  min_contract_coverage: 0.8
+
+  # Fuzzing effectiveness
+  min_fuzzing_bugs: 3
+  min_strategies_effective: 2
+  fuzzer_coverage_threshold: 0.7
+
+  # Classification
+  cc_classification_complete: true
+  min_diagnostic_quality: 0.7
+
+# ==============================================================================
+# Bug Classification Configuration
+# ==============================================================================
+bug_classification:
+  enabled: true
+
+  # Type-1: Invalid accepted
+  type1_enabled: true
+  severity: "high"
+  auto_confirm: true
+
+  # Type-2: Valid rejected / Poor diagnostics
+  type2_enabled: true
+  severity: "medium"
+  auto_confirm: true
+  diagnostic_quality_threshold: 0.6
+
+  # Type-2.PF: Precondition failed
+  type2_pf_enabled: true
+  severity: "medium"
+  auto_confirm: true
+
+  # Type-3: Valid operation fails
+  type3_enabled: true
+  severity: "high"
+  auto_confirm: true
+
+  # Type-4: Semantic invariant violation
+  type4_enabled: true
+  severity: "medium"
+  auto_confirm: false  # Manual review required
+
+# ==============================================================================
+# Monitoring and Alerting
+# ==============================================================================
+monitoring:
+  enabled: true
+
+  # Real-time metrics
+  track_metrics:
+    - tests_executed
+    - tests_passed
+    - tests_failed
+    - bugs_found
+    - execution_time
+    - resource_usage
+
+  # Alerts
+  alerts:
+    - condition: "critical_bug_found"
+      action: "immediate_notification"
+    - condition: "failure_rate > 0.5"
+      action: "pause_and_review"
+    - condition: "test_timeout > 10"
+      action: "log_warning"
+
+  # Logging
+  log_level: "DEBUG"
+  log_file: "results/aggressive_bug_mining_2025_001/campaign.log"
+  detailed_logging: true
+
+# ==============================================================================
+# Resource Limits
+# ==============================================================================
+resource_limits:
+  # Memory
+  max_memory_per_test: "4GB"
+  max_total_memory: "16GB"
+
+  # Disk
+  max_disk_usage: "100GB"
+  cleanup_after_test: true
+
+  # Time
+  max_campaign_duration: "24h"
+  max_test_duration: "10m"
+  max_phase_duration: "6h"
+
+# ==============================================================================
+# Cleanup and Maintenance
+# ==============================================================================
+cleanup:
+  enabled: true
+
+  # Automatic cleanup
+  cleanup_test_data: true
+  cleanup_temp_files: true
+  cleanup_collections: true
+
+  # Retention policy
+  retain_results: true
+  retain_logs: true
+  retain_days: 30
+
+  # Archive
+  archive_results: true
+  archive_format: "tar.gz"
+  archive_after_completion: true

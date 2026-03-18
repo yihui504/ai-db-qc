@@ -1,0 +1,26 @@
+{
+  "run_timestamp": "20260316-213108",
+  "results": [
+    {
+      "adapter": "mock",
+      "run_id": "20260316-213108",
+      "config": {
+        "n_base": 100,
+        "n_drift": 50,
+        "n_probes": 5,
+        "dim": 16,
+        "top_k": 10,
+        "recall_tolerance": 0.05
+      },
+      "recalls": {
+        "phase1_baseline": 0.0,
+        "phase3_post_drift": 0.0,
+        "phase4_recovery": 0.0,
+        "drift_delta": 0.0,
+        "recovery_delta": 0.0
+      },
+      "violations": [],
+      "classification": "PASS"
+    }
+  ]
+}

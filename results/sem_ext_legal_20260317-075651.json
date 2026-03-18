@@ -1,0 +1,374 @@
+{
+  "dataset_id": "sem-legal-20260317-075704",
+  "domain": "legal",
+  "created_at": "2026-03-17T07:57:04.154565",
+  "generator_version": "1.0",
+  "pairs": [
+    {
+      "pair_id": "legal-positive-0000",
+      "text_a": "The defendant was found guilty of the charges.",
+      "text_b": "The court convicted the accused on all counts.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0001",
+      "text_a": "The defendant was found guilty of the charges.",
+      "text_b": "The court convicted the accused on all counts.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0002",
+      "text_a": "The court issued an injunction to halt the proceedings.",
+      "text_b": "A court order was granted to stop the action.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0003",
+      "text_a": "The contract was terminated due to breach.",
+      "text_b": "The agreement was voided following a violation of its terms.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0004",
+      "text_a": "The contract was terminated due to breach.",
+      "text_b": "The agreement was voided following a violation of its terms.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0005",
+      "text_a": "The contract was terminated due to breach.",
+      "text_b": "The agreement was voided following a violation of its terms.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0006",
+      "text_a": "The defendant was found guilty of the charges.",
+      "text_b": "The court convicted the accused on all counts.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0007",
+      "text_a": "The statute of limitations has expired.",
+      "text_b": "The legal time limit for filing the claim has passed.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0008",
+      "text_a": "The defendant was found guilty of the charges.",
+      "text_b": "The court convicted the accused on all counts.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-positive-0009",
+      "text_a": "The statute of limitations has expired.",
+      "text_b": "The legal time limit for filing the claim has passed.",
+      "pair_type": "positive",
+      "domain": "legal",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-negative-0010",
+      "text_a": "The jury returned a verdict of not guilty.",
+      "text_b": "The algorithm converged after 100 epochs.",
+      "pair_type": "negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-negative-0011",
+      "text_a": "The defendant filed a motion to dismiss.",
+      "text_b": "The patient was prescribed antibiotics.",
+      "pair_type": "negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-negative-0012",
+      "text_a": "The defendant filed a motion to dismiss.",
+      "text_b": "The patient was prescribed antibiotics.",
+      "pair_type": "negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-negative-0013",
+      "text_a": "The defendant filed a motion to dismiss.",
+      "text_b": "The patient was prescribed antibiotics.",
+      "pair_type": "negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-negative-0014",
+      "text_a": "The defendant filed a motion to dismiss.",
+      "text_b": "The patient was prescribed antibiotics.",
+      "pair_type": "negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0015",
+      "text_a": "The contract is enforceable under current law.",
+      "text_b": "The contract is unenforceable under current law.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "enforceable vs unenforceable",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0016",
+      "text_a": "The injunction was granted by the judge.",
+      "text_b": "The injunction was denied by the judge.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "granted vs denied",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0017",
+      "text_a": "The injunction was granted by the judge.",
+      "text_b": "The injunction was denied by the judge.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "granted vs denied",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0018",
+      "text_a": "The defendant is liable for the damages.",
+      "text_b": "The defendant is not liable for the damages.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "liable vs not liable",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0019",
+      "text_a": "The injunction was granted by the judge.",
+      "text_b": "The injunction was denied by the judge.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "granted vs denied",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0020",
+      "text_a": "The contract is enforceable under current law.",
+      "text_b": "The contract is unenforceable under current law.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "enforceable vs unenforceable",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0021",
+      "text_a": "The appeal was successful and the verdict was reversed.",
+      "text_b": "The appeal was unsuccessful and the verdict was upheld.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "reversed vs upheld",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0022",
+      "text_a": "The appeal was successful and the verdict was reversed.",
+      "text_b": "The appeal was unsuccessful and the verdict was upheld.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "reversed vs upheld",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0023",
+      "text_a": "The appeal was successful and the verdict was reversed.",
+      "text_b": "The appeal was unsuccessful and the verdict was upheld.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "reversed vs upheld",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-hard_negative-0024",
+      "text_a": "The injunction was granted by the judge.",
+      "text_b": "The injunction was denied by the judge.",
+      "pair_type": "hard_negative",
+      "domain": "legal",
+      "expected_relation": "far",
+      "semantic_notes": "granted vs denied",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-boundary-0025",
+      "text_a": "The accused was acquitted of all charges.",
+      "text_b": "The accused was convicted of all charges.",
+      "pair_type": "boundary",
+      "domain": "legal",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: acquitted vs convicted",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-boundary-0026",
+      "text_a": "The contract is enforceable under current law.",
+      "text_b": "The contract is unenforceable under current law.",
+      "pair_type": "boundary",
+      "domain": "legal",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: enforceable vs unenforceable",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "legal-boundary-0027",
+      "text_a": "The accused was acquitted of all charges.",
+      "text_b": "The accused was convicted of all charges.",
+      "pair_type": "boundary",
+      "domain": "legal",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: acquitted vs convicted",
+      "vector_a": null,
+      "vector_b": null
+    }
+  ],
+  "metamorphic_relations": [
+    {
+      "relation_id": "MR-LEG-01",
+      "name": "Semantic Equivalence Consistency",
+      "description": "If two queries are semantically equivalent, their top-K results should have ≥80% overlap",
+      "input_transformation": "Replace query with a semantically equivalent paraphrase",
+      "expected_output_property": "Recall(results_Q1, results_Q2) >= 0.80",
+      "domain": "legal",
+      "testable": true,
+      "test_strategy": "Generate positive pairs as query pairs; measure result set overlap"
+    },
+    {
+      "relation_id": "MR-LEG-02",
+      "name": "Semantic Distance Monotonicity",
+      "description": "If doc A is semantically closer to query Q than doc B, rank(A) must be better than rank(B)",
+      "input_transformation": "Compare two documents with known relative semantic distances to a query",
+      "expected_output_property": "rank(closer_doc) < rank(further_doc)",
+      "domain": "legal",
+      "testable": true,
+      "test_strategy": "Use ground-truth labeled pairs; verify ranking order"
+    },
+    {
+      "relation_id": "MR-LEG-03",
+      "name": "Hard Negative Discrimination",
+      "description": "Hard negative pairs (surface-similar but semantically different) should NOT appear as top-1 results for each other",
+      "input_transformation": "Use text_a as query, search for text_b",
+      "expected_output_property": "rank(text_b) > K/2 when searching with text_a (not in top half)",
+      "domain": "legal",
+      "testable": true,
+      "test_strategy": "Use hard_negative pairs; search text_a for text_b and verify rank"
+    },
+    {
+      "relation_id": "MR-LEG-04",
+      "name": "Negative Pair Rejection",
+      "description": "Semantically dissimilar texts should not appear in each other's top-K results",
+      "input_transformation": "Use text_a as query, check if text_b appears in top-K",
+      "expected_output_property": "text_b NOT in top-K results when searching with text_a",
+      "domain": "legal",
+      "testable": true,
+      "test_strategy": "Use negative pairs; verify neither text appears in the other's top-K"
+    },
+    {
+      "relation_id": "MR-LEG-05",
+      "name": "Distance Symmetry",
+      "description": "Distance(A, B) should approximately equal Distance(B, A)",
+      "input_transformation": "Swap query and document roles",
+      "expected_output_property": "|rank_A_in_results_B - rank_B_in_results_A| <= tolerance",
+      "domain": "legal",
+      "testable": true,
+      "test_strategy": "Search both directions; compare relative rankings"
+    }
+  ],
+  "stats": {
+    "positive": 10,
+    "negative": 5,
+    "hard_negative": 10,
+    "boundary": 3
+  }
+}

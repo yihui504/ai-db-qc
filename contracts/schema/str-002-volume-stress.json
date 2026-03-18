@@ -1,0 +1,137 @@
+{
+  "contract_id": "STR-002",
+  "name": "Large Dataset Stress Test",
+  "family": "STRESS",
+  "type": "performance",
+  "statement": "Database must handle large collections without performance collapse or data corruption",
+  "rationale": "Production databases often contain millions of vectors; scalability is critical",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["insert", "search", "bulk_insert", "delete"],
+    "conditions": ["large_dataset"]
+  },
+  "preconditions": [
+    "adapter_initialized",
+    "sufficient_storage"
+  ],
+  "postconditions": [
+    "no_crashes",
+    "search_quality_maintained",
+    "memory_usage_reasonable"
+  ],
+  "invariants": [
+    "Scalability",
+    "Recall consistency",
+    "Memory efficiency"
+  ],
+  "violation_criteria": {
+    "condition": "crash OR severe_performance_degradation OR recall_significantly_degraded OR memory_exhaustion",
+    "severity": "critical"
+  },
+  "stress_parameters": {
+    "dataset_sizes": [
+      {
+        "name": "small",
+        "vectors": 10000,
+        "dimension": 128
+      },
+      {
+        "name": "medium",
+        "vectors": 100000,
+        "dimension": 128
+      },
+      {
+        "name": "large",
+        "vectors": 1000000,
+        "dimension": 128
+      },
+      {
+        "name": "extra_large",
+        "vectors": 10000000,
+        "dimension": 128
+      }
+    ],
+    "operations": [
+      {
+        "name": "insert_test",
+        "description": "Insert all vectors and measure time"
+      },
+      {
+        "name": "search_test",
+        "description": "Perform 1000 random searches and measure latency"
+      },
+      {
+        "name": "bulk_delete_test",
+        "description": "Delete 10% of vectors and measure performance"
+      },
+      {
+        "name": "rebuild_index_test",
+        "description": "Rebuild index and measure time"
+      }
+    ]
+  },
+  "test_generation": {
+    "strategy": "progressive_volume",
+    "cases": [
+      {
+        "name": "Progressive dataset growth",
+        "sequence": [
+          "test with 10K vectors",
+          "test with 100K vectors",
+          "test with 1M vectors",
+          "test with 10M vectors if time permits",
+          "measure performance at each level",
+          "verify search quality (recall) maintained"
+        ]
+      },
+      {
+        "name": "Mixed operations on large dataset",
+        "sequence": [
+          "insert 1M vectors",
+          "perform search while inserting new vectors",
+          "delete old vectors while searching",
+          "verify stability and consistency"
+        ]
+      },
+      {
+        "name": "Memory usage scaling",
+        "sequence": [
+          "measure baseline memory",
+          "insert vectors in batches of 100K",
+          "measure memory after each batch",
+          "verify linear or better memory growth"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "no_crashes AND recall_maintained AND performance_acceptable",
+    "verification": "measure search latency and recall at each scale; monitor memory usage; verify no crashes",
+    "classification": {
+      "type3_bug": "crash on large dataset",
+      "type4_bug": "recall significantly degraded",
+      "marginal": "performance degrades but functional",
+      "pass": "scalable with acceptable performance"
+    }
+  },
+  "performance_thresholds": {
+    "search_latency_ms": {
+      "10K": {"max": 50, "p95": 100},
+      "100K": {"max": 100, "p95": 200},
+      "1M": {"max": 200, "p95": 500},
+      "10M": {"max": 500, "p95": 2000}
+    },
+    "recall": {
+      "min_threshold": 0.85
+    },
+    "memory_growth": {
+      "factor_per_1M": 2.0
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": [],
+    "test_complexity": "high",
+    "version": "1.0"
+  }
+}

@@ -36,6 +36,10 @@ class ExecutionResult(BaseModel):
     oracle_results: List[OracleResult] = Field(default_factory=list)
     snapshot_id: str = Field(default="", description="Runtime snapshot ID for this execution")
     triage_result: Optional["TriageResult"] = Field(default=None, description="Triage classification result")
+    sequence_state: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Intermediate state for sequence execution (e.g., count, collection_size, etc.)"
+    )
 
     @property
     def observed_success(self) -> bool:

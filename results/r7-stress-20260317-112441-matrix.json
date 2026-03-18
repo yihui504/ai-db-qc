@@ -1,0 +1,58 @@
+{
+  "run_id": "r7-stress-20260317-112441",
+  "timestamp": "2026-03-17T11:24:49.408085",
+  "mode": "stress_matrix",
+  "config": {
+    "targets": [
+      "qdrant",
+      "weaviate",
+      "pgvector"
+    ],
+    "thread_counts": [
+      8
+    ],
+    "dim": 64,
+    "queries_per_thread": 20
+  },
+  "matrix": {
+    "qdrant": [
+      {
+        "threads": 8,
+        "total_queries": 160,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 16.0,
+        "p95_ms": 16.0,
+        "p99_ms": 31.0,
+        "max_ms": 31.0,
+        "classification": "PASS"
+      }
+    ],
+    "weaviate": [
+      {
+        "threads": 8,
+        "total_queries": 160,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 16.0,
+        "p95_ms": 32.0,
+        "p99_ms": 32.0,
+        "max_ms": 32.0,
+        "classification": "PASS"
+      }
+    ],
+    "pgvector": [
+      {
+        "threads": 8,
+        "total_queries": 160,
+        "violations": 0,
+        "errors": 0,
+        "p50_ms": 187.0,
+        "p95_ms": 203.0,
+        "p99_ms": 219.0,
+        "max_ms": 235.0,
+        "classification": "PASS"
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "run_id": "r5d-schema-offline-20260317-094054",
+  "timestamp": "2026-03-17T09:40:54.153493",
+  "mode": "offline",
+  "config": {
+    "host": "localhost",
+    "port": 19530,
+    "offline": true,
+    "dim": 64,
+    "n_base": 200,
+    "n_tagged": 100,
+    "n_rebuild": 300,
+    "n0": 150,
+    "n1": 100,
+    "n_delete": 50,
+    "recall_threshold": 0.99,
+    "contracts": [
+      "SCH-002"
+    ]
+  },
+  "summary": {
+    "total": 1,
+    "passes": 1,
+    "violations": 0,
+    "skipped": 0
+  },
+  "results": {
+    "SCH-002": {
+      "test_id": "SCH-002",
+      "classification": "PASS",
+      "tagged_entities": 100,
+      "returned_count": 100,
+      "false_positives": 0
+    }
+  }
+}

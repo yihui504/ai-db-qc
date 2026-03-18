@@ -15,6 +15,15 @@ class MilvusAdapter(AdapterBase):
     search, filtered_search, health_check, get_runtime_snapshot.
     """
 
+    def supported_operations(self) -> List[str]:
+        """Return list of operations supported by MilvusAdapter."""
+        return [
+            "create_collection", "insert", "insert_unique", "search", "search_exact",
+            "wait", "build_index", "load", "filtered_search", "drop_collection",
+            "delete", "release", "reload", "drop_index", "flush", "get_load_state",
+            "count_entities", "describe_collection"
+        ]
+
     def __init__(self, connection_config: Dict[str, Any]):
         """Initialize Milvus adapter with connection configuration.
 
@@ -201,6 +210,7 @@ class MilvusAdapter(AdapterBase):
         dimension = params.get("dimension", 128)
         metric_type = params.get("metric_type", "L2")
         scalar_fields = params.get("scalar_fields", [])
+        enable_dynamic_field = params.get("enable_dynamic_field", False)
 
         # Define schema with proper DataType enums
         fields = [
@@ -216,7 +226,11 @@ class MilvusAdapter(AdapterBase):
                 FieldSchema(name=field_name, dtype=DataType.VARCHAR, max_length=256)
             )
 
-        schema = CollectionSchema(fields, f"Auto generated schema for {collection_name}")
+        schema = CollectionSchema(
+            fields,
+            f"Auto generated schema for {collection_name}",
+            enable_dynamic_field=enable_dynamic_field,
+        )
 
         # Create collection
         collection = Collection(name=collection_name, schema=schema, using=self.alias)
@@ -233,6 +247,7 @@ class MilvusAdapter(AdapterBase):
         collection_name = params.get("collection_name")
         vectors = params.get("vectors", [])
         scalar_data = params.get("scalar_data", [])
+        ids = params.get("ids", [])  # Support explicit IDs parameter
 
         # Parse vector strings if needed (instantiator substitutes strings)
         vectors = self._parse_vectors(vectors)
@@ -251,6 +266,12 @@ class MilvusAdapter(AdapterBase):
                     if key != "id":
                         entity[key] = value
                 data.append(entity)
+        elif ids:
+            # Explicit IDs provided - convert string IDs to integers
+            converted_ids = self._convert_ids_to_int(ids)
+            data = []
+            for i, vec in enumerate(vectors):
+                data.append({"id": converted_ids[i] if i < len(converted_ids) else i, "vector": vec})
         else:
             # No scalar data - just vectors
             data = []
@@ -268,29 +289,50 @@ class MilvusAdapter(AdapterBase):
         }
 
     def _build_index(self, params: Dict) -> Dict[str, Any]:
-        """Build index on collection."""
+        """Build index on collection with fully configurable parameters.
+
+        Supports IVF_FLAT, IVF_SQ8, HNSW, FLAT index types.
+        All algorithm parameters are now exposed (no more hardcoded values).
+        """
         collection_name = params.get("collection_name")
         index_type = params.get("index_type", "IVF_FLAT")
         metric_type = params.get("metric_type", "L2")
 
         collection = Collection(collection_name, using=self.alias)
 
-        # Create index on vector field
+        # Build algorithm-specific params (fully configurable, no hardcoded values)
+        algo_params: Dict[str, Any] = {}
+        if index_type in ("IVF_FLAT", "IVF_SQ8", "IVF_PQ"):
+            algo_params["nlist"] = int(params.get("nlist", 128))
+        elif index_type == "HNSW":
+            algo_params["M"] = int(params.get("M", 16))
+            algo_params["efConstruction"] = int(params.get("efConstruction", 200))
+        elif index_type == "FLAT":
+            pass  # FLAT has no algorithm parameters
+        elif index_type == "DISKANN":
+            algo_params["search_list"] = int(params.get("search_list", 100))
+        else:
+            # Unknown index type: pass any extra params through
+            for k, v in params.items():
+                if k not in ("collection_name", "index_type", "metric_type", "field_name"):
+                    algo_params[k] = v
+
         index_params = {
             "index_type": index_type,
             "metric_type": metric_type,
-            "params": {"nlist": 128}
+            "params": algo_params,
         }
 
-        collection.create_index(
-            field_name="vector",
-            index_params=index_params
-        )
+        field_name = params.get("field_name", "vector")
+        collection.create_index(field_name=field_name, index_params=index_params)
 
         return {
             "status": "success",
             "operation": "build_index",
             "collection_name": collection_name,
+            "index_type": index_type,
+            "metric_type": metric_type,
+            "algo_params": algo_params,
             "data": []
         }
 
@@ -482,7 +524,9 @@ class MilvusAdapter(AdapterBase):
 
         try:
             collection = Collection(collection_name, using=self.alias)
-            result = collection.delete(expr=f"id in {ids}")
+            # Convert string IDs to integers for Milvus compatibility
+            converted_ids = self._convert_ids_to_int(ids)
+            result = collection.delete(expr=f"id in {converted_ids}")
             return {
                 "status": "success",
                 "operation": "delete",
@@ -496,6 +540,36 @@ class MilvusAdapter(AdapterBase):
                 "error": str(e),
                 "operation": "delete"
             }
+
+    def _convert_ids_to_int(self, ids: List[Any]) -> List[int]:
+        """Convert string IDs to integers for Milvus compatibility.
+        
+        Milvus requires INT64 IDs, but tests may pass string IDs like 'id_1'.
+        This method extracts numeric portion or generates deterministic integers.
+        
+        Args:
+            ids: List of IDs (strings or integers)
+            
+        Returns:
+            List of integer IDs
+        """
+        converted = []
+        for id_val in ids:
+            if isinstance(id_val, int):
+                converted.append(id_val)
+            elif isinstance(id_val, str):
+                # Try to extract numeric portion from strings like 'id_1', 'entity_2'
+                import re
+                numeric_match = re.search(r'\d+', id_val)
+                if numeric_match:
+                    converted.append(int(numeric_match.group()))
+                else:
+                    # Fallback: use hash for deterministic integer
+                    converted.append(abs(hash(id_val)) % (2**63))
+            else:
+                # Try direct conversion
+                converted.append(int(id_val))
+        return converted
 
     def _release(self, params: Dict) -> Dict[str, Any]:
         """Release collection from memory (collection-level load state operation).

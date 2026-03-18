@@ -1,0 +1,182 @@
+[
+  {
+    "contract_id": "STR-001",
+    "database": "weaviate",
+    "test_cases": [
+      {
+        "name": "Throughput test at low",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 206.02ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 29170,
+          "successes": 29170,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 206.02330564839568,
+          "p95_latency_ms": 328.6118507385254,
+          "p99_latency_ms": 427.8724193572998
+        }
+      },
+      {
+        "name": "Throughput test at medium",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 189.47ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 31720,
+          "successes": 31720,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 189.465872095933,
+          "p95_latency_ms": 279.9994945526123,
+          "p99_latency_ms": 333.5573673248291
+        }
+      },
+      {
+        "name": "Throughput test at high",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 192.87ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 31170,
+          "successes": 31170,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 192.8674134222942,
+          "p95_latency_ms": 282.86242485046387,
+          "p99_latency_ms": 336.6067409515381
+        }
+      }
+    ],
+    "overall_verdict": "PASS"
+  },
+  {
+    "contract_id": "STR-002",
+    "database": "weaviate",
+    "test_cases": [
+      {
+        "name": "Volume test with 10,000 vectors",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Average latency (16.37ms) < 100ms",
+            "status": true
+          },
+          {
+            "name": "P95 latency (29.24ms) reasonable",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "phases": [
+            {
+              "name": "insert",
+              "time_seconds": 2.8231143951416016,
+              "vectors_per_second": 3542.1873152605353
+            },
+            {
+              "name": "build_index",
+              "time_seconds": 0.0
+            },
+            {
+              "name": "load",
+              "time_seconds": 0.0
+            },
+            {
+              "name": "search",
+              "time_seconds": 16.386528968811035,
+              "avg_search_latency_ms": 16.372716426849365,
+              "p95_search_latency_ms": 29.239416122436523
+            }
+          ]
+        }
+      },
+      {
+        "name": "Volume test with 100,000 vectors",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Average latency (17.18ms) < 200ms",
+            "status": true
+          },
+          {
+            "name": "P95 latency (31.29ms) reasonable",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "phases": [
+            {
+              "name": "insert",
+              "time_seconds": 39.19554591178894,
+              "vectors_per_second": 2551.3103000288293
+            },
+            {
+              "name": "build_index",
+              "time_seconds": 0.0
+            },
+            {
+              "name": "load",
+              "time_seconds": 0.0
+            },
+            {
+              "name": "search",
+              "time_seconds": 17.197442531585693,
+              "avg_search_latency_ms": 17.17767858505249,
+              "p95_search_latency_ms": 31.287431716918945
+            }
+          ]
+        }
+      }
+    ],
+    "overall_verdict": "PASS"
+  }
+]

@@ -1,0 +1,164 @@
+{
+  "suite_name": "idx_002",
+  "generated_at": "2026-03-10T23:16:50.191480",
+  "total_tests": 3,
+  "contracts_covered": [
+    "IDX-002"
+  ],
+  "tests": [
+    {
+      "test_id": "idx-002_seq_001",
+      "contract_id": "IDX-002",
+      "name": "Index Data Preservation - Sequence: Data count after index creation",
+      "description": "Sequence test for Index Data Preservation",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "create index",
+          "description": "Step 2: create index"
+        },
+        {
+          "step": 3,
+          "operation": "count entities",
+          "description": "Step 3: count entities"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "count == N",
+      "oracle": {
+        "check": "data_count_preserved AND all_data_accessible",
+        "verification": "assert count(collection) == original_count",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "idx-002_seq_002",
+      "contract_id": "IDX-002",
+      "name": "Index Data Preservation - Sequence: Data count after index deletion",
+      "description": "Sequence test for Index Data Preservation",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "create index",
+          "description": "Step 2: create index"
+        },
+        {
+          "step": 3,
+          "operation": "drop index",
+          "description": "Step 3: drop index"
+        },
+        {
+          "step": 4,
+          "operation": "count entities",
+          "description": "Step 4: count entities"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "count == N",
+      "oracle": {
+        "check": "data_count_preserved AND all_data_accessible",
+        "verification": "assert count(collection) == original_count",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    },
+    {
+      "test_id": "idx-002_seq_003",
+      "contract_id": "IDX-002",
+      "name": "Index Data Preservation - Sequence: Data count after index rebuild",
+      "description": "Sequence test for Index Data Preservation",
+      "family": "INDEX",
+      "strategy": "sequence",
+      "setup": [],
+      "steps": [
+        {
+          "step": 1,
+          "operation": "insert N entities",
+          "description": "Step 1: insert N entities"
+        },
+        {
+          "step": 2,
+          "operation": "create index",
+          "description": "Step 2: create index"
+        },
+        {
+          "step": 3,
+          "operation": "rebuild index",
+          "description": "Step 3: rebuild index"
+        },
+        {
+          "step": 4,
+          "operation": "count entities",
+          "description": "Step 4: count entities"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "success",
+      "expected_result": "count == N",
+      "oracle": {
+        "check": "data_count_preserved AND all_data_accessible",
+        "verification": "assert count(collection) == original_count",
+        "classification": {
+          "violation": "BUG (data_loss)",
+          "compliant": "PASS"
+        }
+      },
+      "priority": "medium",
+      "estimated_complexity": "medium",
+      "tags": [
+        "sequence",
+        "INDEX"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "run_id": "multidb-diff-20260316-231601",
+  "timestamp": "2026-03-16T23:16:01.039125",
+  "config": {
+    "n_vectors": 50,
+    "n_queries": 20,
+    "dim": 16,
+    "top_k": 5,
+    "recall_threshold": 0.7,
+    "mock": true,
+    "skip_milvus": false,
+    "skip_qdrant": false,
+    "skip_weaviate": false,
+    "skip_pgvector": false,
+    "milvus_host": "localhost",
+    "milvus_port": 19530,
+    "qdrant_host": "localhost",
+    "qdrant_port": 6333,
+    "weaviate_host": "localhost",
+    "weaviate_port": 8080,
+    "pg_container": "pgvector",
+    "output_dir": "results\\multidb_diff"
+  },
+  "results": [
+    {
+      "db": "mock-A",
+      "contracts": {},
+      "errors": [
+        "create_collection failed: None"
+      ]
+    },
+    {
+      "db": "mock-B",
+      "contracts": {},
+      "errors": [
+        "create_collection failed: None"
+      ]
+    }
+  ],
+  "comparison": {
+    "matrix": {},
+    "divergences": []
+  }
+}

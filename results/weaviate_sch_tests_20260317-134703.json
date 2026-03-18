@@ -1,0 +1,45 @@
+{
+  "adapter": "weaviate",
+  "results": [
+    {
+      "test": "SCH-001 Data Preservation",
+      "contract": "SCH-001",
+      "violations": [],
+      "passed": [
+        "Total searchable: 100/100"
+      ]
+    },
+    {
+      "test": "SCH-002 Filter Compatibility",
+      "contract": "SCH-002",
+      "violations": [
+        {
+          "contract": "SCH-002",
+          "expected": "50 entities with category==premium",
+          "actual": "0 entities",
+          "issue": "Filter compatibility across schema updates"
+        }
+      ],
+      "passed": [
+        "Filter category==premium: 0/50 expected"
+      ]
+    },
+    {
+      "test": "SCH-003 Index Rebuild",
+      "contract": "SCH-003",
+      "violations": [],
+      "passed": [
+        "Recall before/after: 1.000"
+      ]
+    },
+    {
+      "test": "SCH-004 Metadata Accuracy",
+      "contract": "SCH-004",
+      "violations": [],
+      "passed": [
+        "Count after delete: 90/90"
+      ]
+    }
+  ],
+  "total_violations": 1
+}

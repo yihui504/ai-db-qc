@@ -1,0 +1,82 @@
+# Weaviate database profile
+profile_name: weaviate-1.27
+db_type: weaviate
+db_version: "1.27"
+description: Weaviate vector database profile
+
+# Supported operations
+supported_operations:
+  - create_collection
+  - drop_collection
+  - insert
+  - delete
+  - search
+  - filtered_search
+
+# Operation mappings (core op -> Weaviate API)
+operation_mappings:
+  create_collection:
+    core_operation: create_collection
+    db_operation: create_class
+    api_endpoint: /v1/schema
+    parameter_mapping:
+      collection_name: class
+      dimension: vectorIndexConfig.dimensions
+      metric_type: vectorIndexConfig.distance
+
+  drop_collection:
+    core_operation: drop_collection
+    db_operation: delete_class
+    api_endpoint: /v1/schema/{class}
+
+  insert:
+    core_operation: insert
+    db_operation: create_object
+    api_endpoint: /v1/objects
+    parameter_mapping:
+      collection_name: class
+      vectors: vector
+
+  delete:
+    core_operation: delete
+    db_operation: delete_object
+    api_endpoint: /v1/objects/{id}
+
+  search:
+    core_operation: search
+    db_operation: graphql_search
+    api_endpoint: /v1/graphql
+    parameter_mapping:
+      collection_name: class
+      vector: nearVector
+      top_k: limit
+
+  filtered_search:
+    core_operation: filtered_search
+    db_operation: graphql_search
+    api_endpoint: /v1/graphql
+    parameter_mapping:
+      collection_name: class
+      vector: nearVector
+      filter: where
+      top_k: limit
+
+# Parameter relaxations (override core constraints)
+parameter_relaxations:
+  search:
+    top_k:
+      max_value: 10000
+      min_value: 1
+
+# Supported features
+supported_features:
+  - HNSW
+  - FILTERED_SEARCH
+  - HYBRID_SEARCH
+  - BM25
+
+# Environment requirements
+environment_requirements:
+  service: weaviate
+  min_memory: 2GB
+  min_disk: 5GB

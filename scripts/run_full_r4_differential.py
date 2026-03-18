@@ -2,7 +2,9 @@
 """
 R4 Full Differential Campaign
 
-Tests all 8 semantic properties across Milvus and Qdrant:
+Tests all 8 semantic properties across multiple databases (Milvus, Qdrant,
+Weaviate, pgvector).  Adapters are selected via --adapters CLI flag.
+
 - R4-001: Post-Drop Rejection (PRIMARY)
 - R4-002: Deleted Entity Visibility (PRIMARY)
 - R4-003: Delete Idempotency (PRIMARY)
@@ -13,7 +15,14 @@ Tests all 8 semantic properties across Milvus and Qdrant:
 - R4-008: Collection Creation Idempotency (PRIMARY)
 
 Usage:
+    # Default: Milvus + Qdrant (original behaviour)
     python scripts/run_full_r4_differential.py --require-real
+
+    # Expand to Weaviate and pgvector (Layer I)
+    python scripts/run_full_r4_differential.py --require-real \
+        --adapters milvus,qdrant,weaviate,pgvector \
+        --weaviate-host localhost --weaviate-port 8080 \
+        --pgvector-container pgvector_container --pgvector-db vectordb
 """
 
 import sys
@@ -26,8 +35,26 @@ from typing import Dict, Any, List, Optional, Tuple
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from adapters.milvus_adapter import MilvusAdapter
-from adapters.qdrant_adapter import QdrantAdapter
+
+def _build_adapter(name: str, args: Any) -> Any:
+    """Factory: create one adapter by name using connection args from argparse."""
+    if name == "milvus":
+        from adapters.milvus_adapter import MilvusAdapter
+        return MilvusAdapter({"host": args.milvus_host, "port": args.milvus_port,
+                              "alias": "r4_full_milvus"})
+    if name == "qdrant":
+        from adapters.qdrant_adapter import QdrantAdapter
+        return QdrantAdapter({"url": args.qdrant_url, "timeout": 30.0})
+    if name == "weaviate":
+        from adapters.weaviate_adapter import WeaviateAdapter
+        return WeaviateAdapter({"host": args.weaviate_host, "port": args.weaviate_port})
+    if name == "pgvector":
+        from adapters.pgvector_adapter import PgvectorAdapter
+        return PgvectorAdapter({
+            "container": args.pgvector_container,
+            "db": args.pgvector_db,
+        })
+    raise ValueError(f"Unknown adapter name: {name}")
 
 
 def print_header(text: str):
@@ -97,7 +124,7 @@ def get_environment_snapshot() -> Dict[str, str]:
 
 
 class FullR4Runner:
-    """Run full R4 differential campaign across Milvus and Qdrant."""
+    """Run full R4 differential campaign across N databases (dict-driven)."""
 
     # Test isolation: unique collection names for each property
     COLLECTION_NAMES = {
@@ -111,45 +138,37 @@ class FullR4Runner:
         "r4_008": "r4_008",
     }
 
-    def __init__(self, results_dir: str, require_real: bool = False):
+    def __init__(self, results_dir: str, require_real: bool = False,
+                 adapter_names: Optional[List[str]] = None,
+                 cli_args: Any = None):
         self.results_dir = results_dir
         self.require_real = require_real
-        self.milvus = None
-        self.qdrant = None
-        self.raw_results = {"milvus": {}, "qdrant": {}}
+        # ── Layer I: N-database dict ──────────────────────────────────────
+        self.adapter_names: List[str] = adapter_names or ["milvus", "qdrant"]
+        self.adapters: Dict[str, Any] = {}          # name → adapter instance
+        self._cli_args = cli_args                   # forwarded to _build_adapter
+        # raw_results keyed by adapter name (populated dynamically in setup)
+        self.raw_results: Dict[str, Dict] = {}
+        # ──────────────────────────────────────────────────────────────────
         self.differential_results = []
         self.environment_snapshot = {}
-        self.adapter_requested = "real"
+        self.adapter_requested = ",".join(self.adapter_names)
         self.adapter_actual = "unknown"
 
     def setup_adapters(self) -> bool:
-        """Initialize both adapters with safety checks."""
+        """Initialize all requested adapters with safety checks."""
         try:
-            # Milvus config
-            milvus_config = {
-                "host": "localhost",
-                "port": 19530,
-                "alias": "r4_full_milvus"
-            }
-            self.milvus = MilvusAdapter(milvus_config)
-
-            # Verify real connection
-            if not self._verify_real_connection(self.milvus, "Milvus"):
-                return False
-
-            # Qdrant config
-            qdrant_config = {
-                "url": "http://localhost:6333",
-                "timeout": 30.0
-            }
-            self.qdrant = QdrantAdapter(qdrant_config)
-
-            # Verify real connection
-            if not self._verify_real_connection(self.qdrant, "Qdrant"):
-                return False
+            for name in self.adapter_names:
+                print(f"  [INIT] Connecting to {name}...")
+                adapter = _build_adapter(name, self._cli_args)
+                if not self._verify_real_connection(adapter, name):
+                    return False
+                self.adapters[name] = adapter
+                self.raw_results[name] = {}
+                print(f"  [INIT] {name}: OK")
 
             self.adapter_actual = "real"
-            print("[PASS]: Both adapters initialized and verified (REAL databases)")
+            print(f"[PASS]: All adapters initialized ({', '.join(self.adapters)})")
             return True
         except Exception as e:
             print(f"[FAIL]: Adapter initialization failed: {e}")
@@ -215,6 +234,41 @@ class FullR4Runner:
 
         return results
 
+    def _run_sequence_all(self, sequence: List[Dict], cleanup: bool = True) -> Dict[str, List[Dict]]:
+        """Execute sequence on ALL adapters; return {name: step_results}."""
+        return {
+            name: self.execute_sequence(adapter, name, sequence, cleanup=cleanup)
+            for name, adapter in self.adapters.items()
+        }
+
+    def _classify_n_db(self, per_db_steps: Dict[str, Dict],
+                       classify_fn) -> Dict:
+        """Apply a pairwise classify_fn across all adapters.
+
+        classify_fn(step_a, step_b) -> classification dict.
+        Returns the *strictest* result across all pairs
+        (BUG > ALLOWED_DIFFERENCE > CONSISTENT).
+        """
+        db_names = list(per_db_steps.keys())
+        if len(db_names) < 2:
+            # Single adapter — just check internally
+            step = list(per_db_steps.values())[0]
+            return classify_fn(step, step)
+
+        # Collect all pairwise results using the first DB as reference
+        ref_name = db_names[0]
+        ref_step = per_db_steps[ref_name]
+        results = []
+        for other_name in db_names[1:]:
+            r = classify_fn(ref_step, per_db_steps[other_name])
+            r["pair"] = f"{ref_name} vs {other_name}"
+            results.append(r)
+
+        # Return strictest result
+        priority = {"BUG": 2, "ALLOWED_DIFFERENCE": 1, "CONSISTENT": 0}
+        results.sort(key=lambda r: priority.get(r.get("result", "CONSISTENT"), 0), reverse=True)
+        return results[0]
+
     def run_r4_001_post_drop_rejection(self) -> Dict:
         """R4-001: Post-Drop Rejection (PRIMARY).
 
@@ -261,26 +315,39 @@ class FullR4Runner:
         ]
 
         # No cleanup - collection is dropped in step 6
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence, cleanup=False)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence, cleanup=False)
+        all_results = self._run_sequence_all(sequence, cleanup=False)
 
-        # Classify at step 7
+        # Classify using first vs second adapter (reference vs rest)
+        db_names = list(all_results.keys())
+        ref, *others = db_names
         classification = self._classify_post_drop_rejection(
-            milvus_results[6], qdrant_results[6]
+            all_results[ref][6], all_results[others[0]][6]
+        ) if others else self._classify_post_drop_rejection(
+            all_results[ref][6], all_results[ref][6]
         )
+        # Strict check across all pairs
+        if len(db_names) > 2:
+            classification = self._classify_n_db(
+                {n: all_results[n][6] for n in db_names},
+                self._classify_post_drop_rejection
+            )
 
-        return {
+        result = {
             "case_id": case_id,
             "property": "Post-Drop Rejection",
             "category": "PRIMARY",
             "property_number": 1,
             "oracle_rule": "Rule 1 (Search After Drop)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 7,
             "description": "Both databases must fail search on dropped collection"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        # legacy compat
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_002_deleted_entity_visibility(self) -> Dict:
         """R4-002: Deleted Entity Visibility (PRIMARY).
@@ -328,26 +395,27 @@ class FullR4Runner:
             }},
         ]
 
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence)
-
-        # Classify at step 7
-        classification = self._classify_deleted_entity_visibility(
-            milvus_results[6], qdrant_results[6]
+        all_results = self._run_sequence_all(sequence)
+        db_names = list(all_results.keys())
+        classification = self._classify_n_db(
+            {n: all_results[n][6] for n in db_names},
+            self._classify_deleted_entity_visibility
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Deleted Entity Visibility",
             "category": "PRIMARY",
             "property_number": 2,
             "oracle_rule": "Rule 2 (Deleted Entity Visibility)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 7,
             "description": "Deleted entities must not appear in search results"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_003_delete_idempotency(self) -> Dict:
         """R4-003: Delete Idempotency (PRIMARY).
@@ -389,26 +457,27 @@ class FullR4Runner:
             }},
         ]
 
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence)
-
-        # Classify at step 6
-        classification = self._classify_delete_idempotency(
-            milvus_results[5], qdrant_results[5]
+        all_results = self._run_sequence_all(sequence)
+        db_names = list(all_results.keys())
+        classification = self._classify_n_db(
+            {n: all_results[n][5] for n in db_names},
+            self._classify_delete_idempotency
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Delete Idempotency",
             "category": "PRIMARY",
             "property_number": 3,
             "oracle_rule": "Rule 4 (Delete Idempotency)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 6,
             "description": "Delete operations should be idempotent"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_004_index_independent_search(self) -> Dict:
         """R4-004: Index-Independent Search (ALLOWED-SENSITIVE).
@@ -438,26 +507,27 @@ class FullR4Runner:
             }},
         ]
 
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence)
-
-        # Classify at step 3
-        classification = self._classify_search_without_index(
-            milvus_results[2], qdrant_results[2]
+        all_results = self._run_sequence_all(sequence)
+        db_names = list(all_results.keys())
+        classification = self._classify_n_db(
+            {n: all_results[n][2] for n in db_names},
+            self._classify_search_without_index
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Index-Independent Search",
             "category": "ALLOWED-SENSITIVE",
             "property_number": 4,
             "oracle_rule": "Rule 3 (Search Without Index)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 3,
             "description": "Search behavior without explicit index creation"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_005_load_state_enforcement(self) -> Dict:
         """R4-005: Load-State Enforcement (ALLOWED-SENSITIVE).
@@ -487,26 +557,27 @@ class FullR4Runner:
             }},
         ]
 
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence)
-
-        # Classify at step 3
-        classification = self._classify_load_requirement(
-            milvus_results[2], qdrant_results[2]
+        all_results = self._run_sequence_all(sequence)
+        db_names = list(all_results.keys())
+        classification = self._classify_n_db(
+            {n: all_results[n][2] for n in db_names},
+            self._classify_load_requirement
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Load-State Enforcement",
             "category": "ALLOWED-SENSITIVE",
             "property_number": 5,
             "oracle_rule": "Rule 7 (Load Requirement)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 3,
             "description": "Search behavior without explicit load"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_006_empty_collection_handling(self) -> Dict:
         """R4-006: Empty Collection Handling (EXPLORATORY).
@@ -532,26 +603,27 @@ class FullR4Runner:
             }},
         ]
 
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence)
-
-        # Classify at step 2
-        classification = self._classify_empty_collection(
-            milvus_results[1], qdrant_results[1]
+        all_results = self._run_sequence_all(sequence)
+        db_names = list(all_results.keys())
+        classification = self._classify_n_db(
+            {n: all_results[n][1] for n in db_names},
+            self._classify_empty_collection
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Empty Collection Handling",
             "category": "EXPLORATORY",
             "property_number": 6,
             "oracle_rule": "Rule 5 (Empty Collection)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 2,
             "description": "Search behavior on empty collection"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_007_nonexistent_delete(self) -> Dict:
         """R4-007: Non-Existent Delete Tolerance (PRIMARY).
@@ -576,26 +648,27 @@ class FullR4Runner:
             }},
         ]
 
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence)
-
-        # Classify at step 2
-        classification = self._classify_nonexistent_delete(
-            milvus_results[1], qdrant_results[1]
+        all_results = self._run_sequence_all(sequence)
+        db_names = list(all_results.keys())
+        classification = self._classify_n_db(
+            {n: all_results[n][1] for n in db_names},
+            self._classify_nonexistent_delete
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Non-Existent Delete Tolerance",
             "category": "PRIMARY",
             "property_number": 7,
             "oracle_rule": "Rule 4 (Idempotency Extension)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 2,
             "description": "Deleting non-existent ID should be handled gracefully"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     def run_r4_008_collection_creation_idempotency(self) -> Dict:
         """R4-008: Collection Creation Idempotency (PRIMARY).
@@ -623,30 +696,32 @@ class FullR4Runner:
 
         # For R4-008, we need to handle cleanup specially
         # since the test is about duplicate creation
-        milvus_results = self.execute_sequence(self.milvus, "milvus", sequence, cleanup=False)
-        qdrant_results = self.execute_sequence(self.qdrant, "qdrant", sequence, cleanup=False)
+        all_results = self._run_sequence_all(sequence, cleanup=False)
+        db_names = list(all_results.keys())
 
         # Cleanup manually
-        self.cleanup_collection(self.milvus, "milvus", collection_name)
-        self.cleanup_collection(self.qdrant, "qdrant", collection_name)
+        for name, adapter in self.adapters.items():
+            self.cleanup_collection(adapter, name, collection_name)
 
-        # Classify at step 2
-        classification = self._classify_creation_idempotency(
-            milvus_results[1], qdrant_results[1]
+        classification = self._classify_n_db(
+            {n: all_results[n][1] for n in db_names},
+            self._classify_creation_idempotency
         )
-
-        return {
+        result = {
             "case_id": case_id,
             "property": "Collection Creation Idempotency",
             "category": "PRIMARY",
             "property_number": 8,
             "oracle_rule": "Rule 6 (Creation Idempotency)",
-            "milvus_results": milvus_results,
-            "qdrant_results": qdrant_results,
             "classification": classification,
             "test_step": 2,
             "description": "Duplicate collection creation should have deterministic behavior"
         }
+        for name in db_names:
+            result[f"{name}_results"] = all_results[name]
+        if "milvus" in all_results: result["milvus_results"] = all_results["milvus"]
+        if "qdrant" in all_results: result["qdrant_results"] = all_results["qdrant"]
+        return result
 
     # ========================================================================
     # CLASSIFICATION METHODS (from frozen classification rules)
@@ -889,28 +964,20 @@ class FullR4Runner:
 
         for case in self.differential_results:
             case_id = case["case_id"]
-
-            # Save Milvus results
-            milvus_file = os.path.join(raw_dir, f"{case_id}_milvus.json")
-            with open(milvus_file, 'w') as f:
-                json.dump({
-                    "database": "milvus",
-                    "case_id": case_id,
-                    "property": case["property"],
-                    "property_number": case["property_number"],
-                    "steps": case["milvus_results"]
-                }, f, indent=2)
-
-            # Save Qdrant results
-            qdrant_file = os.path.join(raw_dir, f"{case_id}_qdrant.json")
-            with open(qdrant_file, 'w') as f:
-                json.dump({
-                    "database": "qdrant",
-                    "case_id": case_id,
-                    "property": case["property"],
-                    "property_number": case["property_number"],
-                    "steps": case["qdrant_results"]
-                }, f, indent=2)
+            # Save each adapter's results
+            for name in self.adapter_names:
+                key = f"{name}_results"
+                if key not in case:
+                    continue
+                out_file = os.path.join(raw_dir, f"{case_id}_{name}.json")
+                with open(out_file, 'w') as f:
+                    json.dump({
+                        "database": name,
+                        "case_id": case_id,
+                        "property": case["property"],
+                        "property_number": case["property_number"],
+                        "steps": case[key]
+                    }, f, indent=2)
 
         print(f"\n[INFO]: Raw results saved to {raw_dir}")
 
@@ -943,12 +1010,12 @@ class FullR4Runner:
         """Save campaign summary."""
         summary = {
             "campaign": "R4 Full Differential Testing",
-            "version": "1.0",
+            "version": "2.0",  # Layer I — N-database
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "environment": self.environment_snapshot,
             "adapter_requested": self.adapter_requested,
             "adapter_actual": self.adapter_actual,
-            "databases": ["milvus", "qdrant"],
+            "databases": self.adapter_names,
             "total_cases": len(self.differential_results),
             "results": self._calculate_summary_stats(),
             "by_category": self._calculate_category_stats()
@@ -1013,7 +1080,7 @@ class FullR4Runner:
     def run_full_campaign(self) -> int:
         """Run the full R4 differential campaign."""
         print_header("R4 Full Differential Campaign")
-        print("Testing 8 semantic properties across Milvus and Qdrant")
+        print(f"Testing 8 semantic properties across: {', '.join(self.adapter_names)}")
         print("\nProperties:")
         print("  R4-001: Post-Drop Rejection (PRIMARY)")
         print("  R4-002: Deleted Entity Visibility (PRIMARY)")
@@ -1161,6 +1228,26 @@ def main():
         default=None,
         help="Custom output directory"
     )
+    # ── Layer I: adapter selection ────────────────────────────────────────
+    parser.add_argument(
+        "--adapters",
+        type=str,
+        default="milvus,qdrant",
+        help="Comma-separated list of adapters to test "
+             "(choices: milvus, qdrant, weaviate, pgvector; default: milvus,qdrant)"
+    )
+    # Milvus connection
+    parser.add_argument("--milvus-host", default="localhost", help="Milvus host")
+    parser.add_argument("--milvus-port", type=int, default=19530, help="Milvus port")
+    # Qdrant connection
+    parser.add_argument("--qdrant-url", default="http://localhost:6333", help="Qdrant URL")
+    # Weaviate connection
+    parser.add_argument("--weaviate-host", default="localhost", help="Weaviate host")
+    parser.add_argument("--weaviate-port", type=int, default=8080, help="Weaviate HTTP port")
+    # pgvector connection
+    parser.add_argument("--pgvector-container", default="pgvector_container",
+                        help="pgvector Docker container name")
+    parser.add_argument("--pgvector-db", default="vectordb", help="pgvector database name")
 
     args = parser.parse_args()
 
@@ -1169,6 +1256,13 @@ def main():
         print("[ERROR]: --require-real flag is required for execution")
         print("[ERROR]: This prevents accidental execution on wrong environment")
         return 1
+
+    adapter_names = [a.strip() for a in args.adapters.split(",") if a.strip()]
+    valid = {"milvus", "qdrant", "weaviate", "pgvector"}
+    for name in adapter_names:
+        if name not in valid:
+            print(f"[ERROR]: Unknown adapter '{name}'. Valid: {sorted(valid)}")
+            return 1
 
     # Create results directory with timestamp
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -1180,7 +1274,12 @@ def main():
     os.makedirs(results_dir, exist_ok=True)
 
     # Run full campaign
-    runner = FullR4Runner(results_dir, require_real=args.require_real)
+    runner = FullR4Runner(
+        results_dir,
+        require_real=args.require_real,
+        adapter_names=adapter_names,
+        cli_args=args,
+    )
     exit_code = runner.run_full_campaign()
 
     if exit_code == 0:

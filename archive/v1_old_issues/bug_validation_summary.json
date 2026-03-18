@@ -1,0 +1,141 @@
+{
+  "validation_date": "2026-03-17",
+  "databases": [
+    {
+      "database": "milvus",
+      "bugs_by_contract": {
+        "SCH-006": [
+          {
+            "verdict": "LIKELY_BUG"
+          }
+        ],
+        "BND-001": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-002": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-003": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-004": [
+          {
+            "verdict": "BUG"
+          }
+        ]
+      },
+      "total_bugs": 5
+    },
+    {
+      "database": "qdrant",
+      "bugs_by_contract": {
+        "SCH-006": [
+          {
+            "verdict": "LIKELY_BUG"
+          }
+        ],
+        "BND-001": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-002": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-003": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-004": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "STR-001": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "STR-002": [
+          {
+            "verdict": "BUG"
+          }
+        ]
+      },
+      "total_bugs": 7
+    },
+    {
+      "database": "weaviate",
+      "bugs_by_contract": {
+        "SCH-006": [
+          {
+            "verdict": "LIKELY_BUG"
+          }
+        ],
+        "BND-001": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-002": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-003": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-004": [
+          {
+            "verdict": "BUG"
+          }
+        ]
+      },
+      "total_bugs": 5
+    },
+    {
+      "database": "pgvector",
+      "bugs_by_contract": {
+        "SCH-006": [
+          {
+            "verdict": "LIKELY_BUG"
+          }
+        ],
+        "BND-001": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-002": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-003": [
+          {
+            "verdict": "BUG"
+          }
+        ],
+        "BND-004": [
+          {
+            "verdict": "BUG"
+          }
+        ]
+      },
+      "total_bugs": 5
+    }
+  ],
+  "total_bugs": 22,
+  "validation_method": "Evidence chain tracing"
+}

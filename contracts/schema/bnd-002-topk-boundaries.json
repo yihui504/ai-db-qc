@@ -1,0 +1,90 @@
+{
+  "contract_id": "BND-002",
+  "name": "Top-K Parameter Boundaries",
+  "family": "BOUNDARY",
+  "type": "parameter_validation",
+  "statement": "Top-K parameter must be validated with proper handling of edge cases",
+  "rationale": "Invalid top-K values can cause crashes, performance issues, or incorrect results",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search", "filtered_search", "hybrid_search"],
+    "parameters": ["top_k"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "index_loaded",
+    "data_present"
+  ],
+  "postconditions": [
+    "valid_topk_accepted",
+    "invalid_topk_rejected",
+    "edge_cases_handled"
+  ],
+  "invariants": [
+    "Result count <= top_k",
+    "Empty results for top_k = 0"
+  ],
+  "violation_criteria": {
+    "condition": "result_count_gt_topk OR invalid_topk_accepted OR crash_on_edge_case",
+    "severity": "high"
+  },
+  "boundary_values": {
+    "top_k": {
+      "min_valid": 1,
+      "max_valid": 10000,
+      "special_values": [0, 1, -1, 100000],
+      "edge_values": [1, 10, 100, 1000, 10000]
+    }
+  },
+  "test_generation": {
+    "strategy": "boundary_testing",
+    "cases": [
+      {
+        "name": "Top-K = 0",
+        "test": "top_k = 0",
+        "expected": "empty result or rejected with clear error"
+      },
+      {
+        "name": "Top-K = 1",
+        "test": "top_k = 1",
+        "expected": "exactly 1 result returned"
+      },
+      {
+        "name": "Top-K > collection size",
+        "test": "top_k > total_vectors",
+        "expected": "return all vectors, no error"
+      },
+      {
+        "name": "Negative top-K",
+        "test": "top_k = -1",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Very large top-K",
+        "test": "top_k = 100000",
+        "expected": "rejected or handled gracefully"
+      },
+      {
+        "name": "Result count validation",
+        "test": "verify len(results) <= top_k",
+        "expected": "always true"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "result_count_le_topk AND edge_cases_handled",
+    "verification": "verify result count never exceeds top_k; test all edge cases",
+    "classification": {
+      "type1_bug": "invalid top_k accepted",
+      "type3_bug": "valid top_k causes crash",
+      "type4_bug": "result_count > top_k",
+      "pass": "correct behavior"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}
