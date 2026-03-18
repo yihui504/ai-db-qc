@@ -1,0 +1,21 @@
+
+============================================================
+  IDX-003 + IDX-004 Contract Testing
+  Run ID: idx003-idx004-20260316-200854
+  Target: localhost:19530  dim=32
+============================================================
+  Milvus connected OK
+
+
+--- IDX-003: Parameter Validation Contract ---
+2026-03-16 20:08:58,271 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=invalid parameter[expected=valid index][actual=invalid index type: NONEXISTENT])>, <Time:{'RPC start': '2026-03-16 20:08:58.216366', 'RPC error': '2026-03-16 20:08:58.271257'}> (decorators.py:140)
+Traceback (most recent call last):
+  File "scripts/run_r5bc_idx003_idx004.py", line 482, in <module>
+    main()
+  File "scripts/run_r5bc_idx003_idx004.py", line 443, in main
+    idx003_results = run_idx003(adapter, dim=args.dim)
+  File "scripts/run_r5bc_idx003_idx004.py", line 215, in run_idx003
+    print(f"  {status_icon}  {case['test_id']}: {case['desc'][:60]}")
+  File "C:\Program Files\python\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 2: character maps to <undefined>

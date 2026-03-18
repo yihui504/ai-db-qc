@@ -1,0 +1,40 @@
+[
+  {
+    "adapter": "weaviate",
+    "results": [
+      {
+        "test": "Delete-then-Search",
+        "violations": [],
+        "passed": [
+          "Count before delete: 100",
+          "Count after delete: 50",
+          "Search returned: 45 results"
+        ]
+      },
+      {
+        "test": "Insert-then-Search",
+        "violations": [
+          {
+            "operation": "insert-then-search",
+            "expected": ">=100",
+            "actual": 91,
+            "issue": "Search does not return newly inserted entities"
+          }
+        ],
+        "passed": [
+          "Initial count: 50",
+          "Count after insert: 100",
+          "Search returned: 91 results"
+        ]
+      },
+      {
+        "test": "Empty-Collection-Search",
+        "violations": [],
+        "passed": [
+          "Search on empty: 0 results"
+        ]
+      }
+    ],
+    "total_violations": 1
+  }
+]

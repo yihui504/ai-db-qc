@@ -1,0 +1,53 @@
+{
+  "run_id": "conc-test-20260317-210507",
+  "timestamp": "2026-03-17T21:05:07.615590",
+  "target": "qdrant",
+  "host": "localhost",
+  "port": 19530,
+  "config": {
+    "threads": 4,
+    "readers": 8,
+    "deleters": 4,
+    "searchers": 4,
+    "vectors_per_thread": 100,
+    "dim": 64,
+    "duration": 60,
+    "top_k": 10,
+    "profile": false
+  },
+  "summary": {
+    "total": 1,
+    "passes": 0,
+    "violations": 1,
+    "errors": 0
+  },
+  "results": {
+    "CONC-002": {
+      "contract_id": "CONC-002",
+      "classification": "VIOLATION",
+      "violations": [
+        {
+          "contract_id": "CONC-002",
+          "violation_type": "setup_failure",
+          "description": "Failed to setup collection",
+          "severity": "high",
+          "details": {}
+        }
+      ],
+      "metrics": {
+        "total_operations": 0,
+        "successful_operations": 0,
+        "failed_operations": 0,
+        "throughput_ops_per_sec": 0.0,
+        "latency_ms": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "min": 0,
+          "max": 0
+        }
+      },
+      "metadata": {}
+    }
+  }
+}

@@ -1,6 +1,29 @@
 version: '3.5'
 
+# AI-DB-QC Test Infrastructure
+# Services:
+#   - Milvus (standalone) on port 19530  — primary test target
+#   - Qdrant on port 6333                — differential testing target
+#   - Weaviate on port 8080               — differential testing target
+#   - Pgvector on port 5432               — differential testing target
+#
+# Versions (latest as of 2026-03-18):
+#   - Milvus v2.6.12
+#   - Qdrant v1.17.0
+#   - Weaviate v1.36.5
+#   - Pgvector v0.8.2 on PostgreSQL 17
+#
+# Start all:   docker-compose up -d
+# Start one:   docker-compose up -d standalone
+#              docker-compose up -d qdrant
+#              docker-compose up -d weaviate
+#              docker-compose up -d pgvector
+# Stop all:    docker-compose down
+
 services:
+
+  # ── Milvus dependencies ──────────────────────────────────────
+
   etcd:
     container_name: milvus-etcd
     image: quay.io/coreos/etcd:v3.5.5
@@ -13,7 +36,7 @@ services:
       - milvus-etcd:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     networks:
-      - milvus
+      - aidbqc
 
   minio:
     container_name: milvus-minio
@@ -30,11 +53,13 @@ services:
       timeout: 20s
       retries: 3
     networks:
-      - milvus
+      - aidbqc
+
+  # ── Milvus standalone ────────────────────────────────────────
 
   standalone:
     container_name: milvus-standalone
-    image: milvusdb/milvus:v2.4.15
+    image: milvusdb/milvus:v2.6.12
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: etcd:2379
@@ -42,19 +67,96 @@ services:
     volumes:
       - milvus-data:/var/lib/milvus
     ports:
-      - "19530:19530"
-      - "9091:9091"
+      - "19530:19530"   # gRPC API
+      - "9091:9091"     # HTTP metrics
     depends_on:
       - "etcd"
       - "minio"
     networks:
-      - milvus
+      - aidbqc
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
+
+  # ── Qdrant ──────────────────────────────────────────────────
+
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:v1.17.0
+    ports:
+      - "6333:6333"     # REST API
+      - "6334:6334"     # gRPC API
+    volumes:
+      - qdrant-data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+      - QDRANT__LOG_LEVEL=INFO
+    networks:
+      - aidbqc
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/readyz"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+
+  # ── Weaviate ────────────────────────────────────────────────
+
+  weaviate:
+    container_name: weaviate
+    image: cr.weaviate.io/semitechnologies/weaviate:1.36.5
+    ports:
+      - "8080:8080"     # REST API
+      - "50051:50051"   # gRPC API
+    environment:
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+      - DEFAULT_VECTORIZER_MODULE=none
+      - ENABLE_MODULES=
+    volumes:
+      - weaviate-data:/var/lib/weaviate
+    networks:
+      - aidbqc
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── Pgvector ────────────────────────────────────────────────
+
+  pgvector:
+    container_name: pgvector
+    image: pgvector/pgvector:pg17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: pgvector
+      POSTGRES_DB: vectordb
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+    networks:
+      - aidbqc
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 networks:
-  milvus:
+  aidbqc:
     driver: bridge
+    name: aidbqc
 
 volumes:
   milvus-etcd:
   milvus-minio:
   milvus-data:
+  qdrant-data:
+  weaviate-data:
+  pgvector-data:

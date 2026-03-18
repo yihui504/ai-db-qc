@@ -1,0 +1,766 @@
+{
+  "campaign_id": "AGGRESSIVE_BUG_MINING_2025_001",
+  "start_time": 1773834197.1184857,
+  "phases": {
+    "schema_evolution": {
+      "databases": {
+        "pgvector": {
+          "exit_code": 0,
+          "success": true,
+          "output_file": "C:\\Users\\11428\\Desktop\\ai-db-qc\\results\\schema_evolution_2025_001\\pgvector_schema_evolution_results.json",
+          "test_results": [
+            {
+              "contract_id": "SCH-005",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "Search after field extension",
+                  "checks": [
+                    {
+                      "name": "Baseline data inserted",
+                      "status": true
+                    },
+                    {
+                      "name": "Baseline search successful",
+                      "status": true
+                    },
+                    {
+                      "name": "Baseline returned 10 results",
+                      "status": true
+                    },
+                    {
+                      "name": "Schema extension supported",
+                      "status": false
+                    },
+                    {
+                      "name": "Post-extension search successful",
+                      "status": true
+                    },
+                    {
+                      "name": "Post-extension returned 10 results",
+                      "status": true
+                    },
+                    {
+                      "name": "Queries still work",
+                      "status": true
+                    },
+                    {
+                      "name": "Results consistent",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Queries during schema operations",
+                  "checks": [
+                    {
+                      "name": "All 10 searches succeed",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                }
+              ],
+              "overall_verdict": "PASS"
+            },
+            {
+              "contract_id": "SCH-006",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "Failed schema operation rollback",
+                  "checks": [
+                    {
+                      "name": "Original data count: 50",
+                      "status": true
+                    },
+                    {
+                      "name": "Original schema captured",
+                      "status": false
+                    },
+                    {
+                      "name": "Invalid schema change rejected",
+                      "status": true
+                    },
+                    {
+                      "name": "Schema intact after failed change",
+                      "status": false
+                    },
+                    {
+                      "name": "All data accessible (count=50)",
+                      "status": true
+                    },
+                    {
+                      "name": "No partial state visible",
+                      "status": false
+                    }
+                  ],
+                  "verdict": "LIKELY_BUG"
+                },
+                {
+                  "name": "Schema state consistency",
+                  "checks": [
+                    {
+                      "name": "Collection still exists",
+                      "status": false
+                    },
+                    {
+                      "name": "Can still insert new data",
+                      "status": true
+                    },
+                    {
+                      "name": "Can still search",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "LIKELY_BUG"
+                }
+              ],
+              "overall_verdict": "LIKELY_BUG"
+            }
+          ]
+        }
+      }
+    },
+    "boundary": {
+      "databases": {
+        "pgvector": {
+          "exit_code": 0,
+          "success": true,
+          "output_file": "C:\\Users\\11428\\Desktop\\ai-db-qc\\results\\boundary_2025_001\\pgvector_boundary_results.json",
+          "test_results": [
+            {
+              "contract_id": "BND-001",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "Minimum dimension (1)",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Zero dimension",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1 (invalid accepted)"
+                },
+                {
+                  "name": "Negative dimension",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1 (invalid accepted)"
+                },
+                {
+                  "name": "Standard dimension (128)",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Large dimension (4096)",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Excessive dimension (100000)",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1 (invalid accepted)"
+                },
+                {
+                  "name": "Vector dimension mismatch",
+                  "checks": [
+                    {
+                      "name": "Wrong dimension vector rejected",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1 (invalid accepted)"
+                }
+              ],
+              "overall_verdict": "BUG"
+            },
+            {
+              "contract_id": "BND-002",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "Top-K = 0",
+                  "checks": [
+                    {
+                      "name": "Search succeeded",
+                      "status": true
+                    },
+                    {
+                      "name": "Exception during test",
+                      "status": false,
+                      "error": "invalid literal for int() with base 10: 'empty'"
+                    }
+                  ],
+                  "verdict": "TYPE-3"
+                },
+                {
+                  "name": "Top-K = 1",
+                  "checks": [
+                    {
+                      "name": "Search succeeded",
+                      "status": true
+                    },
+                    {
+                      "name": "Returned 1 results (expected ~1)",
+                      "status": true
+                    },
+                    {
+                      "name": "Result count (1) <= top_k (1)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Top-K = 10",
+                  "checks": [
+                    {
+                      "name": "Search succeeded",
+                      "status": true
+                    },
+                    {
+                      "name": "Returned 10 results (expected ~10)",
+                      "status": true
+                    },
+                    {
+                      "name": "Result count (10) <= top_k (10)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Top-K = 100 (equal to collection size)",
+                  "checks": [
+                    {
+                      "name": "Search succeeded",
+                      "status": true
+                    },
+                    {
+                      "name": "Returned 100 results (expected ~100)",
+                      "status": true
+                    },
+                    {
+                      "name": "Result count (100) <= top_k (100)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Top-K = 200 (greater than collection)",
+                  "checks": [
+                    {
+                      "name": "Search succeeded",
+                      "status": true
+                    },
+                    {
+                      "name": "Returned 100 results (expected ~100)",
+                      "status": true
+                    },
+                    {
+                      "name": "Result count (100) <= top_k (200)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Negative top-K",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                }
+              ],
+              "overall_verdict": "BUG"
+            },
+            {
+              "contract_id": "BND-003",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "L2 metric",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "IP metric",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "COSINE metric",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Lowercase 'l2'",
+                  "checks": [
+                    {
+                      "name": "Handled consistently (result: accepted)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Lowercase 'ip'",
+                  "checks": [
+                    {
+                      "name": "Handled consistently (result: accepted)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Lowercase 'cosine'",
+                  "checks": [
+                    {
+                      "name": "Handled consistently (result: accepted)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "Unsupported metric 'MANHATTAN'",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                },
+                {
+                  "name": "Empty metric",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                }
+              ],
+              "overall_verdict": "BUG"
+            },
+            {
+              "contract_id": "BND-004",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "test_collection",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "my_test_col",
+                  "checks": [
+                    {
+                      "name": "Accepted (expected)",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                },
+                {
+                  "name": "my collection",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                },
+                {
+                  "name": "test/name",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                },
+                {
+                  "name": "123collection",
+                  "checks": [
+                    {
+                      "name": "Handled as accepted",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS"
+                },
+                {
+                  "name": "system",
+                  "checks": [
+                    {
+                      "name": "Rejected (expected)",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                },
+                {
+                  "name": "Duplicate collection name",
+                  "checks": [
+                    {
+                      "name": "Duplicate name rejected",
+                      "status": false
+                    },
+                    {
+                      "name": "Good error diagnostics",
+                      "status": false,
+                      "message": ""
+                    }
+                  ],
+                  "verdict": "TYPE-1"
+                }
+              ],
+              "overall_verdict": "BUG"
+            }
+          ]
+        }
+      }
+    },
+    "stress": {
+      "databases": {
+        "pgvector": {
+          "exit_code": 0,
+          "success": true,
+          "output_file": "C:\\Users\\11428\\Desktop\\ai-db-qc\\results\\stress_2025_001\\pgvector_stress_results.json",
+          "test_results": [
+            {
+              "contract_id": "STR-001",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "Throughput test at low",
+                  "checks": [
+                    {
+                      "name": "No crashes",
+                      "status": true
+                    },
+                    {
+                      "name": "Success rate: 100.00%",
+                      "status": true
+                    },
+                    {
+                      "name": "Average latency: 1023.75ms",
+                      "status": false
+                    }
+                  ],
+                  "verdict": "MARGINAL",
+                  "stats": {
+                    "total_requests": 5894,
+                    "successes": 5894,
+                    "errors": 0,
+                    "timeouts": 0,
+                    "success_rate": 1.0,
+                    "avg_latency_ms": 1023.7498034612178,
+                    "p95_latency_ms": 1353.4486293792725,
+                    "p99_latency_ms": 1467.047929763794
+                  }
+                },
+                {
+                  "name": "Throughput test at medium",
+                  "checks": [
+                    {
+                      "name": "No crashes",
+                      "status": true
+                    },
+                    {
+                      "name": "Success rate: 100.00%",
+                      "status": true
+                    },
+                    {
+                      "name": "Average latency: 1135.87ms",
+                      "status": false
+                    }
+                  ],
+                  "verdict": "MARGINAL",
+                  "stats": {
+                    "total_requests": 5313,
+                    "successes": 5313,
+                    "errors": 0,
+                    "timeouts": 0,
+                    "success_rate": 1.0,
+                    "avg_latency_ms": 1135.871087093486,
+                    "p95_latency_ms": 1417.3247814178467,
+                    "p99_latency_ms": 1581.2249183654785
+                  }
+                },
+                {
+                  "name": "Throughput test at high",
+                  "checks": [
+                    {
+                      "name": "No crashes",
+                      "status": true
+                    },
+                    {
+                      "name": "Success rate: 100.00%",
+                      "status": true
+                    },
+                    {
+                      "name": "Average latency: 1151.36ms",
+                      "status": false
+                    }
+                  ],
+                  "verdict": "MARGINAL",
+                  "stats": {
+                    "total_requests": 5249,
+                    "successes": 5249,
+                    "errors": 0,
+                    "timeouts": 0,
+                    "success_rate": 1.0,
+                    "avg_latency_ms": 1151.3595462504013,
+                    "p95_latency_ms": 1485.1531982421875,
+                    "p99_latency_ms": 1642.4579620361328
+                  }
+                }
+              ],
+              "overall_verdict": "MARGINAL"
+            },
+            {
+              "contract_id": "STR-002",
+              "database": "pgvector",
+              "test_cases": [
+                {
+                  "name": "Volume test with 10,000 vectors",
+                  "checks": [
+                    {
+                      "name": "No crashes",
+                      "status": true
+                    },
+                    {
+                      "name": "Average latency (152.53ms) < 100ms",
+                      "status": false
+                    },
+                    {
+                      "name": "P95 latency (171.93ms) reasonable",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "MARGINAL",
+                  "stats": {
+                    "phases": [
+                      {
+                        "name": "insert",
+                        "time_seconds": 8.82798957824707,
+                        "vectors_per_second": 1132.7607391654453
+                      },
+                      {
+                        "name": "build_index",
+                        "time_seconds": 0.6746718883514404
+                      },
+                      {
+                        "name": "load",
+                        "time_seconds": 0.0
+                      },
+                      {
+                        "name": "search",
+                        "time_seconds": 152.55855631828308,
+                        "avg_search_latency_ms": 152.5271122455597,
+                        "p95_search_latency_ms": 171.92506790161133
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "Volume test with 100,000 vectors",
+                  "checks": [
+                    {
+                      "name": "No crashes",
+                      "status": true
+                    },
+                    {
+                      "name": "Average latency (155.09ms) < 200ms",
+                      "status": true
+                    },
+                    {
+                      "name": "P95 latency (191.26ms) reasonable",
+                      "status": true
+                    }
+                  ],
+                  "verdict": "PASS",
+                  "stats": {
+                    "phases": [
+                      {
+                        "name": "insert",
+                        "time_seconds": 88.41771006584167,
+                        "vectors_per_second": 1130.9951357655993
+                      },
+                      {
+                        "name": "build_index",
+                        "time_seconds": 1.6522142887115479
+                      },
+                      {
+                        "name": "load",
+                        "time_seconds": 0.0
+                      },
+                      {
+                        "name": "search",
+                        "time_seconds": 155.1227457523346,
+                        "avg_search_latency_ms": 155.09115195274353,
+                        "p95_search_latency_ms": 191.26272201538086
+                      }
+                    ]
+                  }
+                }
+              ],
+              "overall_verdict": "MARGINAL"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_phases": 3,
+    "phases_completed": 3,
+    "total_bugs": 5,
+    "critical_bugs": 0,
+    "bugs_by_phase": {
+      "schema_evolution": 1,
+      "boundary": 4,
+      "stress": 0
+    },
+    "bugs_by_db": {
+      "pgvector": 5
+    },
+    "bugs_by_contract": {
+      "SCH-006": 1,
+      "BND-001": 1,
+      "BND-002": 1,
+      "BND-003": 1,
+      "BND-004": 1
+    }
+  },
+  "end_time": 1773834803.054195,
+  "duration_seconds": 605.9357092380524
+}

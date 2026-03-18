@@ -19,3 +19,8 @@ class TestCase(BaseModel):
     )
     oracle_refs: List[str] = Field(default_factory=list)
     rationale: str = ""
+    sequence_assertions: List[str] = Field(
+        default_factory=list,
+        description="Sequence-specific oracle assertions for multi-step operations. "
+                   "Format: 'field relation value' (e.g., 'count > 0', 'result_count <= 10')"
+    )

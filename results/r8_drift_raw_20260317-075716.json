@@ -1,0 +1,26 @@
+{
+  "run_timestamp": "20260317-075716",
+  "results": [
+    {
+      "adapter": "weaviate",
+      "run_id": "20260317_075716",
+      "config": {
+        "n_base": 500,
+        "n_drift": 200,
+        "n_probes": 20,
+        "dim": 64,
+        "top_k": 10,
+        "recall_tolerance": 0.05
+      },
+      "recalls": {
+        "phase1_baseline": 0.415,
+        "phase3_post_drift": 0.415,
+        "phase4_recovery": 0.415,
+        "drift_delta": 0.0,
+        "recovery_delta": 0.0
+      },
+      "violations": [],
+      "classification": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "experiment": "V5_ablation_combined",
+  "timestamp": "20260317_1039",
+  "sem_backend": "sentence_transformers",
+  "dim": 384,
+  "domains": [
+    {
+      "domain": "finance",
+      "sem_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.7,
+          "violation_rate": 0.3
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 1.0,
+          "pass_rate": 0.0
+        }
+      },
+      "rnd_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.0,
+          "violation_rate": 1.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 0.1,
+          "pass_rate": 0.9
+        }
+      }
+    },
+    {
+      "domain": "medical",
+      "sem_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 1.0,
+          "violation_rate": 0.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 1.0,
+          "pass_rate": 0.0
+        }
+      },
+      "rnd_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.0,
+          "violation_rate": 1.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 0.2,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "domain": "legal",
+      "sem_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.8,
+          "violation_rate": 0.2
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 1.0,
+          "pass_rate": 0.0
+        }
+      },
+      "rnd_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.0,
+          "violation_rate": 1.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 0.1,
+          "pass_rate": 0.9
+        }
+      }
+    },
+    {
+      "domain": "code",
+      "sem_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.7,
+          "violation_rate": 0.3
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 1.0,
+          "pass_rate": 0.0
+        }
+      },
+      "rnd_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.0,
+          "violation_rate": 1.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 0.0,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "domain": "general",
+      "sem_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 1.0,
+          "violation_rate": 0.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 1.0,
+          "pass_rate": 0.0
+        }
+      },
+      "rnd_metrics": {
+        "total": 20,
+        "mr01": {
+          "n": 10,
+          "pass_rate": 0.0,
+          "violation_rate": 1.0
+        },
+        "mr03": {
+          "n": 10,
+          "violation_rate": 0.4,
+          "pass_rate": 0.6
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "run_timestamp": "20260317-075435",
+  "adapter": "milvus",
+  "embed_backend": "hash-fallback",
+  "domains": [
+    "finance",
+    "medical"
+  ],
+  "results": {
+    "finance": {
+      "error": "collection setup failed"
+    },
+    "medical": {
+      "error": "collection setup failed"
+    }
+  }
+}

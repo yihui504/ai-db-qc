@@ -1,0 +1,411 @@
+[
+  {
+    "contract_id": "BND-001",
+    "database": "milvus",
+    "test_cases": [
+      {
+        "name": "Minimum dimension (1)",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": false
+          }
+        ],
+        "verdict": "TYPE-2 (valid rejected)"
+      },
+      {
+        "name": "Zero dimension",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2 (poor diagnostics)"
+      },
+      {
+        "name": "Negative dimension",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2 (poor diagnostics)"
+      },
+      {
+        "name": "Standard dimension (128)",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Large dimension (4096)",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Excessive dimension (100000)",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2 (poor diagnostics)"
+      },
+      {
+        "name": "Vector dimension mismatch",
+        "checks": [
+          {
+            "name": "Wrong dimension vector rejected",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2 (poor diagnostics)"
+      }
+    ],
+    "overall_verdict": "BUG"
+  },
+  {
+    "contract_id": "BND-002",
+    "database": "milvus",
+    "test_cases": [
+      {
+        "name": "Top-K = 0",
+        "checks": [
+          {
+            "name": "Search succeeded",
+            "status": false
+          }
+        ],
+        "verdict": "TYPE-3 (crash)"
+      },
+      {
+        "name": "Top-K = 1",
+        "checks": [
+          {
+            "name": "Search succeeded",
+            "status": true
+          },
+          {
+            "name": "Returned 1 results (expected ~1)",
+            "status": true
+          },
+          {
+            "name": "Result count (1) <= top_k (1)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Top-K = 10",
+        "checks": [
+          {
+            "name": "Search succeeded",
+            "status": true
+          },
+          {
+            "name": "Returned 10 results (expected ~10)",
+            "status": true
+          },
+          {
+            "name": "Result count (10) <= top_k (10)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Top-K = 100 (equal to collection size)",
+        "checks": [
+          {
+            "name": "Search succeeded",
+            "status": true
+          },
+          {
+            "name": "Returned 100 results (expected ~100)",
+            "status": true
+          },
+          {
+            "name": "Result count (100) <= top_k (100)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Top-K = 200 (greater than collection)",
+        "checks": [
+          {
+            "name": "Search succeeded",
+            "status": true
+          },
+          {
+            "name": "Returned 100 results (expected ~100)",
+            "status": true
+          },
+          {
+            "name": "Result count (100) <= top_k (200)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Negative top-K",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false
+          }
+        ],
+        "verdict": "TYPE-2"
+      }
+    ],
+    "overall_verdict": "BUG"
+  },
+  {
+    "contract_id": "BND-003",
+    "database": "milvus",
+    "test_cases": [
+      {
+        "name": "L2 metric",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "IP metric",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "COSINE metric",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Lowercase 'l2'",
+        "checks": [
+          {
+            "name": "Handled consistently (result: accepted)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Lowercase 'ip'",
+        "checks": [
+          {
+            "name": "Handled consistently (result: accepted)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Lowercase 'cosine'",
+        "checks": [
+          {
+            "name": "Handled consistently (result: accepted)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Unsupported metric 'MANHATTAN'",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": false
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-1"
+      },
+      {
+        "name": "Empty metric",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": false
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-1"
+      }
+    ],
+    "overall_verdict": "BUG"
+  },
+  {
+    "contract_id": "BND-004",
+    "database": "milvus",
+    "test_cases": [
+      {
+        "name": "test_collection",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "my_test_col",
+        "checks": [
+          {
+            "name": "Accepted (expected)",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2"
+      },
+      {
+        "name": "my collection",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2"
+      },
+      {
+        "name": "test/name",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": true
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-2"
+      },
+      {
+        "name": "123collection",
+        "checks": [
+          {
+            "name": "Handled as rejected",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "system",
+        "checks": [
+          {
+            "name": "Rejected (expected)",
+            "status": false
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-1"
+      },
+      {
+        "name": "Duplicate collection name",
+        "checks": [
+          {
+            "name": "Duplicate name rejected",
+            "status": false
+          },
+          {
+            "name": "Good error diagnostics",
+            "status": false,
+            "message": ""
+          }
+        ],
+        "verdict": "TYPE-1"
+      }
+    ],
+    "overall_verdict": "BUG"
+  }
+]

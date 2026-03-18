@@ -1,0 +1,182 @@
+[
+  {
+    "contract_id": "STR-001",
+    "database": "pgvector",
+    "test_cases": [
+      {
+        "name": "Throughput test at low",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 1023.75ms",
+            "status": false
+          }
+        ],
+        "verdict": "MARGINAL",
+        "stats": {
+          "total_requests": 5894,
+          "successes": 5894,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 1023.7498034612178,
+          "p95_latency_ms": 1353.4486293792725,
+          "p99_latency_ms": 1467.047929763794
+        }
+      },
+      {
+        "name": "Throughput test at medium",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 1135.87ms",
+            "status": false
+          }
+        ],
+        "verdict": "MARGINAL",
+        "stats": {
+          "total_requests": 5313,
+          "successes": 5313,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 1135.871087093486,
+          "p95_latency_ms": 1417.3247814178467,
+          "p99_latency_ms": 1581.2249183654785
+        }
+      },
+      {
+        "name": "Throughput test at high",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 1151.36ms",
+            "status": false
+          }
+        ],
+        "verdict": "MARGINAL",
+        "stats": {
+          "total_requests": 5249,
+          "successes": 5249,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 1151.3595462504013,
+          "p95_latency_ms": 1485.1531982421875,
+          "p99_latency_ms": 1642.4579620361328
+        }
+      }
+    ],
+    "overall_verdict": "MARGINAL"
+  },
+  {
+    "contract_id": "STR-002",
+    "database": "pgvector",
+    "test_cases": [
+      {
+        "name": "Volume test with 10,000 vectors",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Average latency (152.53ms) < 100ms",
+            "status": false
+          },
+          {
+            "name": "P95 latency (171.93ms) reasonable",
+            "status": true
+          }
+        ],
+        "verdict": "MARGINAL",
+        "stats": {
+          "phases": [
+            {
+              "name": "insert",
+              "time_seconds": 8.82798957824707,
+              "vectors_per_second": 1132.7607391654453
+            },
+            {
+              "name": "build_index",
+              "time_seconds": 0.6746718883514404
+            },
+            {
+              "name": "load",
+              "time_seconds": 0.0
+            },
+            {
+              "name": "search",
+              "time_seconds": 152.55855631828308,
+              "avg_search_latency_ms": 152.5271122455597,
+              "p95_search_latency_ms": 171.92506790161133
+            }
+          ]
+        }
+      },
+      {
+        "name": "Volume test with 100,000 vectors",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Average latency (155.09ms) < 200ms",
+            "status": true
+          },
+          {
+            "name": "P95 latency (191.26ms) reasonable",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "phases": [
+            {
+              "name": "insert",
+              "time_seconds": 88.41771006584167,
+              "vectors_per_second": 1130.9951357655993
+            },
+            {
+              "name": "build_index",
+              "time_seconds": 1.6522142887115479
+            },
+            {
+              "name": "load",
+              "time_seconds": 0.0
+            },
+            {
+              "name": "search",
+              "time_seconds": 155.1227457523346,
+              "avg_search_latency_ms": 155.09115195274353,
+              "p95_search_latency_ms": 191.26272201538086
+            }
+          ]
+        }
+      }
+    ],
+    "overall_verdict": "MARGINAL"
+  }
+]

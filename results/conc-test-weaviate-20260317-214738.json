@@ -1,0 +1,51 @@
+{
+  "run_id": "conc-test-20260317-214738",
+  "timestamp": "2026-03-17T21:47:38.786594",
+  "target": "weaviate",
+  "host": "localhost",
+  "port": 19530,
+  "config": {
+    "threads": 4,
+    "readers": 4,
+    "deleters": 1,
+    "searchers": 4,
+    "vectors_per_thread": 50,
+    "dim": 64,
+    "duration": 10,
+    "top_k": 10,
+    "profile": false
+  },
+  "summary": {
+    "total": 1,
+    "passes": 1,
+    "violations": 0,
+    "errors": 0
+  },
+  "results": {
+    "CONC-001": {
+      "contract_id": "CONC-001",
+      "classification": "PASS",
+      "violations": [],
+      "metrics": {
+        "total_operations": 4,
+        "successful_operations": 4,
+        "failed_operations": 0,
+        "throughput_ops_per_sec": 93.87,
+        "latency_ms": {
+          "p50": 31.0,
+          "p95": 31.0,
+          "p99": 31.0,
+          "min": 15.0,
+          "max": 31.0
+        }
+      },
+      "metadata": {
+        "n_threads": 4,
+        "vectors_per_thread": 50,
+        "expected_total": 200,
+        "final_count": 200,
+        "insert_errors": 0
+      }
+    }
+  }
+}

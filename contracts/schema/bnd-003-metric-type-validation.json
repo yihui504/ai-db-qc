@@ -1,0 +1,82 @@
+{
+  "contract_id": "BND-003",
+  "name": "Metric Type Validation",
+  "family": "BOUNDARY",
+  "type": "parameter_validation",
+  "statement": "Metric types must be validated with support for standard distance metrics",
+  "rationale": "Invalid metric types cause index failures or incorrect similarity calculations",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["create_collection", "create_index"],
+    "parameters": ["metric_type"]
+  },
+  "preconditions": [
+    "adapter_initialized"
+  ],
+  "postconditions": [
+    "valid_metrics_accepted",
+    "invalid_metrics_rejected",
+    "case_sensitivity_handled"
+  ],
+  "invariants": [
+    "Metric type validation",
+    "Distance calculation correctness"
+  ],
+  "violation_criteria": {
+    "condition": "invalid_metric_accepted OR valid_metric_rejected OR case_sensitivity_inconsistent",
+    "severity": "high"
+  },
+  "boundary_values": {
+    "metric_type": {
+      "valid_values": ["L2", "IP", "COSINE", "l2", "ip", "cosine", "l2_distance", "inner_product", "cosine_distance"],
+      "invalid_values": ["EUCLIDEAN", "MANHATTAN", "CHEBYSHEV", "HAMMING", "JACCARD", "", "invalid", null],
+      "case_variations": ["L2", "l2", "L2", "Ip", "COSINE", "cosine"]
+    }
+  },
+  "test_generation": {
+    "strategy": "validation_testing",
+    "cases": [
+      {
+        "name": "Standard metric types",
+        "test": "metric_type in [L2, IP, COSINE]",
+        "expected": "accepted"
+      },
+      {
+        "name": "Case insensitivity",
+        "test": "metric_type case variations",
+        "expected": "consistent handling (either all accepted or all rejected with clear error)"
+      },
+      {
+        "name": "Unsupported metric",
+        "test": "metric_type = 'MANHATTAN'",
+        "expected": "rejected with clear error listing supported metrics"
+      },
+      {
+        "name": "Empty metric type",
+        "test": "metric_type = '' or null",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Metric change after data",
+        "test": "change metric_type on existing collection",
+        "expected": "rejected or handled according to schema evolution rules"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "metric_validation_correct AND error_messages_include_supported_values",
+    "verification": "test various metric types; verify acceptance/rejection and error quality",
+    "classification": {
+      "type1_bug": "invalid metric accepted",
+      "type2_bug": "valid metric rejected OR poor error message",
+      "type2_pf_bug": "case sensitivity inconsistent",
+      "pass": "correct validation"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

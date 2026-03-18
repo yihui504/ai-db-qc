@@ -1,0 +1,61 @@
+{
+  "run_id": "r7-concurrency-20260316-202000",
+  "timestamp": "2026-03-16T20:20:39.541569",
+  "config": {
+    "host": "localhost",
+    "port": 19530,
+    "dim": 64,
+    "threads": 8
+  },
+  "summary": {
+    "total_test_types": 4,
+    "violations": 0,
+    "passes": 4
+  },
+  "results": {
+    "R7A": {
+      "test_id": "R7A",
+      "total_checks": 80,
+      "violations": 0,
+      "errors": 0,
+      "avg_latency_ms": 121.9,
+      "p95_latency_ms": 250.0,
+      "classification": "PASS",
+      "violation_details": [],
+      "error_details": []
+    },
+    "R7B": {
+      "test_id": "R7B",
+      "total_reads": 72,
+      "violations": 0,
+      "write_batches": 5,
+      "final_observed_count": 100,
+      "expected_count_approx": 600,
+      "classification": "PASS",
+      "violation_details": []
+    },
+    "R7C": {
+      "test_id": "R7C",
+      "total_vectors_expected": 2000,
+      "final_count": 2000,
+      "insert_errors": 0,
+      "classification": "PASS",
+      "reason": "All 2000 vectors inserted correctly (2000 counted)"
+    },
+    "R7D": {
+      "test_id": "R7D",
+      "total_searches": 97,
+      "violations": 0,
+      "errors": 77,
+      "empty_during_rebuild": 0,
+      "rebuild_result": {
+        "release": "success",
+        "drop_index": "success",
+        "build_index": "success",
+        "load": "success"
+      },
+      "classification": "PASS",
+      "violation_details": []
+    }
+  }
+}

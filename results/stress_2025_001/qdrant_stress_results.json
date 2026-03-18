@@ -1,0 +1,88 @@
+[
+  {
+    "contract_id": "STR-001",
+    "database": "qdrant",
+    "test_cases": [
+      {
+        "name": "Throughput test at low",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 191.86ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 31367,
+          "successes": 31367,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 191.8644341860928,
+          "p95_latency_ms": 341.54820442199707,
+          "p99_latency_ms": 374.1297721862793
+        }
+      },
+      {
+        "name": "Throughput test at medium",
+        "checks": [
+          {
+            "name": "Test completed without crash",
+            "status": false,
+            "error": "Failed to create collection: {'status': 'error', 'error': \"Unexpected Response: 502 (Bad Gateway)\\nRaw response content:\\nb''\", 'error_type': 'UnexpectedResponse', 'operation': 'create_collection'}"
+          }
+        ],
+        "verdict": "TYPE-3 (crash)"
+      },
+      {
+        "name": "Throughput test at high",
+        "checks": [
+          {
+            "name": "Test completed without crash",
+            "status": false,
+            "error": "Failed to create collection: {'status': 'error', 'error': \"Unexpected Response: 502 (Bad Gateway)\\nRaw response content:\\nb''\", 'error_type': 'UnexpectedResponse', 'operation': 'create_collection'}"
+          }
+        ],
+        "verdict": "TYPE-3 (crash)"
+      }
+    ],
+    "overall_verdict": "BUG"
+  },
+  {
+    "contract_id": "STR-002",
+    "database": "qdrant",
+    "test_cases": [
+      {
+        "name": "Volume test with 10,000 vectors",
+        "checks": [
+          {
+            "name": "Test completed without crash",
+            "status": false,
+            "error": "Failed to create collection: {'status': 'error', 'error': \"Unexpected Response: 502 (Bad Gateway)\\nRaw response content:\\nb''\", 'error_type': 'UnexpectedResponse', 'operation': 'create_collection'}"
+          }
+        ],
+        "verdict": "TYPE-3 (crash)"
+      },
+      {
+        "name": "Volume test with 100,000 vectors",
+        "checks": [
+          {
+            "name": "Test completed without crash",
+            "status": false,
+            "error": "Failed to create collection: {'status': 'error', 'error': \"Unexpected Response: 502 (Bad Gateway)\\nRaw response content:\\nb''\", 'error_type': 'UnexpectedResponse', 'operation': 'create_collection'}"
+          }
+        ],
+        "verdict": "TYPE-3 (crash)"
+      }
+    ],
+    "overall_verdict": "BUG"
+  }
+]

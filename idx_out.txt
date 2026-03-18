@@ -1,0 +1,53 @@
+
+============================================================
+  IDX-003 + IDX-004 Contract Testing
+  Run ID: idx003-idx004-20260316-201018
+  Target: localhost:19530  dim=32
+============================================================
+  Milvus connected OK
+
+
+--- IDX-003: Parameter Validation Contract ---
+2026-03-16 20:10:22,852 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=invalid parameter[expected=valid index][actual=invalid index type: NONEXISTENT])>, <Time:{'RPC start': '2026-03-16 20:10:22.799028', 'RPC error': '2026-03-16 20:10:22.852620'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-01: Invalid index type 'NONEXISTENT'
+2026-03-16 20:10:27,294 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'M' (0) should be in range [2, 2048]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:10:27.239175', 'RPC error': '2026-03-16 20:10:27.294681'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-02: HNSW M=0 (must be >= 1)
+2026-03-16 20:10:31,173 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'M' (-1) should be in range [2, 2048]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:10:31.127052', 'RPC error': '2026-03-16 20:10:31.173507'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-03: HNSW M=-1 (negative, must be rejected)
+2026-03-16 20:10:35,013 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'nlist' (0) should be in range [1, 65536]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:10:35.012134', 'RPC error': '2026-03-16 20:10:35.013949'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-04: IVF_FLAT nlist=0 (must be >= 1)
+2026-03-16 20:10:37,822 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=1100, message=Out of range in json: param 'nlist' (-5) should be in range [1, 65536]: invalid parameter[expected=valid index params][actual=invalid index params])>, <Time:{'RPC start': '2026-03-16 20:10:37.773220', 'RPC error': '2026-03-16 20:10:37.822283'}> (decorators.py:140)
+  [PASS]  IDX-003-ILLEGAL-05: IVF_FLAT nlist=-5 (negative, must be rejected)
+  [PASS]  IDX-003-LEGAL-01: HNSW M=8, efConstruction=100 (valid)
+  [PASS]  IDX-003-LEGAL-02: IVF_FLAT nlist=64 (valid)
+  [PASS]  IDX-003-LEGAL-03: FLAT (no algorithm params, always exact)
+
+--- IDX-004: Index Rebuild Idempotency Contract ---
+    IDX-004-SEQ-01 step1_IVF_FLAT: recall=0.000 (threshold=0.7) -> ALLOWED_DIFF
+2026-03-16 20:11:11,045 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>, <Time:{'RPC start': '2026-03-16 20:11:10.994621', 'RPC error': '2026-03-16 20:11:11.045339'}> (decorators.py:140)
+  [VIOLATION]  IDX-004-SEQ-01: IVF_FLAT → HNSW index change
+    IDX-004-SEQ-02 step1_HNSW: recall=0.000 (threshold=0.7) -> ALLOWED_DIFF
+2026-03-16 20:11:19,791 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>, <Time:{'RPC start': '2026-03-16 20:11:19.741680', 'RPC error': '2026-03-16 20:11:19.791447'}> (decorators.py:140)
+  [VIOLATION]  IDX-004-SEQ-02: HNSW → IVF_FLAT index change (reverse)
+    IDX-004-SEQ-03 step1_HNSW: recall=0.000 (threshold=0.7) -> ALLOWED_DIFF
+2026-03-16 20:11:28,209 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>, <Time:{'RPC start': '2026-03-16 20:11:28.162387', 'RPC error': '2026-03-16 20:11:28.209785'}> (decorators.py:140)
+  [VIOLATION]  IDX-004-SEQ-03: HNSW M=8 → HNSW M=32 (same type, param change)
+    IDX-004-SEQ-04 step1_FLAT: recall=0.000 (threshold=0.99) -> ALLOWED_DIFF
+2026-03-16 20:11:37,153 [ERROR][handler]: RPC error: [create_index], <MilvusException: (code=65535, message=CreateIndex failed: at most one distinct index is allowed per field)>, <Time:{'RPC start': '2026-03-16 20:11:37.101632', 'RPC error': '2026-03-16 20:11:37.152525'}> (decorators.py:140)
+  [VIOLATION]  IDX-004-SEQ-04: 3-step chain: FLAT → IVF_FLAT → HNSW
+
+============================================================
+  RESULTS SUMMARY
+  Total tests:  12
+  PASS:         8
+  VIOLATIONS:   4
+
+  Violations:
+    [IDX-004-SEQ-01] Exception: 'list' object has no attribute 'get'
+    [IDX-004-SEQ-02] Exception: 'list' object has no attribute 'get'
+    [IDX-004-SEQ-03] Exception: 'list' object has no attribute 'get'
+    [IDX-004-SEQ-04] Exception: 'list' object has no attribute 'get'
+
+  Results saved: results\idx003-idx004-20260316-201018-results.json
+============================================================
+

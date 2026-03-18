@@ -1,0 +1,101 @@
+[
+  {
+    "case_id": "type1-001",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-1",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": true,
+    "rationale": "Illegal operation succeeded"
+  },
+  {
+    "case_id": "type2-001",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Illegal input with poor diagnostic"
+  },
+  {
+    "case_id": "type2pf-001",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2.precondition_failed",
+    "input_validity": "legal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "type4-001",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2.precondition_failed",
+    "input_validity": "legal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "type4-001-unfiltered",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2.precondition_failed",
+    "input_validity": "legal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "nonbug-002",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2.precondition_failed",
+    "input_validity": "legal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "gate-001-no-precond",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2.precondition_failed",
+    "input_validity": "legal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "gate-001-with-precond",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2.precondition_failed",
+    "input_validity": "legal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Contract-valid but precondition-fail"
+  },
+  {
+    "case_id": "oracle-001",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Illegal input with poor diagnostic"
+  },
+  {
+    "case_id": "triage-001",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-1",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": true,
+    "rationale": "Illegal operation succeeded"
+  },
+  {
+    "case_id": "triage-002",
+    "run_id": "phase5.3-ablation-v2-20260316-214854-20260316-214855",
+    "final_type": "type-2",
+    "input_validity": "illegal",
+    "observed_outcome": "success",
+    "precondition_pass": false,
+    "rationale": "Illegal input with poor diagnostic"
+  }
+]

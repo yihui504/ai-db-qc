@@ -1,0 +1,118 @@
+{
+  "contract_id": "BND-004",
+  "name": "Collection Name Boundaries",
+  "family": "BOUNDARY",
+  "type": "parameter_validation",
+  "statement": "Collection names must be validated against naming constraints with clear error messages",
+  "rationale": "Invalid collection names can cause storage issues, naming conflicts, or security problems",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["create_collection", "drop_collection", "alter_collection"],
+    "parameters": ["collection_name"]
+  },
+  "preconditions": [
+    "adapter_initialized"
+  ],
+  "postconditions": [
+    "valid_names_accepted",
+    "invalid_names_rejected",
+    "reserved_names_protected"
+  ],
+  "invariants": [
+    "Name uniqueness",
+    "Name validity"
+  ],
+  "violation_criteria": {
+    "condition": "invalid_name_accepted OR valid_name_rejected OR naming_inconsistency",
+    "severity": "medium"
+  },
+  "boundary_values": {
+    "collection_name": {
+      "valid_patterns": [
+        "^[a-zA-Z][a-zA-Z0-9_]{2,63}$",
+        "^[a-z0-9_]{3,63}$"
+      ],
+      "invalid_patterns": [
+        "^\\d.*$",
+        "^_$",
+        "^__.*",
+        ".*\\s.*",
+        ".*[<>:\"/\\\\|?*].*"
+      ],
+      "edge_values": [
+        "",
+        "a",
+        "ab",
+        "abc",
+        "a" * 256,
+        "test_123",
+        "123_invalid",
+        "_invalid",
+        "invalid name",
+        "invalid/name",
+        "very_long_name_" + "x" * 250
+      ],
+      "reserved_names": ["system", "admin", "default", "information_schema"]
+    }
+  },
+  "test_generation": {
+    "strategy": "validation_testing",
+    "cases": [
+      {
+        "name": "Empty collection name",
+        "test": "collection_name = ''",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Too short name",
+        "test": "collection_name = 'a'",
+        "expected": "rejected if min length > 1"
+      },
+      {
+        "name": "Name with spaces",
+        "test": "collection_name = 'my collection'",
+        "expected": "rejected or normalized"
+      },
+      {
+        "name": "Name with special characters",
+        "test": "collection_name = 'test/name'",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Name starting with number",
+        "test": "collection_name = '123collection'",
+        "expected": "rejected or handled according to naming rules"
+      },
+      {
+        "name": "Reserved name",
+        "test": "collection_name = 'system'",
+        "expected": "rejected with clear error about reserved names"
+      },
+      {
+        "name": "Duplicate name",
+        "test": "create collection with existing name",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Case sensitivity",
+        "test": "collection_name case variations",
+        "expected": "consistent handling"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "name_validation_correct AND uniqueness_enforced",
+    "verification": "test various name patterns; verify validation and uniqueness constraints",
+    "classification": {
+      "type1_bug": "invalid name accepted OR duplicate name accepted",
+      "type2_bug": "valid name rejected OR poor error message",
+      "pass": "correct validation and enforcement"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

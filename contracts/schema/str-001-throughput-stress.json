@@ -1,0 +1,121 @@
+{
+  "contract_id": "STR-001",
+  "name": "High Throughput Stress Test",
+  "family": "STRESS",
+  "type": "performance",
+  "statement": "Database must maintain stability and correctness under high throughput load",
+  "rationale": "Production systems often handle high request rates; database must not crash or corrupt data",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["insert", "search", "bulk_insert"],
+    "conditions": ["high_load"]
+  },
+  "preconditions": [
+    "adapter_initialized",
+    "collection_exists",
+    "index_loaded"
+  ],
+  "postconditions": [
+    "no_crashes",
+    "no_data_corruption",
+    "performance_within_reasonable_bounds"
+  ],
+  "invariants": [
+    "Data integrity under load",
+    "System stability",
+    "Consistent performance"
+  ],
+  "violation_criteria": {
+    "condition": "crash OR data_corruption OR performance_degradation_severe OR timeout_without_reason",
+    "severity": "critical"
+  },
+  "stress_parameters": {
+    "throughput_levels": [
+      {
+        "name": "low",
+        "requests_per_second": 100,
+        "duration_seconds": 60
+      },
+      {
+        "name": "medium",
+        "requests_per_second": 1000,
+        "duration_seconds": 60
+      },
+      {
+        "name": "high",
+        "requests_per_second": 5000,
+        "duration_seconds": 60
+      },
+      {
+        "name": "extreme",
+        "requests_per_second": 10000,
+        "duration_seconds": 30
+      }
+    ],
+    "operation_mix": [
+      {
+        "operation": "insert",
+        "percentage": 40
+      },
+      {
+        "operation": "search",
+        "percentage": 40
+      },
+      {
+        "operation": "bulk_insert",
+        "percentage": 20
+      }
+    ]
+  },
+  "test_generation": {
+    "strategy": "progressive_load",
+    "cases": [
+      {
+        "name": "Progressive throughput ramp-up",
+        "sequence": [
+          "baseline test at 100 req/s",
+          "ramp to 1000 req/s for 60s",
+          "ramp to 5000 req/s for 60s",
+          "ramp to 10000 req/s for 30s",
+          "verify no crashes or corruption",
+          "measure performance degradation"
+        ]
+      },
+      {
+        "name": "Sustained high throughput",
+        "sequence": [
+          "start at 5000 req/s",
+          "maintain for 5 minutes",
+          "monitor for degradation",
+          "verify data integrity"
+        ]
+      },
+      {
+        "name": "Burst load pattern",
+        "sequence": [
+          "baseline at 100 req/s",
+          "burst to 10000 req/s for 10s",
+          "return to baseline for 10s",
+          "repeat 10 times",
+          "verify recovery capability"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "no_crashes AND data_integrity_preserved AND performance_reasonable",
+    "verification": "monitor system stability; verify data consistency after load; measure latency/throughput",
+    "classification": {
+      "type3_bug": "crash or timeout under load",
+      "type4_bug": "data corruption or inconsistent results",
+      "marginal": "severe performance degradation but functional",
+      "pass": "stable with acceptable performance"
+    }
+  },
+  "metadata": {
+    "confidence": "medium",
+    "dependencies": [],
+    "test_complexity": "high",
+    "version": "1.0"
+  }
+}

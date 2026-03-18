@@ -1,0 +1,73 @@
+{
+  "contract_id": "CONC-003",
+  "name": "Delete-Search Cross Consistency",
+  "family": "CONC",
+  "type": "universal",
+  "statement": "Delete and search operations executed concurrently must maintain cross-operation consistency",
+  "rationale": "When delete and search operations interleave, the system must not produce contradictory results (e.g., search returns entity that delete claims to have removed)",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["delete", "search", "count_entities"],
+    "conditions": ["concurrent_delete_search"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "collection_loaded",
+    "data_populated_with_known_ids"
+  ],
+  "postconditions": [
+    "deleted_entities_not_searchable",
+    "count_consistent_with_deletes",
+    "no_ghost_entities"
+  ],
+  "invariants": [
+    "Once deleted, entity remains unsearchable",
+    "Entity count decreases monotonically with deletes"
+  ],
+  "violation_criteria": {
+    "condition": "deleted_entity_searchable OR count_increase_after_delete OR ghost_entity_observed",
+    "severity": "high",
+    "cc_classification": "Type-4"
+  },
+  "test_generation": {
+    "strategy": "concurrent_cross",
+    "parameters": {
+      "n_deleters": [1, 2],
+      "n_searchers": [2, 4],
+      "delete_batch_size": [5, 10],
+      "search_verification_ratio": 0.5
+    },
+    "cases": [
+      {
+        "name": "Delete-search interleaving",
+        "n_deleters": 2,
+        "n_searchers": 4,
+        "total_entities": 200,
+        "delete_percentage": 0.3,
+        "verification": "consistency_check"
+      },
+      {
+        "name": "Stress test delete-search",
+        "n_deleters": 4,
+        "n_searchers": 8,
+        "duration_seconds": 30,
+        "verification": "no_violations"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "deleted_not_searchable AND count_monotonic",
+    "verification": "assert not searchable(deleted_ids) AND count_trend_monotonic",
+    "classification": {
+      "violation": "BUG (consistency_violation)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["CONC-001", "CONC-002"],
+    "test_complexity": "high",
+    "version": "1.0",
+    "sbmf_reference": "CONC-003"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "run_id": "multidb-diff-20260316-231610",
+  "timestamp": "2026-03-16T23:16:29.862611",
+  "config": {
+    "n_vectors": 300,
+    "n_queries": 20,
+    "dim": 64,
+    "top_k": 10,
+    "recall_threshold": 0.7,
+    "mock": false,
+    "skip_milvus": false,
+    "skip_qdrant": false,
+    "skip_weaviate": false,
+    "skip_pgvector": false,
+    "milvus_host": "localhost",
+    "milvus_port": 19530,
+    "qdrant_host": "localhost",
+    "qdrant_port": 6333,
+    "weaviate_host": "localhost",
+    "weaviate_port": 8080,
+    "pg_container": "pgvector",
+    "output_dir": "results/multidb_diff"
+  },
+  "results": [
+    {
+      "db": "milvus",
+      "contracts": {},
+      "errors": [
+        "'charmap' codec can't encode character '\\u2713' in position 12: character maps to <undefined>"
+      ]
+    },
+    {
+      "db": "qdrant",
+      "contracts": {},
+      "errors": [
+        "'charmap' codec can't encode character '\\u2713' in position 12: character maps to <undefined>"
+      ]
+    },
+    {
+      "db": "weaviate",
+      "contracts": {},
+      "errors": [
+        "'charmap' codec can't encode character '\\u2713' in position 14: character maps to <undefined>"
+      ]
+    },
+    {
+      "db": "pgvector",
+      "contracts": {},
+      "errors": [
+        "'charmap' codec can't encode character '\\u2717' in position 14: character maps to <undefined>"
+      ]
+    }
+  ],
+  "comparison": {
+    "matrix": {},
+    "divergences": []
+  }
+}

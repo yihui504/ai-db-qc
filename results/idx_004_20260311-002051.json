@@ -1,0 +1,44 @@
+{
+  "run_id": "idx-004-20260311-002051",
+  "timestamp": "2026-03-11T00:20:51.877153",
+  "contract_id": "IDX-004",
+  "total_tests": 1,
+  "results": [
+    {
+      "test_id": "idx-004_seq_001",
+      "contract_id": "IDX-004",
+      "timestamp": "2026-03-11T00:20:49.926703",
+      "steps": [
+        {
+          "step": "create_collection",
+          "status": "success"
+        },
+        {
+          "step": "insert",
+          "count": 100
+        },
+        {
+          "step": "create_index_IVF_FLAT",
+          "status": "success"
+        },
+        {
+          "step": "create_index_HNSW",
+          "status": "success"
+        },
+        {
+          "step": "search",
+          "result_count": 0,
+          "status": "success"
+        }
+      ],
+      "status": "PASS",
+      "classification": "PASS",
+      "reasoning": "Multiple index creation and search completed successfully"
+    }
+  ],
+  "summary": {
+    "PASS": 1,
+    "VIOLATION": 0,
+    "ERROR": 0
+  }
+}

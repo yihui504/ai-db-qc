@@ -1,0 +1,182 @@
+# Boundary Value Contracts: Zero Vector, Empty Collection, Duplicate IDs
+# Campaign: R2b - Boundary Value Expansion
+# Target: Detect bugs in edge case handling that are currently uncovered
+
+templates:
+  # ========================================
+  # Family 1: Zero Vector Search (3 cases)
+  # ========================================
+
+  - template_id: boundary-zero-001
+    operation: search
+    param_template:
+      collection_name: "{collection}"
+      vector: [0.0] * 128  # Zero vector: potential division by zero in COSINE
+      top_k: 5
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: ["filter_strictness"]
+    rationale: "Zero vector search - COSINE metric may cause division by zero, L2/L1 should handle normally"
+
+  - template_id: boundary-zero-002
+    operation: filtered_search
+    param_template:
+      collection_name: "{collection}"
+      vector: [0.0] * 128
+      top_k: 10
+      filter: "{valid_filter}"
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+           - collection_loaded
+    oracle_refs: ["filter_strictness"]
+    rationale: "Zero vector with filter - tests edge case interaction between vector computation and filter logic"
+
+  - template_id: boundary-zero-003
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors:
+        - [0.0] * 128  # Insert zero vector
+      ids: ["zero_vector_id"]
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Insert zero vector - validates storage and retrieval of zero-length vectors"
+
+  # ========================================
+  # Family 2: Empty Collection Search (2 cases)
+  # ========================================
+
+  - template_id: boundary-empty-001
+    operation: search
+    param_template:
+      collection_name: "{empty_collection}"  # Collection with no data
+      vector: "{query_vector}"
+      top_k: 5
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: ["monotonicity"]
+    rationale: "Search on empty collection - should return empty list, not error"
+
+  - template_id: boundary-empty-002
+    operation: filtered_search
+    param_template:
+      collection_name: "{collection}"
+      vector: "{query_vector}"
+      top_k: 10
+      filter: "{impossible_filter}"  # Filter that matches no documents
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: ["filter_strictness"]
+    rationale: "Search with impossible filter - equivalent to empty result set, should not error"
+
+  # ========================================
+  # Family 3: Duplicate ID Insertion (2 cases)
+  # ========================================
+
+  - template_id: boundary-dup-001
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors:
+        - "{vector_1}"
+      ids: ["duplicate_test_id"]
+    expected_validity: legal  # Behavior varies: overwrite vs error
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Insert duplicate ID - some databases overwrite, others error. Both behaviors valid if consistent"
+
+  - template_id: boundary-dup-002
+    operation: insert
+    param_template:
+      collection_name: "{collection}"
+      vectors:
+        - "{vector_1}"
+        - "{vector_2}"  # Different vector, same ID
+      ids: ["duplicate_test_id", "duplicate_test_id"]
+    expected_validity: illegal  # Should reject duplicate in same batch
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["write_read_consistency"]
+    rationale: "Insert duplicate IDs in same batch - should be rejected as illegal"
+
+  # ========================================
+  # Family 4: Index Parameter Boundary (3 cases)
+  # ========================================
+
+  - template_id: boundary-index-001
+    operation: build_index
+    param_template:
+      collection_name: "{collection}"
+      index_type: "HNSW"
+      index_params:
+        M: 0  # Invalid: M should be >= 2 for HNSW
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: []
+    rationale: "HNSW with M=0 - invalid parameter should be rejected"
+
+  - template_id: boundary-index-002
+    operation: build_index
+    param_template:
+      collection_name: "{collection}"
+      index_type: "IVF_FLAT"
+      index_params:
+        nlist: 1  # Valid but pathological: single cluster
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "IVF_FLAT with nlist=1 - valid but may degrade performance. RecallQualityOracle can detect quality loss"
+
+  - template_id: boundary-index-003
+    operation: build_index
+    param_template:
+      collection_name: "{collection}"
+      index_type: "HNSW"
+      index_params:
+        ef_construction: 1  # Pathological: minimal construction quality
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "HNSW with ef_construction=1 - valid but severely degrades quality. RecallQualityOracle will catch this"
+
+  # ========================================
+  # Family 5: Metric Type Mismatch (2 cases)
+  # ========================================
+
+  - template_id: boundary-metric-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_metric_cosine"
+      dimension: 128
+      metric_type: "COSINE"
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Create collection with COSINE metric - base for mismatch test"
+
+  - template_id: boundary-metric-002
+    operation: search
+    param_template:
+      collection_name: "test_metric_cosine"  # Collection created with COSINE
+      vector: "{query_vector}"
+      top_k: 5
+      metric_type: "L2"  # Mismatch: search with different metric
+    expected_validity: illegal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: []
+    rationale: "Metric type mismatch - search metric differs from collection metric. Should be rejected or clearly documented behavior"

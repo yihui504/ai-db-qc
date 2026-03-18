@@ -1,0 +1,289 @@
+{
+  "run_id": "semantic-seekdb-20260316-214407",
+  "timestamp": "2026-03-16T21:44:07.593165",
+  "mode": "offline",
+  "target": "offline",
+  "config": {
+    "host": "localhost",
+    "port": 2881,
+    "domains": [
+      "legal",
+      "code"
+    ],
+    "n_positives": 3,
+    "n_negatives": 2,
+    "n_hard_negatives": 4
+  },
+  "milvus_baseline": {
+    "legal": 0.05,
+    "code": 0.1
+  },
+  "domain_results": {
+    "legal": {
+      "domain": "legal",
+      "total": 9,
+      "violations": 3,
+      "violation_rate": 0.333,
+      "by_type": {
+        "positive": {
+          "total": 3,
+          "violations": 3,
+          "violation_rate": 1.0,
+          "avg_cosine": 0.026
+        },
+        "negative": {
+          "total": 2,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": 0.0305
+        },
+        "hard_negative": {
+          "total": 4,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": 0.0295
+        }
+      }
+    },
+    "code": {
+      "domain": "code",
+      "total": 9,
+      "violations": 3,
+      "violation_rate": 0.333,
+      "by_type": {
+        "positive": {
+          "total": 3,
+          "violations": 3,
+          "violation_rate": 1.0,
+          "avg_cosine": -0.0024
+        },
+        "negative": {
+          "total": 2,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": -0.0323
+        },
+        "hard_negative": {
+          "total": 4,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": -0.0281
+        }
+      }
+    }
+  },
+  "full_results": {
+    "legal": {
+      "domain": "legal",
+      "total": 9,
+      "violations": 3,
+      "violation_rate": 0.333,
+      "by_type": {
+        "positive": {
+          "total": 3,
+          "violations": 3,
+          "violation_rate": 1.0,
+          "avg_cosine": 0.026
+        },
+        "negative": {
+          "total": 2,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": 0.0305
+        },
+        "hard_negative": {
+          "total": 4,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": 0.0295
+        }
+      },
+      "results": [
+        {
+          "domain": "legal",
+          "pair_type": "positive",
+          "label": "paraphrase",
+          "cosine_sim": 0.0262,
+          "violations": [
+            "MR-01: positive pair has low cosine=0.026"
+          ],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "positive",
+          "label": "paraphrase",
+          "cosine_sim": 0.0143,
+          "violations": [
+            "MR-01: positive pair has low cosine=0.014"
+          ],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "positive",
+          "label": "paraphrase",
+          "cosine_sim": 0.0375,
+          "violations": [
+            "MR-01: positive pair has low cosine=0.037"
+          ],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "negative",
+          "label": "unrelated",
+          "cosine_sim": -0.0786,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "negative",
+          "label": "unrelated",
+          "cosine_sim": 0.1395,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "hard_negative",
+          "label": "acquitted vs convicted",
+          "cosine_sim": -0.0168,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "hard_negative",
+          "label": "enforceable vs unenforceable",
+          "cosine_sim": 0.0447,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "hard_negative",
+          "label": "liable vs not liable",
+          "cosine_sim": 0.0227,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "legal",
+          "pair_type": "hard_negative",
+          "label": "granted vs denied",
+          "cosine_sim": 0.0676,
+          "violations": [],
+          "status": "ok"
+        }
+      ]
+    },
+    "code": {
+      "domain": "code",
+      "total": 9,
+      "violations": 3,
+      "violation_rate": 0.333,
+      "by_type": {
+        "positive": {
+          "total": 3,
+          "violations": 3,
+          "violation_rate": 1.0,
+          "avg_cosine": -0.0024
+        },
+        "negative": {
+          "total": 2,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": -0.0323
+        },
+        "hard_negative": {
+          "total": 4,
+          "violations": 0,
+          "violation_rate": 0.0,
+          "avg_cosine": -0.0281
+        }
+      },
+      "results": [
+        {
+          "domain": "code",
+          "pair_type": "positive",
+          "label": "paraphrase",
+          "cosine_sim": -0.0198,
+          "violations": [
+            "MR-01: positive pair has low cosine=-0.020"
+          ],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "positive",
+          "label": "paraphrase",
+          "cosine_sim": -0.037,
+          "violations": [
+            "MR-01: positive pair has low cosine=-0.037"
+          ],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "positive",
+          "label": "paraphrase",
+          "cosine_sim": 0.0496,
+          "violations": [
+            "MR-01: positive pair has low cosine=0.050"
+          ],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "negative",
+          "label": "unrelated",
+          "cosine_sim": -0.0484,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "negative",
+          "label": "unrelated",
+          "cosine_sim": -0.0162,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "hard_negative",
+          "label": "thread-safe vs unsafe",
+          "cosine_sim": 0.0073,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "hard_negative",
+          "label": "True vs False termination",
+          "cosine_sim": -0.006,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "hard_negative",
+          "label": "stable vs unstable",
+          "cosine_sim": -0.039,
+          "violations": [],
+          "status": "ok"
+        },
+        {
+          "domain": "code",
+          "pair_type": "hard_negative",
+          "label": "raises vs silent",
+          "cosine_sim": -0.0749,
+          "violations": [],
+          "status": "ok"
+        }
+      ]
+    }
+  }
+}

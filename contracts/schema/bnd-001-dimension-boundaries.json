@@ -1,0 +1,86 @@
+{
+  "contract_id": "BND-001",
+  "name": "Vector Dimension Boundaries",
+  "family": "BOUNDARY",
+  "type": "parameter_validation",
+  "statement": "Vector dimensions must be validated against supported ranges with clear error messages",
+  "rationale": "Dimensions outside supported ranges can cause crashes or undefined behavior",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["create_collection", "insert"],
+    "parameters": ["dimension"]
+  },
+  "preconditions": [
+    "adapter_initialized"
+  ],
+  "postconditions": [
+    "valid_dimensions_accepted",
+    "invalid_dimensions_rejected_with_clear_message"
+  ],
+  "invariants": [
+    "Dimension validation",
+    "Error message quality"
+  ],
+  "violation_criteria": {
+    "condition": "invalid_dimension_accepted OR valid_dimension_rejected OR poor_error_message",
+    "severity": "high"
+  },
+  "boundary_values": {
+    "dimension": {
+      "min_valid": 1,
+      "max_valid": 32768,
+      "invalid_values": [0, -1, -100, 100000],
+      "edge_values": [1, 2, 128, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+    }
+  },
+  "test_generation": {
+    "strategy": "boundary_testing",
+    "cases": [
+      {
+        "name": "Minimum dimension",
+        "test": "dimension = 1",
+        "expected": "accepted"
+      },
+      {
+        "name": "Zero dimension",
+        "test": "dimension = 0",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Negative dimension",
+        "test": "dimension = -1",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Maximum dimension",
+        "test": "dimension = max_supported",
+        "expected": "accepted"
+      },
+      {
+        "name": "Excessive dimension",
+        "test": "dimension = max_supported + 1",
+        "expected": "rejected with clear error"
+      },
+      {
+        "name": "Vector dimension mismatch",
+        "test": "vector dimension != collection dimension",
+        "expected": "rejected with clear error"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "dimension_validation_correct AND error_messages_specific",
+    "verification": "attempt various dimension values; verify acceptance/rejection and error message quality",
+    "classification": {
+      "type1_bug": "invalid dimension accepted",
+      "type2_bug": "valid dimension rejected OR poor error message",
+      "pass": "correct validation with clear messages"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": [],
+    "test_complexity": "low",
+    "version": "1.0"
+  }
+}

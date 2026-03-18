@@ -1,0 +1,182 @@
+[
+  {
+    "contract_id": "STR-001",
+    "database": "milvus",
+    "test_cases": [
+      {
+        "name": "Throughput test at low",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 204.47ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 29396,
+          "successes": 29396,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 204.47230656173932,
+          "p95_latency_ms": 271.18420600891113,
+          "p99_latency_ms": 315.4780864715576
+        }
+      },
+      {
+        "name": "Throughput test at medium",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 175.33ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 34273,
+          "successes": 34273,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 175.32852457537524,
+          "p95_latency_ms": 236.10615730285645,
+          "p99_latency_ms": 265.7039165496826
+        }
+      },
+      {
+        "name": "Throughput test at high",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Success rate: 100.00%",
+            "status": true
+          },
+          {
+            "name": "Average latency: 196.47ms",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "total_requests": 30606,
+          "successes": 30606,
+          "errors": 0,
+          "timeouts": 0,
+          "success_rate": 1.0,
+          "avg_latency_ms": 196.4745622424996,
+          "p95_latency_ms": 257.5693130493164,
+          "p99_latency_ms": 291.8553352355957
+        }
+      }
+    ],
+    "overall_verdict": "PASS"
+  },
+  {
+    "contract_id": "STR-002",
+    "database": "milvus",
+    "test_cases": [
+      {
+        "name": "Volume test with 10,000 vectors",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Average latency (97.83ms) < 100ms",
+            "status": true
+          },
+          {
+            "name": "P95 latency (104.42ms) reasonable",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "phases": [
+            {
+              "name": "insert",
+              "time_seconds": 0.3335888385772705,
+              "vectors_per_second": 29977.02214093611
+            },
+            {
+              "name": "build_index",
+              "time_seconds": 0.6278507709503174
+            },
+            {
+              "name": "load",
+              "time_seconds": 1.5941731929779053
+            },
+            {
+              "name": "search",
+              "time_seconds": 97.87202215194702,
+              "avg_search_latency_ms": 97.83362770080566,
+              "p95_search_latency_ms": 104.41923141479492
+            }
+          ]
+        }
+      },
+      {
+        "name": "Volume test with 100,000 vectors",
+        "checks": [
+          {
+            "name": "No crashes",
+            "status": true
+          },
+          {
+            "name": "Average latency (95.13ms) < 200ms",
+            "status": true
+          },
+          {
+            "name": "P95 latency (103.50ms) reasonable",
+            "status": true
+          }
+        ],
+        "verdict": "PASS",
+        "stats": {
+          "phases": [
+            {
+              "name": "insert",
+              "time_seconds": 3.9119882583618164,
+              "vectors_per_second": 25562.448912327764
+            },
+            {
+              "name": "build_index",
+              "time_seconds": 1.648979663848877
+            },
+            {
+              "name": "load",
+              "time_seconds": 1.7975730895996094
+            },
+            {
+              "name": "search",
+              "time_seconds": 95.15570402145386,
+              "avg_search_latency_ms": 95.13110756874084,
+              "p95_search_latency_ms": 103.50465774536133
+            }
+          ]
+        }
+      }
+    ],
+    "overall_verdict": "PASS"
+  }
+]

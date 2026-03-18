@@ -1,0 +1,42 @@
+{
+  "milvus": {
+    "#1": {
+      "status": "REPRODUCED",
+      "details": [
+        "Collection created successfully",
+        "Data inserted successfully",
+        "Index built successfully",
+        "Index loaded successfully",
+        "Collection dropped successfully",
+        "Collection still exists and queryable"
+      ]
+    },
+    "#2": {
+      "status": "NOT_REPRODUCED",
+      "details": [
+        "Collection created with dim=1"
+      ]
+    },
+    "#3": {
+      "status": "NOT_REPRODUCED",
+      "details": [
+        "Search with top_k=0 succeeded"
+      ]
+    },
+    "#4": {
+      "status": "REPRODUCED",
+      "details": [
+        "Invalid metric accepted"
+      ]
+    },
+    "#5": {
+      "status": "REPRODUCED",
+      "details": [
+        "Reserved name 'system' accepted"
+      ]
+    }
+  },
+  "qdrant": {},
+  "weaviate": {},
+  "pgvector": {}
+}

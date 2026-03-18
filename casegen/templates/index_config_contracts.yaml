@@ -1,0 +1,196 @@
+# Index Configuration Contracts: Recall Quality Validation
+# Campaign: R2c - Index Parameter Semantic Validation
+# Target: Detect precision degradation bugs from misconfigured index parameters
+# Oracle: recall_quality (RecallQualityOracle)
+
+templates:
+  # ========================================
+  # Family 1: HNSW Parameter Contracts (4 cases)
+  # ========================================
+
+  - template_id: idx-hnsw-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_idx_hnsw_001"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Base collection for HNSW parameter tests"
+
+  - template_id: idx-hnsw-002-healthy
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_hnsw_001"
+      index_type: "HNSW"
+      index_params:
+        M: 16  # Reasonable default
+        ef_construction: 200  # Good quality
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "HNSW with healthy parameters - should pass recall quality check (recall@10 >= 0.80)"
+
+  - template_id: idx-hnsw-003-degraded
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_hnsw_001"
+      index_type: "HNSW"
+      index_params:
+        M: 2  # Too small
+        ef_construction: 10  # Too small
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "HNSW with degraded parameters - should fail recall quality check. Detects precision degradation bug"
+
+  - template_id: idx-hnsw-004-extreme
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_hnsw_001"
+      index_type: "HNSW"
+      index_params:
+        M: 100  # Excessive
+        ef_construction: 1000  # Very large
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "HNSW with extreme parameters - may pass recall but degrade performance. Tests boundary"
+
+  # ========================================
+  # Family 2: IVF_FLAT Parameter Contracts (4 cases)
+  # ========================================
+
+  - template_id: idx-ivf-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_idx_ivf_001"
+      dimension: 128
+      metric_type: "COSINE"
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Base collection for IVF_FLAT parameter tests"
+
+  - template_id: idx-ivf-002-healthy
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_ivf_001"
+      index_type: "IVF_FLAT"
+      index_params:
+        nlist: 100  # Reasonable for ~10k vectors
+        nprobe: 10  # Probe 10% of clusters
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "IVF_FLAT with healthy parameters - should pass recall quality check"
+
+  - template_id: idx-ivf-003-degraded
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_ivf_001"
+      index_type: "IVF_FLAT"
+      index_params:
+        nlist: 1000  # Too many clusters
+        nprobe: 1  # Probe only 1 cluster - very poor recall
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "IVF_FLAT with degraded nprobe - should fail recall quality. Detects precision degradation bug"
+
+  - template_id: idx-ivf-004-pathological
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_ivf_001"
+      index_type: "IVF_FLAT"
+      index_params:
+        nlist: 1  # Single cluster - defeats purpose of IVF
+        nprobe: 1
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "IVF_FLAT with nlist=1 - effectively flat search. Tests if database accepts pathological config"
+
+  # ========================================
+  # Family 3: IVF_SQ8 Parameter Contracts (3 cases)
+  # ========================================
+
+  - template_id: idx-ivfsq8-001
+    operation: create_collection
+    param_template:
+      collection_name: "test_idx_ivfsq8_001"
+      dimension: 128
+      metric_type: "L2"
+    expected_validity: legal
+    required_preconditions: []
+    oracle_refs: []
+    rationale: "Base collection for IVF_SQ8 parameter tests"
+
+  - template_id: idx-ivfsq8-002-healthy
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_ivfsq8_001"
+      index_type: "IVF_SQ8"
+      index_params:
+        nlist: 100
+        nprobe: 10
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "IVF_SQ8 with healthy parameters - should pass recall quality check (quantization may slightly reduce recall)"
+
+  - template_id: idx-ivfsq8-003-degraded
+    operation: build_index
+    param_template:
+      collection_name: "test_idx_ivfsq8_001"
+      index_type: "IVF_SQ8"
+      index_params:
+        nlist: 100
+        nprobe: 1  # Too small probe - combined with quantization, very poor quality
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+    oracle_refs: ["recall_quality"]
+    rationale: "IVF_SQ8 with degraded nprobe - should fail recall quality. Detects combined quantization + parameter bug"
+
+  # ========================================
+  # Family 4: Cross-Database Parameter Comparison (2 cases)
+  # ========================================
+
+  - template_id: idx-cross-001-compare
+    operation: search
+    param_template:
+      collection_name: "{collection_with_hnsw}"
+      vector: "{query_vector}"
+      top_k: 10
+      search_params:
+        ef: 64  # HNSW ef parameter
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: ["recall_quality"]
+    rationale: "Search with explicit ef parameter - tests if search-time params override index defaults correctly"
+
+  - template_id: idx-cross-002-nprobe
+    operation: search
+    param_template:
+      collection_name: "{collection_with_ivf}"
+      vector: "{query_vector}"
+      top_k: 10
+      search_params:
+        nprobe: 20  # Larger than index default nprobe
+    expected_validity: legal
+    required_preconditions:
+      - collection_exists
+      - collection_loaded
+    oracle_refs: ["recall_quality"]
+    rationale: "Search with explicit nprobe - tests if larger nprobe improves recall as expected"

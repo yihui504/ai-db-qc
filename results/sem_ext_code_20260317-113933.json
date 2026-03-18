@@ -1,0 +1,374 @@
+{
+  "dataset_id": "sem-code-20260317-113938",
+  "domain": "code",
+  "created_at": "2026-03-17T11:39:38.379496",
+  "generator_version": "1.0",
+  "pairs": [
+    {
+      "pair_id": "code-positive-0000",
+      "text_a": "The function returns None if the input is invalid.",
+      "text_b": "The method returns null when the provided argument is not valid.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0001",
+      "text_a": "The function returns None if the input is invalid.",
+      "text_b": "The method returns null when the provided argument is not valid.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0002",
+      "text_a": "The variable is declared as a constant and cannot be reassigned.",
+      "text_b": "The identifier is defined as immutable and its value cannot change.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0003",
+      "text_a": "The loop iterates over each element in the list.",
+      "text_b": "The for-loop processes every item in the array.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0004",
+      "text_a": "The loop iterates over each element in the list.",
+      "text_b": "The for-loop processes every item in the array.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0005",
+      "text_a": "The loop iterates over each element in the list.",
+      "text_b": "The for-loop processes every item in the array.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0006",
+      "text_a": "The function returns None if the input is invalid.",
+      "text_b": "The method returns null when the provided argument is not valid.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0007",
+      "text_a": "The recursive function calls itself until the base case is reached.",
+      "text_b": "The self-referential function terminates when it hits the stopping condition.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0008",
+      "text_a": "The function returns None if the input is invalid.",
+      "text_b": "The method returns null when the provided argument is not valid.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-positive-0009",
+      "text_a": "The recursive function calls itself until the base case is reached.",
+      "text_b": "The self-referential function terminates when it hits the stopping condition.",
+      "pair_type": "positive",
+      "domain": "code",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-negative-0010",
+      "text_a": "The class inherits from the base interface.",
+      "text_b": "The patient's blood pressure is elevated.",
+      "pair_type": "negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-negative-0011",
+      "text_a": "The function sorts the list in ascending order.",
+      "text_b": "The bond yield rose sharply this quarter.",
+      "pair_type": "negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-negative-0012",
+      "text_a": "The function sorts the list in ascending order.",
+      "text_b": "The bond yield rose sharply this quarter.",
+      "pair_type": "negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-negative-0013",
+      "text_a": "The function sorts the list in ascending order.",
+      "text_b": "The bond yield rose sharply this quarter.",
+      "pair_type": "negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-negative-0014",
+      "text_a": "The function sorts the list in ascending order.",
+      "text_b": "The bond yield rose sharply this quarter.",
+      "pair_type": "negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0015",
+      "text_a": "The loop terminates when the condition is True.",
+      "text_b": "The loop terminates when the condition is False.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "True vs False termination",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0016",
+      "text_a": "The cache stores the result of the computation.",
+      "text_b": "The cache invalidates and discards the result of the computation.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "stores vs invalidates",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0017",
+      "text_a": "The cache stores the result of the computation.",
+      "text_b": "The cache invalidates and discards the result of the computation.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "stores vs invalidates",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0018",
+      "text_a": "The function raises an exception when the file is not found.",
+      "text_b": "The function silently returns None when the file is not found.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "raises vs silent",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0019",
+      "text_a": "The cache stores the result of the computation.",
+      "text_b": "The cache invalidates and discards the result of the computation.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "stores vs invalidates",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0020",
+      "text_a": "The loop terminates when the condition is True.",
+      "text_b": "The loop terminates when the condition is False.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "True vs False termination",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0021",
+      "text_a": "The API call is synchronous and blocks until completion.",
+      "text_b": "The API call is asynchronous and returns a promise immediately.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "sync vs async",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0022",
+      "text_a": "The API call is synchronous and blocks until completion.",
+      "text_b": "The API call is asynchronous and returns a promise immediately.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "sync vs async",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0023",
+      "text_a": "The API call is synchronous and blocks until completion.",
+      "text_b": "The API call is asynchronous and returns a promise immediately.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "sync vs async",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-hard_negative-0024",
+      "text_a": "The cache stores the result of the computation.",
+      "text_b": "The cache invalidates and discards the result of the computation.",
+      "pair_type": "hard_negative",
+      "domain": "code",
+      "expected_relation": "far",
+      "semantic_notes": "stores vs invalidates",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-boundary-0025",
+      "text_a": "The function is thread-safe and can be called concurrently.",
+      "text_b": "The function is not thread-safe and must be called sequentially.",
+      "pair_type": "boundary",
+      "domain": "code",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: thread-safe vs unsafe",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-boundary-0026",
+      "text_a": "The loop terminates when the condition is True.",
+      "text_b": "The loop terminates when the condition is False.",
+      "pair_type": "boundary",
+      "domain": "code",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: True vs False termination",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "code-boundary-0027",
+      "text_a": "The function is thread-safe and can be called concurrently.",
+      "text_b": "The function is not thread-safe and must be called sequentially.",
+      "pair_type": "boundary",
+      "domain": "code",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: thread-safe vs unsafe",
+      "vector_a": null,
+      "vector_b": null
+    }
+  ],
+  "metamorphic_relations": [
+    {
+      "relation_id": "MR-COD-01",
+      "name": "Semantic Equivalence Consistency",
+      "description": "If two queries are semantically equivalent, their top-K results should have ≥80% overlap",
+      "input_transformation": "Replace query with a semantically equivalent paraphrase",
+      "expected_output_property": "Recall(results_Q1, results_Q2) >= 0.80",
+      "domain": "code",
+      "testable": true,
+      "test_strategy": "Generate positive pairs as query pairs; measure result set overlap"
+    },
+    {
+      "relation_id": "MR-COD-02",
+      "name": "Semantic Distance Monotonicity",
+      "description": "If doc A is semantically closer to query Q than doc B, rank(A) must be better than rank(B)",
+      "input_transformation": "Compare two documents with known relative semantic distances to a query",
+      "expected_output_property": "rank(closer_doc) < rank(further_doc)",
+      "domain": "code",
+      "testable": true,
+      "test_strategy": "Use ground-truth labeled pairs; verify ranking order"
+    },
+    {
+      "relation_id": "MR-COD-03",
+      "name": "Hard Negative Discrimination",
+      "description": "Hard negative pairs (surface-similar but semantically different) should NOT appear as top-1 results for each other",
+      "input_transformation": "Use text_a as query, search for text_b",
+      "expected_output_property": "rank(text_b) > K/2 when searching with text_a (not in top half)",
+      "domain": "code",
+      "testable": true,
+      "test_strategy": "Use hard_negative pairs; search text_a for text_b and verify rank"
+    },
+    {
+      "relation_id": "MR-COD-04",
+      "name": "Negative Pair Rejection",
+      "description": "Semantically dissimilar texts should not appear in each other's top-K results",
+      "input_transformation": "Use text_a as query, check if text_b appears in top-K",
+      "expected_output_property": "text_b NOT in top-K results when searching with text_a",
+      "domain": "code",
+      "testable": true,
+      "test_strategy": "Use negative pairs; verify neither text appears in the other's top-K"
+    },
+    {
+      "relation_id": "MR-COD-05",
+      "name": "Distance Symmetry",
+      "description": "Distance(A, B) should approximately equal Distance(B, A)",
+      "input_transformation": "Swap query and document roles",
+      "expected_output_property": "|rank_A_in_results_B - rank_B_in_results_A| <= tolerance",
+      "domain": "code",
+      "testable": true,
+      "test_strategy": "Search both directions; compare relative rankings"
+    }
+  ],
+  "stats": {
+    "positive": 10,
+    "negative": 5,
+    "hard_negative": 10,
+    "boundary": 3
+  }
+}

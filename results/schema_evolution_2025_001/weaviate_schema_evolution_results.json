@@ -1,0 +1,112 @@
+[
+  {
+    "contract_id": "SCH-005",
+    "database": "weaviate",
+    "test_cases": [
+      {
+        "name": "Search after field extension",
+        "checks": [
+          {
+            "name": "Baseline data inserted",
+            "status": true
+          },
+          {
+            "name": "Baseline search successful",
+            "status": true
+          },
+          {
+            "name": "Baseline returned 10 results",
+            "status": true
+          },
+          {
+            "name": "Schema extension supported",
+            "status": false
+          },
+          {
+            "name": "Post-extension search successful",
+            "status": true
+          },
+          {
+            "name": "Post-extension returned 10 results",
+            "status": true
+          },
+          {
+            "name": "Queries still work",
+            "status": true
+          },
+          {
+            "name": "Results consistent",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      },
+      {
+        "name": "Queries during schema operations",
+        "checks": [
+          {
+            "name": "All 10 searches succeed",
+            "status": true
+          }
+        ],
+        "verdict": "PASS"
+      }
+    ],
+    "overall_verdict": "PASS"
+  },
+  {
+    "contract_id": "SCH-006",
+    "database": "weaviate",
+    "test_cases": [
+      {
+        "name": "Failed schema operation rollback",
+        "checks": [
+          {
+            "name": "Original data count: 50",
+            "status": true
+          },
+          {
+            "name": "Original schema captured",
+            "status": false
+          },
+          {
+            "name": "Invalid schema change rejected",
+            "status": true
+          },
+          {
+            "name": "Schema intact after failed change",
+            "status": false
+          },
+          {
+            "name": "All data accessible (count=50)",
+            "status": true
+          },
+          {
+            "name": "No partial state visible",
+            "status": false
+          }
+        ],
+        "verdict": "LIKELY_BUG"
+      },
+      {
+        "name": "Schema state consistency",
+        "checks": [
+          {
+            "name": "Collection still exists",
+            "status": false
+          },
+          {
+            "name": "Can still insert new data",
+            "status": true
+          },
+          {
+            "name": "Can still search",
+            "status": true
+          }
+        ],
+        "verdict": "LIKELY_BUG"
+      }
+    ],
+    "overall_verdict": "LIKELY_BUG"
+  }
+]

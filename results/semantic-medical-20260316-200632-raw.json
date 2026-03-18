@@ -1,0 +1,476 @@
+{
+  "run_id": "semantic-medical-20260316-200632",
+  "domain": "medical",
+  "results": {
+    "MR-01": [
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0000",
+        "pair_type": "positive",
+        "text_a_preview": "The drug inhibits tumor cell proliferation.",
+        "text_b_preview": "The medication prevents cancer cells from dividing.",
+        "ids_a": [
+          11,
+          1,
+          9,
+          8,
+          16,
+          6,
+          17,
+          15,
+          7,
+          2
+        ],
+        "ids_b": [
+          1,
+          11,
+          9,
+          8,
+          16,
+          6,
+          17,
+          7,
+          15,
+          3
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0001",
+        "pair_type": "positive",
+        "text_a_preview": "The patient is recovering well after surgery.",
+        "text_b_preview": "The patient shows good post-operative progress.",
+        "ids_a": [
+          13,
+          15,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          1
+        ],
+        "ids_b": [
+          15,
+          13,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          16
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0002",
+        "pair_type": "positive",
+        "text_a_preview": "The patient is recovering well after surgery.",
+        "text_b_preview": "The patient shows good post-operative progress.",
+        "ids_a": [
+          13,
+          15,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          1
+        ],
+        "ids_b": [
+          15,
+          13,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          16
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0003",
+        "pair_type": "positive",
+        "text_a_preview": "The drug inhibits tumor cell proliferation.",
+        "text_b_preview": "The medication prevents cancer cells from dividing.",
+        "ids_a": [
+          11,
+          1,
+          9,
+          8,
+          16,
+          6,
+          17,
+          15,
+          7,
+          2
+        ],
+        "ids_b": [
+          1,
+          11,
+          9,
+          8,
+          16,
+          6,
+          17,
+          7,
+          15,
+          3
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0004",
+        "pair_type": "positive",
+        "text_a_preview": "Hypertension increases the risk of stroke.",
+        "text_b_preview": "High blood pressure is a major risk factor for cerebrovascular events.",
+        "ids_a": [
+          2,
+          14,
+          12,
+          8,
+          16,
+          7,
+          9,
+          4,
+          1,
+          6
+        ],
+        "ids_b": [
+          14,
+          2,
+          12,
+          8,
+          16,
+          9,
+          1,
+          11,
+          7,
+          3
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.8,
+          "metrics": {
+            "overlap": 0.8,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.800 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0005",
+        "pair_type": "positive",
+        "text_a_preview": "The patient is recovering well after surgery.",
+        "text_b_preview": "The patient shows good post-operative progress.",
+        "ids_a": [
+          13,
+          15,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          1
+        ],
+        "ids_b": [
+          15,
+          13,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          16
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0006",
+        "pair_type": "positive",
+        "text_a_preview": "The patient is recovering well after surgery.",
+        "text_b_preview": "The patient shows good post-operative progress.",
+        "ids_a": [
+          13,
+          15,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          1
+        ],
+        "ids_b": [
+          15,
+          13,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          16
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "medical-positive-0007",
+        "pair_type": "positive",
+        "text_a_preview": "The patient is recovering well after surgery.",
+        "text_b_preview": "The patient shows good post-operative progress.",
+        "ids_a": [
+          13,
+          15,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          1
+        ],
+        "ids_b": [
+          15,
+          13,
+          7,
+          3,
+          4,
+          10,
+          17,
+          9,
+          8,
+          16
+        ],
+        "oracle": {
+          "layer": "approximate",
+          "verdict": "PASS",
+          "confidence": 0.9,
+          "metrics": {
+            "overlap": 0.9,
+            "threshold": 0.6,
+            "relation": "semantic_equivalence"
+          },
+          "reason": "Metamorphic relation satisfied: overlap=0.900 >= 0.6"
+        },
+        "classification": "PASS"
+      }
+    ],
+    "MR-03": [
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0013",
+        "text_a_preview": "The medication is effective for treating hypertension.",
+        "text_b_preview": "The medication is contraindicated for patients with hypertension.",
+        "semantic_notes": "effective vs contraindicated",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0014",
+        "text_a_preview": "The biopsy results were benign.",
+        "text_b_preview": "The biopsy results were malignant.",
+        "semantic_notes": "benign vs malignant",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0015",
+        "text_a_preview": "The biopsy results were benign.",
+        "text_b_preview": "The biopsy results were malignant.",
+        "semantic_notes": "benign vs malignant",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0016",
+        "text_a_preview": "The medication is effective for treating hypertension.",
+        "text_b_preview": "The medication is contraindicated for patients with hypertension.",
+        "semantic_notes": "effective vs contraindicated",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0017",
+        "text_a_preview": "The biopsy results were benign.",
+        "text_b_preview": "The biopsy results were malignant.",
+        "semantic_notes": "benign vs malignant",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0018",
+        "text_a_preview": "The drug has minimal side effects.",
+        "text_b_preview": "The drug has severe side effects.",
+        "semantic_notes": "minimal vs severe",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0019",
+        "text_a_preview": "The biopsy results were benign.",
+        "text_b_preview": "The biopsy results were malignant.",
+        "semantic_notes": "benign vs malignant",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "medical-hard_negative-0020",
+        "text_a_preview": "The drug has minimal side effects.",
+        "text_b_preview": "The drug has severe side effects.",
+        "semantic_notes": "minimal vs severe",
+        "rank_of_hard_negative": 2,
+        "classification": "VIOLATION",
+        "reason": "Hard negative appeared at rank 2 (should be far)"
+      }
+    ],
+    "MR-04": [
+      {
+        "mr": "MR-04",
+        "pair_id": "medical-negative-0008",
+        "text_a_preview": "The patient has been diagnosed with diabetes.",
+        "text_b_preview": "The algorithm achieved state-of-the-art performance on benchmarks.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "medical-negative-0009",
+        "text_a_preview": "The patient has been diagnosed with diabetes.",
+        "text_b_preview": "The algorithm achieved state-of-the-art performance on benchmarks.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "medical-negative-0010",
+        "text_a_preview": "Blood pressure should be monitored regularly.",
+        "text_b_preview": "The latest smartphone features an improved camera.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "medical-negative-0011",
+        "text_a_preview": "The patient has been diagnosed with diabetes.",
+        "text_b_preview": "The algorithm achieved state-of-the-art performance on benchmarks.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      },
+      {
+        "mr": "MR-04",
+        "pair_id": "medical-negative-0012",
+        "text_a_preview": "The patient has been diagnosed with diabetes.",
+        "text_b_preview": "The algorithm achieved state-of-the-art performance on benchmarks.",
+        "classification": "PASS",
+        "reason": "Negative correctly excluded from top-K"
+      }
+    ]
+  }
+}

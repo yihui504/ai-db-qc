@@ -1,0 +1,374 @@
+{
+  "dataset_id": "sem-finance-20260317-112554",
+  "domain": "finance",
+  "created_at": "2026-03-17T11:25:54.970367",
+  "generator_version": "1.0",
+  "pairs": [
+    {
+      "pair_id": "finance-positive-0000",
+      "text_a": "The company reported strong quarterly earnings growth.",
+      "text_b": "The firm achieved significant profit increases this quarter.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0001",
+      "text_a": "The company reported strong quarterly earnings growth.",
+      "text_b": "The firm achieved significant profit increases this quarter.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0002",
+      "text_a": "The stock price fell sharply after the earnings report.",
+      "text_b": "Share prices dropped significantly following the earnings announcement.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0003",
+      "text_a": "Interest rates were raised by the central bank.",
+      "text_b": "The central bank increased its benchmark interest rate.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0004",
+      "text_a": "Interest rates were raised by the central bank.",
+      "text_b": "The central bank increased its benchmark interest rate.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0005",
+      "text_a": "Interest rates were raised by the central bank.",
+      "text_b": "The central bank increased its benchmark interest rate.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0006",
+      "text_a": "The company reported strong quarterly earnings growth.",
+      "text_b": "The firm achieved significant profit increases this quarter.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0007",
+      "text_a": "Market volatility increased due to geopolitical uncertainty.",
+      "text_b": "Geopolitical tensions led to higher market fluctuations.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0008",
+      "text_a": "The company reported strong quarterly earnings growth.",
+      "text_b": "The firm achieved significant profit increases this quarter.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-positive-0009",
+      "text_a": "Market volatility increased due to geopolitical uncertainty.",
+      "text_b": "Geopolitical tensions led to higher market fluctuations.",
+      "pair_type": "positive",
+      "domain": "finance",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-negative-0010",
+      "text_a": "Interest rates are rising globally.",
+      "text_b": "Advances in quantum computing are accelerating.",
+      "pair_type": "negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-negative-0011",
+      "text_a": "The company reported strong quarterly earnings.",
+      "text_b": "The weather forecast calls for rain this weekend.",
+      "pair_type": "negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-negative-0012",
+      "text_a": "The company reported strong quarterly earnings.",
+      "text_b": "The weather forecast calls for rain this weekend.",
+      "pair_type": "negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-negative-0013",
+      "text_a": "The company reported strong quarterly earnings.",
+      "text_b": "The weather forecast calls for rain this weekend.",
+      "pair_type": "negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-negative-0014",
+      "text_a": "The company reported strong quarterly earnings.",
+      "text_b": "The weather forecast calls for rain this weekend.",
+      "pair_type": "negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0015",
+      "text_a": "The merger was approved by regulators.",
+      "text_b": "The merger was blocked by regulators.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "approved vs blocked",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0016",
+      "text_a": "The credit rating was upgraded to AA.",
+      "text_b": "The credit rating was downgraded to BB.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "upgrade vs downgrade",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0017",
+      "text_a": "The credit rating was upgraded to AA.",
+      "text_b": "The credit rating was downgraded to BB.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "upgrade vs downgrade",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0018",
+      "text_a": "The bond yield rose to 5%.",
+      "text_b": "The bond yield fell to 5%.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "rise vs fall",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0019",
+      "text_a": "The credit rating was upgraded to AA.",
+      "text_b": "The credit rating was downgraded to BB.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "upgrade vs downgrade",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0020",
+      "text_a": "The merger was approved by regulators.",
+      "text_b": "The merger was blocked by regulators.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "approved vs blocked",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0021",
+      "text_a": "The credit rating was upgraded to AA.",
+      "text_b": "The credit rating was downgraded to BB.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "upgrade vs downgrade",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0022",
+      "text_a": "The company is profitable and expanding.",
+      "text_b": "The company is losing money and contracting.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "opposite financial health",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0023",
+      "text_a": "The merger was approved by regulators.",
+      "text_b": "The merger was blocked by regulators.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "approved vs blocked",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-hard_negative-0024",
+      "text_a": "The company is profitable and expanding.",
+      "text_b": "The company is losing money and contracting.",
+      "pair_type": "hard_negative",
+      "domain": "finance",
+      "expected_relation": "far",
+      "semantic_notes": "opposite financial health",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-boundary-0025",
+      "text_a": "The credit rating was upgraded to AA.",
+      "text_b": "The credit rating was downgraded to BB.",
+      "pair_type": "boundary",
+      "domain": "finance",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: upgrade vs downgrade",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-boundary-0026",
+      "text_a": "Revenue increased by 20% year-over-year.",
+      "text_b": "Revenue decreased by 20% year-over-year.",
+      "pair_type": "boundary",
+      "domain": "finance",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: increase vs decrease",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "finance-boundary-0027",
+      "text_a": "The bond yield rose to 5%.",
+      "text_b": "The bond yield fell to 5%.",
+      "pair_type": "boundary",
+      "domain": "finance",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: rise vs fall",
+      "vector_a": null,
+      "vector_b": null
+    }
+  ],
+  "metamorphic_relations": [
+    {
+      "relation_id": "MR-FIN-01",
+      "name": "Semantic Equivalence Consistency",
+      "description": "If two queries are semantically equivalent, their top-K results should have ≥80% overlap",
+      "input_transformation": "Replace query with a semantically equivalent paraphrase",
+      "expected_output_property": "Recall(results_Q1, results_Q2) >= 0.80",
+      "domain": "finance",
+      "testable": true,
+      "test_strategy": "Generate positive pairs as query pairs; measure result set overlap"
+    },
+    {
+      "relation_id": "MR-FIN-02",
+      "name": "Semantic Distance Monotonicity",
+      "description": "If doc A is semantically closer to query Q than doc B, rank(A) must be better than rank(B)",
+      "input_transformation": "Compare two documents with known relative semantic distances to a query",
+      "expected_output_property": "rank(closer_doc) < rank(further_doc)",
+      "domain": "finance",
+      "testable": true,
+      "test_strategy": "Use ground-truth labeled pairs; verify ranking order"
+    },
+    {
+      "relation_id": "MR-FIN-03",
+      "name": "Hard Negative Discrimination",
+      "description": "Hard negative pairs (surface-similar but semantically different) should NOT appear as top-1 results for each other",
+      "input_transformation": "Use text_a as query, search for text_b",
+      "expected_output_property": "rank(text_b) > K/2 when searching with text_a (not in top half)",
+      "domain": "finance",
+      "testable": true,
+      "test_strategy": "Use hard_negative pairs; search text_a for text_b and verify rank"
+    },
+    {
+      "relation_id": "MR-FIN-04",
+      "name": "Negative Pair Rejection",
+      "description": "Semantically dissimilar texts should not appear in each other's top-K results",
+      "input_transformation": "Use text_a as query, check if text_b appears in top-K",
+      "expected_output_property": "text_b NOT in top-K results when searching with text_a",
+      "domain": "finance",
+      "testable": true,
+      "test_strategy": "Use negative pairs; verify neither text appears in the other's top-K"
+    },
+    {
+      "relation_id": "MR-FIN-05",
+      "name": "Distance Symmetry",
+      "description": "Distance(A, B) should approximately equal Distance(B, A)",
+      "input_transformation": "Swap query and document roles",
+      "expected_output_property": "|rank_A_in_results_B - rank_B_in_results_A| <= tolerance",
+      "domain": "finance",
+      "testable": true,
+      "test_strategy": "Search both directions; compare relative rankings"
+    }
+  ],
+  "stats": {
+    "positive": 10,
+    "negative": 5,
+    "hard_negative": 10,
+    "boundary": 3
+  }
+}

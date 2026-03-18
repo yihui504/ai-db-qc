@@ -1,0 +1,71 @@
+{
+  "contract_id": "SCH-005",
+  "name": "Schema Extension Backward Compatibility",
+  "family": "SCHEMA",
+  "type": "universal",
+  "statement": "Schema extensions must maintain backward compatibility for existing queries",
+  "rationale": "Schema evolution should not break existing search operations",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search", "filtered_search", "hybrid_search"],
+    "conditions": ["field_added_to_schema"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "schema_extended",
+    "existing_data_present"
+  ],
+  "postconditions": [
+    "existing_queries_still_work",
+    "query_results_consistent",
+    "no_breaking_changes"
+  ],
+  "invariants": [
+    "Query interface stability",
+    "Result format consistency"
+  ],
+  "violation_criteria": {
+    "condition": "existing_query_fails OR query_format_changes OR unexpected_results",
+    "severity": "critical"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Search after field extension",
+        "sequence": [
+          "insert N entities with base schema",
+          "perform baseline search and record results",
+          "extend schema with new field",
+          "perform same search query",
+          "verify queries still execute",
+          "verify results are consistent"
+        ]
+      },
+      {
+        "name": "Filtered search after schema extension",
+        "sequence": [
+          "insert N entities",
+          "perform filtered search",
+          "add new field to schema",
+          "perform same filtered search",
+          "verify backward compatibility"
+        ]
+      }
+    ]
+  },
+  "oracle": {
+    "check": "query_success AND results_match_baseline",
+    "verification": "execute queries pre and post extension; compare success rates and result sets",
+    "classification": {
+      "violation": "BUG (breaking_change)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["SCH-001"],
+    "test_complexity": "medium",
+    "version": "1.0"
+  }
+}

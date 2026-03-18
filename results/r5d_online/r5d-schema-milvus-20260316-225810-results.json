@@ -1,0 +1,116 @@
+{
+  "run_id": "r5d-schema-milvus-20260316-225810",
+  "timestamp": "2026-03-16T22:58:56.905658",
+  "mode": "milvus",
+  "config": {
+    "host": "localhost",
+    "port": 19530,
+    "offline": false,
+    "dim": 128,
+    "n_base": 200,
+    "n_tagged": 100,
+    "n_rebuild": 500,
+    "n0": 300,
+    "n1": 200,
+    "n_delete": 50,
+    "recall_threshold": 0.99,
+    "contracts": [
+      "SCH-001",
+      "SCH-002",
+      "SCH-003",
+      "SCH-004"
+    ]
+  },
+  "summary": {
+    "total": 4,
+    "passes": 1,
+    "violations": 3,
+    "skipped": 0
+  },
+  "results": {
+    "SCH-001": {
+      "test_id": "SCH-001",
+      "classification": "VIOLATION",
+      "violation_type": "SCH-001",
+      "violation_details": {
+        "expected_count": 300,
+        "returned_count": 200,
+        "missing_ids": [
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219
+        ],
+        "extra_ids": []
+      },
+      "reason": "Search after dynamic field add returned 200/300 entities"
+    },
+    "SCH-002": {
+      "test_id": "SCH-002",
+      "classification": "VIOLATION",
+      "violation_type": "SCH-002-FP",
+      "violation_details": {
+        "false_positives": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "returned": 100,
+        "expected": 100
+      },
+      "reason": "Filtered search returned 100 untagged entities"
+    },
+    "SCH-003": {
+      "test_id": "SCH-003",
+      "classification": "PASS",
+      "recall_before": 1.0,
+      "recall_after": 1.0,
+      "regression": 0.0
+    },
+    "SCH-004": {
+      "test_id": "SCH-004",
+      "classification": "VIOLATION",
+      "violation_type": "SCH-004",
+      "violation_details": {
+        "expected": 450,
+        "actual": 500,
+        "count_after_insert": 500,
+        "discrepancy": 50
+      },
+      "reason": "count_entities=500 != expected=450 (discrepancy=+50)"
+    }
+  }
+}

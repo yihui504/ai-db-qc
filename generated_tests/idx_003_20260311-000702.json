@@ -1,0 +1,138 @@
+{
+  "suite_name": "idx_003",
+  "generated_at": "2026-03-11T00:07:02.686620",
+  "total_tests": 3,
+  "contracts_covered": [
+    "IDX-003"
+  ],
+  "tests": [
+    {
+      "test_id": "idx-003_illegal_001",
+      "contract_id": "IDX-003",
+      "name": "Index Parameter Validation - Illegal: Invalid index type",
+      "description": "Illegal input test for Index Parameter Validation",
+      "family": "INDEX",
+      "strategy": "illegal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "index_type": "INVALID_TYPE"
+          },
+          "description": "Execute with params: {'index_type': 'INVALID_TYPE'}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "error",
+      "expected_result": null,
+      "oracle": {
+        "check": "valid_params_succeeds OR invalid_params_fails",
+        "verification": "assert error_occurs for invalid parameters",
+        "classification": {
+          "violation": "BUG (accepts_invalid)",
+          "compliant": "PASS",
+          "allowed_difference": "different_parameter_ranges"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "illegal",
+        "INDEX",
+        "validation"
+      ]
+    },
+    {
+      "test_id": "idx-003_illegal_002",
+      "contract_id": "IDX-003",
+      "name": "Index Parameter Validation - Illegal: Invalid index parameters",
+      "description": "Illegal input test for Index Parameter Validation",
+      "family": "INDEX",
+      "strategy": "illegal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "index_type": "HNSW",
+            "M": -1
+          },
+          "description": "Execute with params: {'index_type': 'HNSW', 'M': -1}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "error",
+      "expected_result": null,
+      "oracle": {
+        "check": "valid_params_succeeds OR invalid_params_fails",
+        "verification": "assert error_occurs for invalid parameters",
+        "classification": {
+          "violation": "BUG (accepts_invalid)",
+          "compliant": "PASS",
+          "allowed_difference": "different_parameter_ranges"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "illegal",
+        "INDEX",
+        "validation"
+      ]
+    },
+    {
+      "test_id": "idx-003_illegal_003",
+      "contract_id": "IDX-003",
+      "name": "Index Parameter Validation - Illegal: Out-of-range parameters",
+      "description": "Illegal input test for Index Parameter Validation",
+      "family": "INDEX",
+      "strategy": "illegal",
+      "setup": [],
+      "steps": [
+        {
+          "operation": "execute_test",
+          "params": {
+            "index_type": "IVF",
+            "nlist": 0
+          },
+          "description": "Execute with params: {'index_type': 'IVF', 'nlist': 0}"
+        }
+      ],
+      "cleanup": [
+        {
+          "operation": "cleanup_test_data",
+          "description": "Cleanup test data"
+        }
+      ],
+      "expected_outcome": "error",
+      "expected_result": null,
+      "oracle": {
+        "check": "valid_params_succeeds OR invalid_params_fails",
+        "verification": "assert error_occurs for invalid parameters",
+        "classification": {
+          "violation": "BUG (accepts_invalid)",
+          "compliant": "PASS",
+          "allowed_difference": "different_parameter_ranges"
+        }
+      },
+      "priority": "high",
+      "estimated_complexity": "low",
+      "tags": [
+        "illegal",
+        "INDEX",
+        "validation"
+      ]
+    }
+  ]
+}

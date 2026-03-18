@@ -1,0 +1,429 @@
+{
+  "run_timestamp": "20260317-113933",
+  "adapter": "pgvector",
+  "embed_backend": "sentence_transformers",
+  "domains": [
+    "code",
+    "legal"
+  ],
+  "results": {
+    "code": {
+      "MR-01": {
+        "records": [
+          {
+            "pair_id": "code-positive-0000",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0001",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0002",
+            "overlap": 0.42857142857142855,
+            "classification": "VIOLATION",
+            "text_a": "The variable is declared as a constant and cannot be reassig",
+            "text_b": "The identifier is defined as immutable and its value cannot "
+          },
+          {
+            "pair_id": "code-positive-0003",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The loop iterates over each element in the list.",
+            "text_b": "The for-loop processes every item in the array."
+          },
+          {
+            "pair_id": "code-positive-0004",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The loop iterates over each element in the list.",
+            "text_b": "The for-loop processes every item in the array."
+          },
+          {
+            "pair_id": "code-positive-0005",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The loop iterates over each element in the list.",
+            "text_b": "The for-loop processes every item in the array."
+          },
+          {
+            "pair_id": "code-positive-0006",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0007",
+            "overlap": 0.5384615384615384,
+            "classification": "PASS",
+            "text_a": "The recursive function calls itself until the base case is r",
+            "text_b": "The self-referential function terminates when it hits the st"
+          },
+          {
+            "pair_id": "code-positive-0008",
+            "overlap": 0.6666666666666666,
+            "classification": "PASS",
+            "text_a": "The function returns None if the input is invalid.",
+            "text_b": "The method returns null when the provided argument is not va"
+          },
+          {
+            "pair_id": "code-positive-0009",
+            "overlap": 0.5384615384615384,
+            "classification": "PASS",
+            "text_a": "The recursive function calls itself until the base case is r",
+            "text_b": "The self-referential function terminates when it hits the st"
+          }
+        ],
+        "summary": {
+          "PASS": 9,
+          "VIOLATION": 1
+        }
+      },
+      "MR-03": {
+        "records": [
+          {
+            "pair_id": "code-hard_negative-0015",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "True vs False termination",
+            "text_a": "The loop terminates when the condition is True.",
+            "text_b": "The loop terminates when the condition is False."
+          },
+          {
+            "pair_id": "code-hard_negative-0016",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          },
+          {
+            "pair_id": "code-hard_negative-0017",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          },
+          {
+            "pair_id": "code-hard_negative-0018",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "raises vs silent",
+            "text_a": "The function raises an exception when the file is not found.",
+            "text_b": "The function silently returns None when the file is not foun"
+          },
+          {
+            "pair_id": "code-hard_negative-0019",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          },
+          {
+            "pair_id": "code-hard_negative-0020",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "True vs False termination",
+            "text_a": "The loop terminates when the condition is True.",
+            "text_b": "The loop terminates when the condition is False."
+          },
+          {
+            "pair_id": "code-hard_negative-0021",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "sync vs async",
+            "text_a": "The API call is synchronous and blocks until completion.",
+            "text_b": "The API call is asynchronous and returns a promise immediate"
+          },
+          {
+            "pair_id": "code-hard_negative-0022",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "sync vs async",
+            "text_a": "The API call is synchronous and blocks until completion.",
+            "text_b": "The API call is asynchronous and returns a promise immediate"
+          },
+          {
+            "pair_id": "code-hard_negative-0023",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "sync vs async",
+            "text_a": "The API call is synchronous and blocks until completion.",
+            "text_b": "The API call is asynchronous and returns a promise immediate"
+          },
+          {
+            "pair_id": "code-hard_negative-0024",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "stores vs invalidates",
+            "text_a": "The cache stores the result of the computation.",
+            "text_b": "The cache invalidates and discards the result of the computa"
+          }
+        ],
+        "summary": {
+          "VIOLATION": 10
+        }
+      },
+      "MR-04": {
+        "records": [
+          {
+            "pair_id": "code-negative-0010",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The class inherits from the base interface.",
+            "text_b": "The patient's blood pressure is elevated."
+          },
+          {
+            "pair_id": "code-negative-0011",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          },
+          {
+            "pair_id": "code-negative-0012",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          },
+          {
+            "pair_id": "code-negative-0013",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          },
+          {
+            "pair_id": "code-negative-0014",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The function sorts the list in ascending order.",
+            "text_b": "The bond yield rose sharply this quarter."
+          }
+        ],
+        "summary": {
+          "PASS": 5
+        }
+      }
+    },
+    "legal": {
+      "MR-01": {
+        "records": [
+          {
+            "pair_id": "legal-positive-0000",
+            "overlap": 1.0,
+            "classification": "PASS",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0001",
+            "overlap": 1.0,
+            "classification": "PASS",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0002",
+            "overlap": 0.8181818181818182,
+            "classification": "PASS",
+            "text_a": "The court issued an injunction to halt the proceedings.",
+            "text_b": "A court order was granted to stop the action."
+          },
+          {
+            "pair_id": "legal-positive-0003",
+            "overlap": 0.8181818181818182,
+            "classification": "PASS",
+            "text_a": "The contract was terminated due to breach.",
+            "text_b": "The agreement was voided following a violation of its terms."
+          },
+          {
+            "pair_id": "legal-positive-0004",
+            "overlap": 0.8181818181818182,
+            "classification": "PASS",
+            "text_a": "The contract was terminated due to breach.",
+            "text_b": "The agreement was voided following a violation of its terms."
+          },
+          {
+            "pair_id": "legal-positive-0005",
+            "overlap": 0.8181818181818182,
+            "classification": "PASS",
+            "text_a": "The contract was terminated due to breach.",
+            "text_b": "The agreement was voided following a violation of its terms."
+          },
+          {
+            "pair_id": "legal-positive-0006",
+            "overlap": 1.0,
+            "classification": "PASS",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0007",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "The statute of limitations has expired.",
+            "text_b": "The legal time limit for filing the claim has passed."
+          },
+          {
+            "pair_id": "legal-positive-0008",
+            "overlap": 1.0,
+            "classification": "PASS",
+            "text_a": "The defendant was found guilty of the charges.",
+            "text_b": "The court convicted the accused on all counts."
+          },
+          {
+            "pair_id": "legal-positive-0009",
+            "overlap": 0.3333333333333333,
+            "classification": "VIOLATION",
+            "text_a": "The statute of limitations has expired.",
+            "text_b": "The legal time limit for filing the claim has passed."
+          }
+        ],
+        "summary": {
+          "PASS": 8,
+          "VIOLATION": 2
+        }
+      },
+      "MR-03": {
+        "records": [
+          {
+            "pair_id": "legal-hard_negative-0015",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "enforceable vs unenforceable",
+            "text_a": "The contract is enforceable under current law.",
+            "text_b": "The contract is unenforceable under current law."
+          },
+          {
+            "pair_id": "legal-hard_negative-0016",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          },
+          {
+            "pair_id": "legal-hard_negative-0017",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          },
+          {
+            "pair_id": "legal-hard_negative-0018",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "liable vs not liable",
+            "text_a": "The defendant is liable for the damages.",
+            "text_b": "The defendant is not liable for the damages."
+          },
+          {
+            "pair_id": "legal-hard_negative-0019",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          },
+          {
+            "pair_id": "legal-hard_negative-0020",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "enforceable vs unenforceable",
+            "text_a": "The contract is enforceable under current law.",
+            "text_b": "The contract is unenforceable under current law."
+          },
+          {
+            "pair_id": "legal-hard_negative-0021",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "reversed vs upheld",
+            "text_a": "The appeal was successful and the verdict was reversed.",
+            "text_b": "The appeal was unsuccessful and the verdict was upheld."
+          },
+          {
+            "pair_id": "legal-hard_negative-0022",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "reversed vs upheld",
+            "text_a": "The appeal was successful and the verdict was reversed.",
+            "text_b": "The appeal was unsuccessful and the verdict was upheld."
+          },
+          {
+            "pair_id": "legal-hard_negative-0023",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "reversed vs upheld",
+            "text_a": "The appeal was successful and the verdict was reversed.",
+            "text_b": "The appeal was unsuccessful and the verdict was upheld."
+          },
+          {
+            "pair_id": "legal-hard_negative-0024",
+            "rank": 2,
+            "classification": "VIOLATION",
+            "notes": "granted vs denied",
+            "text_a": "The injunction was granted by the judge.",
+            "text_b": "The injunction was denied by the judge."
+          }
+        ],
+        "summary": {
+          "VIOLATION": 10
+        }
+      },
+      "MR-04": {
+        "records": [
+          {
+            "pair_id": "legal-negative-0010",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The jury returned a verdict of not guilty.",
+            "text_b": "The algorithm converged after 100 epochs."
+          },
+          {
+            "pair_id": "legal-negative-0011",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          },
+          {
+            "pair_id": "legal-negative-0012",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          },
+          {
+            "pair_id": "legal-negative-0013",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          },
+          {
+            "pair_id": "legal-negative-0014",
+            "rank": null,
+            "classification": "PASS",
+            "text_a": "The defendant filed a motion to dismiss.",
+            "text_b": "The patient was prescribed antibiotics."
+          }
+        ],
+        "summary": {
+          "PASS": 5
+        }
+      }
+    }
+  }
+}

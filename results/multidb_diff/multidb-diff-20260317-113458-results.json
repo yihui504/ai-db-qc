@@ -1,0 +1,166 @@
+{
+  "run_id": "multidb-diff-20260317-113458",
+  "timestamp": "2026-03-17T11:35:09.336356",
+  "config": {
+    "n_vectors": 300,
+    "n_queries": 20,
+    "dim": 64,
+    "top_k": 10,
+    "recall_threshold": 0.7,
+    "mock": false,
+    "skip_milvus": true,
+    "skip_qdrant": false,
+    "skip_weaviate": false,
+    "skip_pgvector": false,
+    "milvus_host": "localhost",
+    "milvus_port": 19530,
+    "qdrant_host": "localhost",
+    "qdrant_port": 6333,
+    "weaviate_host": "localhost",
+    "weaviate_port": 8080,
+    "pg_container": "pgvector",
+    "output_dir": "results\\multidb_diff"
+  },
+  "results": [
+    {
+      "db": "qdrant",
+      "contracts": {
+        "R1A": {
+          "status": "PASS",
+          "mean_recall": 1.0,
+          "threshold": 0.7,
+          "n_queries": 20
+        },
+        "R1B": {
+          "status": "PASS",
+          "note": "top10 subset of top20"
+        },
+        "R2A": {
+          "status": "PASS",
+          "note": "impossible filter returned empty result"
+        },
+        "R2B": {
+          "status": "PASS",
+          "note": "search returned 10/10 results"
+        },
+        "R3A": {
+          "status": "PASS",
+          "count": 300,
+          "expected": 300
+        },
+        "R3B": {
+          "status": "PASS",
+          "count": 280,
+          "expected": 280,
+          "deleted": 20
+        }
+      },
+      "errors": []
+    },
+    {
+      "db": "weaviate",
+      "contracts": {
+        "R1A": {
+          "status": "PASS",
+          "mean_recall": 1.0,
+          "threshold": 0.7,
+          "n_queries": 20
+        },
+        "R1B": {
+          "status": "PASS",
+          "note": "top10 subset of top20"
+        },
+        "R2A": {
+          "status": "PASS",
+          "note": "impossible filter returned empty result"
+        },
+        "R2B": {
+          "status": "PASS",
+          "note": "search returned 10/10 results"
+        },
+        "R3A": {
+          "status": "PASS",
+          "count": 300,
+          "expected": 300
+        },
+        "R3B": {
+          "status": "PASS",
+          "count": 280,
+          "expected": 280,
+          "deleted": 20
+        }
+      },
+      "errors": []
+    },
+    {
+      "db": "pgvector",
+      "contracts": {
+        "R1A": {
+          "status": "PASS",
+          "mean_recall": 1.0,
+          "threshold": 0.7,
+          "n_queries": 20
+        },
+        "R1B": {
+          "status": "PASS",
+          "note": "top10 subset of top20"
+        },
+        "R2A": {
+          "status": "PASS",
+          "note": "impossible filter returned empty result"
+        },
+        "R2B": {
+          "status": "PASS",
+          "note": "search returned 10/10 results"
+        },
+        "R3A": {
+          "status": "PASS",
+          "count": 300,
+          "expected": 300
+        },
+        "R3B": {
+          "status": "PASS",
+          "count": 280,
+          "expected": 280,
+          "deleted": 20
+        }
+      },
+      "errors": []
+    }
+  ],
+  "comparison": {
+    "matrix": {
+      "R1A": {
+        "qdrant": "PASS",
+        "weaviate": "PASS",
+        "pgvector": "PASS"
+      },
+      "R1B": {
+        "qdrant": "PASS",
+        "weaviate": "PASS",
+        "pgvector": "PASS"
+      },
+      "R2A": {
+        "qdrant": "PASS",
+        "weaviate": "PASS",
+        "pgvector": "PASS"
+      },
+      "R2B": {
+        "qdrant": "PASS",
+        "weaviate": "PASS",
+        "pgvector": "PASS"
+      },
+      "R3A": {
+        "qdrant": "PASS",
+        "weaviate": "PASS",
+        "pgvector": "PASS"
+      },
+      "R3B": {
+        "qdrant": "PASS",
+        "weaviate": "PASS",
+        "pgvector": "PASS"
+      }
+    },
+    "divergences": []
+  }
+}

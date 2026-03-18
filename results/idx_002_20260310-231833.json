@@ -1,0 +1,87 @@
+{
+  "run_id": "idx-002-20260310-231833",
+  "timestamp": "2026-03-10T23:18:33.503892",
+  "contract_id": "IDX-002",
+  "total_tests": 3,
+  "results": [
+    {
+      "test_id": "idx-002_seq_001",
+      "contract_id": "IDX-002",
+      "timestamp": "2026-03-10T23:18:33.023250",
+      "steps": [
+        {
+          "step": "insert",
+          "count": 0
+        },
+        {
+          "step": "create_index",
+          "status": "success"
+        },
+        {
+          "step": "final_count",
+          "count": 0
+        }
+      ],
+      "status": "VIOLATION",
+      "classification": "BUG_DATA_LOSS",
+      "reasoning": "Data lost: 0 != 100"
+    },
+    {
+      "test_id": "idx-002_seq_002",
+      "contract_id": "IDX-002",
+      "timestamp": "2026-03-10T23:18:33.130795",
+      "steps": [
+        {
+          "step": "insert",
+          "count": 0
+        },
+        {
+          "step": "create_index",
+          "status": "success"
+        },
+        {
+          "step": "drop_index",
+          "status": "success"
+        },
+        {
+          "step": "final_count",
+          "count": 0
+        }
+      ],
+      "status": "VIOLATION",
+      "classification": "BUG_DATA_LOSS",
+      "reasoning": "Data lost: 0 != 100"
+    },
+    {
+      "test_id": "idx-002_seq_003",
+      "contract_id": "IDX-002",
+      "timestamp": "2026-03-10T23:18:33.341363",
+      "steps": [
+        {
+          "step": "insert",
+          "count": 0
+        },
+        {
+          "step": "create_index",
+          "status": "success"
+        },
+        {
+          "step": "rebuild_index",
+          "status": "success"
+        },
+        {
+          "step": "final_count",
+          "count": 0
+        }
+      ],
+      "status": "VIOLATION",
+      "classification": "BUG_DATA_LOSS",
+      "reasoning": "Data lost: 0 != 100"
+    }
+  ],
+  "summary": {
+    "PASS": 0,
+    "VIOLATION": 3,
+    "ERROR": 0
+  }
+}

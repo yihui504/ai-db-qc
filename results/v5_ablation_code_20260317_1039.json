@@ -1,0 +1,1103 @@
+{
+  "experiment": "V5_ablation",
+  "domain": "code",
+  "timestamp": "20260317_1039",
+  "sem_backend": "sentence_transformers",
+  "dim": 384,
+  "top_k": 10,
+  "rng_seed": null,
+  "V_Sem": {
+    "metrics": {
+      "total": 20,
+      "mr01": {
+        "n": 10,
+        "pass_rate": 0.7,
+        "violation_rate": 0.3
+      },
+      "mr03": {
+        "n": 10,
+        "violation_rate": 1.0,
+        "pass_rate": 0.0
+      }
+    },
+    "results": [
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0000",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          12,
+          20,
+          18,
+          17,
+          4,
+          8,
+          1,
+          13,
+          2,
+          7
+        ],
+        "ids_b": [
+          18,
+          12,
+          4,
+          17,
+          20,
+          8,
+          1,
+          7,
+          16,
+          11
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0001",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          12,
+          20,
+          18,
+          17,
+          4,
+          8,
+          1,
+          13,
+          2,
+          7
+        ],
+        "ids_b": [
+          18,
+          12,
+          4,
+          17,
+          20,
+          8,
+          1,
+          7,
+          16,
+          11
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0002",
+        "pair_type": "positive",
+        "text_a_preview": "The variable is declared as a constant and cannot be reassigned.",
+        "text_b_preview": "The identifier is defined as immutable and its value cannot change.",
+        "ids_a": [
+          7,
+          14,
+          1,
+          12,
+          17,
+          13,
+          8,
+          18,
+          4,
+          20
+        ],
+        "ids_b": [
+          14,
+          7,
+          6,
+          19,
+          1,
+          15,
+          10,
+          13,
+          12,
+          18
+        ],
+        "overlap": 0.4286,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0003",
+        "pair_type": "positive",
+        "text_a_preview": "The loop iterates over each element in the list.",
+        "text_b_preview": "The for-loop processes every item in the array.",
+        "ids_a": [
+          21,
+          5,
+          8,
+          17,
+          23,
+          1,
+          0,
+          19,
+          6,
+          2
+        ],
+        "ids_b": [
+          5,
+          21,
+          8,
+          17,
+          0,
+          23,
+          13,
+          1,
+          2,
+          10
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0004",
+        "pair_type": "positive",
+        "text_a_preview": "The loop iterates over each element in the list.",
+        "text_b_preview": "The for-loop processes every item in the array.",
+        "ids_a": [
+          21,
+          5,
+          8,
+          17,
+          23,
+          1,
+          0,
+          19,
+          6,
+          2
+        ],
+        "ids_b": [
+          5,
+          21,
+          8,
+          17,
+          0,
+          23,
+          13,
+          1,
+          2,
+          10
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0005",
+        "pair_type": "positive",
+        "text_a_preview": "The loop iterates over each element in the list.",
+        "text_b_preview": "The for-loop processes every item in the array.",
+        "ids_a": [
+          21,
+          5,
+          8,
+          17,
+          23,
+          1,
+          0,
+          19,
+          6,
+          2
+        ],
+        "ids_b": [
+          5,
+          21,
+          8,
+          17,
+          0,
+          23,
+          13,
+          1,
+          2,
+          10
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0006",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          12,
+          20,
+          18,
+          17,
+          4,
+          8,
+          1,
+          13,
+          2,
+          7
+        ],
+        "ids_b": [
+          18,
+          12,
+          4,
+          17,
+          20,
+          8,
+          1,
+          7,
+          16,
+          11
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0007",
+        "pair_type": "positive",
+        "text_a_preview": "The recursive function calls itself until the base case is reached.",
+        "text_b_preview": "The self-referential function terminates when it hits the stopping condition.",
+        "ids_a": [
+          2,
+          8,
+          17,
+          1,
+          11,
+          12,
+          10,
+          23,
+          0,
+          5
+        ],
+        "ids_b": [
+          11,
+          8,
+          17,
+          2,
+          1,
+          3,
+          13,
+          4,
+          12,
+          10
+        ],
+        "overlap": 0.5385,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0008",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          12,
+          20,
+          18,
+          17,
+          4,
+          8,
+          1,
+          13,
+          2,
+          7
+        ],
+        "ids_b": [
+          18,
+          12,
+          4,
+          17,
+          20,
+          8,
+          1,
+          7,
+          16,
+          11
+        ],
+        "overlap": 0.6667,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0009",
+        "pair_type": "positive",
+        "text_a_preview": "The recursive function calls itself until the base case is reached.",
+        "text_b_preview": "The self-referential function terminates when it hits the stopping condition.",
+        "ids_a": [
+          2,
+          8,
+          17,
+          1,
+          11,
+          12,
+          10,
+          23,
+          0,
+          5
+        ],
+        "ids_b": [
+          11,
+          8,
+          17,
+          2,
+          1,
+          3,
+          13,
+          4,
+          12,
+          10
+        ],
+        "overlap": 0.5385,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0015",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The loop terminates when the condition is True.",
+        "text_b_preview": "The loop terminates when the condition is False.",
+        "top3_a": [
+          8,
+          17,
+          5
+        ],
+        "top3_b": [
+          17,
+          8,
+          5
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0016",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          0,
+          13,
+          5
+        ],
+        "top3_b": [
+          13,
+          0,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0017",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          0,
+          13,
+          5
+        ],
+        "top3_b": [
+          13,
+          0,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0018",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The function raises an exception when the file is not found.",
+        "text_b_preview": "The function silently returns None when the file is not found.",
+        "top3_a": [
+          4,
+          20,
+          12
+        ],
+        "top3_b": [
+          20,
+          4,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0019",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          0,
+          13,
+          5
+        ],
+        "top3_b": [
+          13,
+          0,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0020",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The loop terminates when the condition is True.",
+        "text_b_preview": "The loop terminates when the condition is False.",
+        "top3_a": [
+          8,
+          17,
+          5
+        ],
+        "top3_b": [
+          17,
+          8,
+          5
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0021",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The API call is synchronous and blocks until completion.",
+        "text_b_preview": "The API call is asynchronous and returns a promise immediately.",
+        "top3_a": [
+          3,
+          16,
+          10
+        ],
+        "top3_b": [
+          16,
+          3,
+          20
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0022",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The API call is synchronous and blocks until completion.",
+        "text_b_preview": "The API call is asynchronous and returns a promise immediately.",
+        "top3_a": [
+          3,
+          16,
+          10
+        ],
+        "top3_b": [
+          16,
+          3,
+          20
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0023",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The API call is synchronous and blocks until completion.",
+        "text_b_preview": "The API call is asynchronous and returns a promise immediately.",
+        "top3_a": [
+          3,
+          16,
+          10
+        ],
+        "top3_b": [
+          16,
+          3,
+          20
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0024",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          0,
+          13,
+          5
+        ],
+        "top3_b": [
+          13,
+          0,
+          12
+        ],
+        "rank_b_in_a": 2,
+        "rank_a_in_b": 2,
+        "verdict": "VIOLATION"
+      }
+    ]
+  },
+  "V_Rnd": {
+    "metrics": {
+      "total": 20,
+      "mr01": {
+        "n": 10,
+        "pass_rate": 0.0,
+        "violation_rate": 1.0
+      },
+      "mr03": {
+        "n": 10,
+        "violation_rate": 0.0,
+        "pass_rate": 1.0
+      }
+    },
+    "results": [
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0000",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          1,
+          13,
+          7,
+          21,
+          15,
+          2,
+          11,
+          19,
+          23,
+          9
+        ],
+        "ids_b": [
+          1,
+          16,
+          6,
+          9,
+          18,
+          5,
+          17,
+          8,
+          3,
+          19
+        ],
+        "overlap": 0.1765,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0001",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          17,
+          11,
+          14,
+          13,
+          1,
+          16,
+          23,
+          3,
+          12,
+          15
+        ],
+        "ids_b": [
+          17,
+          18,
+          8,
+          19,
+          0,
+          22,
+          12,
+          3,
+          4,
+          15
+        ],
+        "overlap": 0.25,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0002",
+        "pair_type": "positive",
+        "text_a_preview": "The variable is declared as a constant and cannot be reassigned.",
+        "text_b_preview": "The identifier is defined as immutable and its value cannot change.",
+        "ids_a": [
+          9,
+          2,
+          3,
+          21,
+          6,
+          7,
+          4,
+          8,
+          1,
+          14
+        ],
+        "ids_b": [
+          2,
+          6,
+          11,
+          9,
+          20,
+          14,
+          19,
+          18,
+          4,
+          23
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0003",
+        "pair_type": "positive",
+        "text_a_preview": "The loop iterates over each element in the list.",
+        "text_b_preview": "The for-loop processes every item in the array.",
+        "ids_a": [
+          18,
+          7,
+          10,
+          19,
+          16,
+          22,
+          6,
+          2,
+          13,
+          3
+        ],
+        "ids_b": [
+          17,
+          18,
+          11,
+          12,
+          20,
+          1,
+          5,
+          23,
+          19,
+          9
+        ],
+        "overlap": 0.1111,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0004",
+        "pair_type": "positive",
+        "text_a_preview": "The loop iterates over each element in the list.",
+        "text_b_preview": "The for-loop processes every item in the array.",
+        "ids_a": [
+          19,
+          12,
+          7,
+          14,
+          8,
+          10,
+          17,
+          3,
+          1,
+          16
+        ],
+        "ids_b": [
+          23,
+          0,
+          17,
+          2,
+          16,
+          11,
+          3,
+          13,
+          14,
+          1
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0005",
+        "pair_type": "positive",
+        "text_a_preview": "The loop iterates over each element in the list.",
+        "text_b_preview": "The for-loop processes every item in the array.",
+        "ids_a": [
+          15,
+          22,
+          18,
+          3,
+          16,
+          10,
+          17,
+          19,
+          8,
+          13
+        ],
+        "ids_b": [
+          23,
+          6,
+          15,
+          9,
+          14,
+          17,
+          16,
+          12,
+          13,
+          1
+        ],
+        "overlap": 0.25,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0006",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          13,
+          3,
+          16,
+          20,
+          4,
+          5,
+          11,
+          10,
+          2,
+          15
+        ],
+        "ids_b": [
+          6,
+          2,
+          12,
+          11,
+          13,
+          21,
+          7,
+          16,
+          23,
+          10
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0007",
+        "pair_type": "positive",
+        "text_a_preview": "The recursive function calls itself until the base case is reached.",
+        "text_b_preview": "The self-referential function terminates when it hits the stopping condition.",
+        "ids_a": [
+          10,
+          6,
+          8,
+          22,
+          14,
+          1,
+          9,
+          16,
+          13,
+          15
+        ],
+        "ids_b": [
+          11,
+          9,
+          7,
+          14,
+          1,
+          0,
+          15,
+          12,
+          5,
+          13
+        ],
+        "overlap": 0.3333,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0008",
+        "pair_type": "positive",
+        "text_a_preview": "The function returns None if the input is invalid.",
+        "text_b_preview": "The method returns null when the provided argument is not valid.",
+        "ids_a": [
+          12,
+          6,
+          7,
+          11,
+          5,
+          9,
+          2,
+          8,
+          0,
+          17
+        ],
+        "ids_b": [
+          16,
+          11,
+          22,
+          14,
+          20,
+          9,
+          4,
+          10,
+          15,
+          19
+        ],
+        "overlap": 0.1111,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-01",
+        "pair_id": "code-positive-0009",
+        "pair_type": "positive",
+        "text_a_preview": "The recursive function calls itself until the base case is reached.",
+        "text_b_preview": "The self-referential function terminates when it hits the stopping condition.",
+        "ids_a": [
+          15,
+          14,
+          19,
+          3,
+          20,
+          23,
+          10,
+          8,
+          13,
+          7
+        ],
+        "ids_b": [
+          0,
+          21,
+          8,
+          4,
+          18,
+          14,
+          9,
+          11,
+          19,
+          22
+        ],
+        "overlap": 0.1765,
+        "verdict": "VIOLATION"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0015",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The loop terminates when the condition is True.",
+        "text_b_preview": "The loop terminates when the condition is False.",
+        "top3_a": [
+          18,
+          12,
+          8
+        ],
+        "top3_b": [
+          12,
+          22,
+          21
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0016",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          4,
+          22,
+          19
+        ],
+        "top3_b": [
+          10,
+          18,
+          15
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0017",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          20,
+          22,
+          2
+        ],
+        "top3_b": [
+          9,
+          21,
+          10
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0018",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The function raises an exception when the file is not found.",
+        "text_b_preview": "The function silently returns None when the file is not found.",
+        "top3_a": [
+          9,
+          4,
+          0
+        ],
+        "top3_b": [
+          7,
+          17,
+          10
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0019",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          18,
+          1,
+          12
+        ],
+        "top3_b": [
+          13,
+          3,
+          8
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0020",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The loop terminates when the condition is True.",
+        "text_b_preview": "The loop terminates when the condition is False.",
+        "top3_a": [
+          4,
+          18,
+          6
+        ],
+        "top3_b": [
+          6,
+          14,
+          3
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0021",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The API call is synchronous and blocks until completion.",
+        "text_b_preview": "The API call is asynchronous and returns a promise immediately.",
+        "top3_a": [
+          5,
+          18,
+          4
+        ],
+        "top3_b": [
+          7,
+          11,
+          9
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0022",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The API call is synchronous and blocks until completion.",
+        "text_b_preview": "The API call is asynchronous and returns a promise immediately.",
+        "top3_a": [
+          4,
+          19,
+          7
+        ],
+        "top3_b": [
+          4,
+          2,
+          6
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0023",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The API call is synchronous and blocks until completion.",
+        "text_b_preview": "The API call is asynchronous and returns a promise immediately.",
+        "top3_a": [
+          2,
+          15,
+          5
+        ],
+        "top3_b": [
+          19,
+          9,
+          13
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      },
+      {
+        "mr": "MR-03",
+        "pair_id": "code-hard_negative-0024",
+        "pair_type": "hard_negative",
+        "text_a_preview": "The cache stores the result of the computation.",
+        "text_b_preview": "The cache invalidates and discards the result of the computation.",
+        "top3_a": [
+          3,
+          17,
+          15
+        ],
+        "top3_b": [
+          14,
+          11,
+          8
+        ],
+        "rank_b_in_a": null,
+        "rank_a_in_b": null,
+        "verdict": "PASS"
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "run_id": "r5d-schema-milvus-20260316-225635",
+  "timestamp": "2026-03-16T22:56:58.076390",
+  "mode": "milvus",
+  "config": {
+    "host": "localhost",
+    "port": 19530,
+    "offline": false,
+    "dim": 128,
+    "n_base": 200,
+    "n_tagged": 100,
+    "n_rebuild": 500,
+    "n0": 300,
+    "n1": 200,
+    "n_delete": 50,
+    "recall_threshold": 0.99,
+    "contracts": [
+      "SCH-001",
+      "SCH-002",
+      "SCH-003",
+      "SCH-004"
+    ]
+  },
+  "summary": {
+    "total": 4,
+    "passes": 0,
+    "violations": 1,
+    "skipped": 3
+  },
+  "results": {
+    "SCH-001": {
+      "test_id": "SCH-001",
+      "classification": "SKIP",
+      "reason": "insert phase B failed: <DataNotMatchException: (code=1, message=Attempt to insert an unexpected field `tag` to collection without enabling dynamic field)>"
+    },
+    "SCH-002": {
+      "test_id": "SCH-002",
+      "classification": "SKIP",
+      "reason": "filtered_search failed: <MilvusException: (code=1100, message=failed to create query plan: cannot parse expression: tag == 'new', error: field tag not exist: invalid parameter)>"
+    },
+    "SCH-003": {
+      "test_id": "SCH-003",
+      "classification": "VIOLATION",
+      "violation_type": "SCH-003",
+      "violation_details": {
+        "recall_before": 0.0,
+        "recall_after": 0.0,
+        "threshold": 0.99,
+        "regression": 0.0
+      },
+      "reason": "Recall after index rebuild=0.0000 < threshold=0.99"
+    },
+    "SCH-004": {
+      "test_id": "SCH-004",
+      "classification": "SKIP",
+      "reason": "insert phase B failed: <DataNotMatchException: (code=1, message=Attempt to insert an unexpected field `category` to collection without enabling dynamic field)>"
+    }
+  }
+}

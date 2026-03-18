@@ -1,0 +1,374 @@
+{
+  "dataset_id": "sem-medical-20260317-112525",
+  "domain": "medical",
+  "created_at": "2026-03-17T11:25:25.450191",
+  "generator_version": "1.0",
+  "pairs": [
+    {
+      "pair_id": "medical-positive-0000",
+      "text_a": "The drug inhibits tumor cell proliferation.",
+      "text_b": "The medication prevents cancer cells from dividing.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0001",
+      "text_a": "The patient is recovering well after surgery.",
+      "text_b": "The patient shows good post-operative progress.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0002",
+      "text_a": "The patient is recovering well after surgery.",
+      "text_b": "The patient shows good post-operative progress.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0003",
+      "text_a": "The drug inhibits tumor cell proliferation.",
+      "text_b": "The medication prevents cancer cells from dividing.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0004",
+      "text_a": "Hypertension increases the risk of stroke.",
+      "text_b": "High blood pressure is a major risk factor for cerebrovascular events.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0005",
+      "text_a": "The patient is recovering well after surgery.",
+      "text_b": "The patient shows good post-operative progress.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0006",
+      "text_a": "The patient is recovering well after surgery.",
+      "text_b": "The patient shows good post-operative progress.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0007",
+      "text_a": "The patient is recovering well after surgery.",
+      "text_b": "The patient shows good post-operative progress.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0008",
+      "text_a": "The drug inhibits tumor cell proliferation.",
+      "text_b": "The medication prevents cancer cells from dividing.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-positive-0009",
+      "text_a": "The patient is recovering well after surgery.",
+      "text_b": "The patient shows good post-operative progress.",
+      "pair_type": "positive",
+      "domain": "medical",
+      "expected_relation": "close",
+      "semantic_notes": "paraphrase",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-negative-0010",
+      "text_a": "The patient has been diagnosed with diabetes.",
+      "text_b": "The algorithm achieved state-of-the-art performance on benchmarks.",
+      "pair_type": "negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-negative-0011",
+      "text_a": "Blood pressure should be monitored regularly.",
+      "text_b": "The latest smartphone features an improved camera.",
+      "pair_type": "negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-negative-0012",
+      "text_a": "The patient has been diagnosed with diabetes.",
+      "text_b": "The algorithm achieved state-of-the-art performance on benchmarks.",
+      "pair_type": "negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-negative-0013",
+      "text_a": "The patient has been diagnosed with diabetes.",
+      "text_b": "The algorithm achieved state-of-the-art performance on benchmarks.",
+      "pair_type": "negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-negative-0014",
+      "text_a": "The patient has been diagnosed with diabetes.",
+      "text_b": "The algorithm achieved state-of-the-art performance on benchmarks.",
+      "pair_type": "negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "unrelated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0015",
+      "text_a": "The biopsy results were benign.",
+      "text_b": "The biopsy results were malignant.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "benign vs malignant",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0016",
+      "text_a": "The biopsy results were benign.",
+      "text_b": "The biopsy results were malignant.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "benign vs malignant",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0017",
+      "text_a": "The medication is effective for treating hypertension.",
+      "text_b": "The medication is contraindicated for patients with hypertension.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "effective vs contraindicated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0018",
+      "text_a": "The biopsy results were benign.",
+      "text_b": "The biopsy results were malignant.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "benign vs malignant",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0019",
+      "text_a": "The drug has minimal side effects.",
+      "text_b": "The drug has severe side effects.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "minimal vs severe",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0020",
+      "text_a": "The biopsy results were benign.",
+      "text_b": "The biopsy results were malignant.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "benign vs malignant",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0021",
+      "text_a": "The drug has minimal side effects.",
+      "text_b": "The drug has severe side effects.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "minimal vs severe",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0022",
+      "text_a": "The patient's condition improved significantly.",
+      "text_b": "The patient's condition deteriorated significantly.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "improved vs deteriorated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0023",
+      "text_a": "The medication is effective for treating hypertension.",
+      "text_b": "The medication is contraindicated for patients with hypertension.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "effective vs contraindicated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-hard_negative-0024",
+      "text_a": "The biopsy results were benign.",
+      "text_b": "The biopsy results were malignant.",
+      "pair_type": "hard_negative",
+      "domain": "medical",
+      "expected_relation": "far",
+      "semantic_notes": "benign vs malignant",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-boundary-0025",
+      "text_a": "The drug has minimal side effects.",
+      "text_b": "The drug has severe side effects.",
+      "pair_type": "boundary",
+      "domain": "medical",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: minimal vs severe",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-boundary-0026",
+      "text_a": "The patient's condition improved significantly.",
+      "text_b": "The patient's condition deteriorated significantly.",
+      "pair_type": "boundary",
+      "domain": "medical",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: improved vs deteriorated",
+      "vector_a": null,
+      "vector_b": null
+    },
+    {
+      "pair_id": "medical-boundary-0027",
+      "text_a": "The patient's condition improved significantly.",
+      "text_b": "The patient's condition deteriorated significantly.",
+      "pair_type": "boundary",
+      "domain": "medical",
+      "expected_relation": "ambiguous",
+      "semantic_notes": "boundary: improved vs deteriorated",
+      "vector_a": null,
+      "vector_b": null
+    }
+  ],
+  "metamorphic_relations": [
+    {
+      "relation_id": "MR-MED-01",
+      "name": "Semantic Equivalence Consistency",
+      "description": "If two queries are semantically equivalent, their top-K results should have ≥80% overlap",
+      "input_transformation": "Replace query with a semantically equivalent paraphrase",
+      "expected_output_property": "Recall(results_Q1, results_Q2) >= 0.80",
+      "domain": "medical",
+      "testable": true,
+      "test_strategy": "Generate positive pairs as query pairs; measure result set overlap"
+    },
+    {
+      "relation_id": "MR-MED-02",
+      "name": "Semantic Distance Monotonicity",
+      "description": "If doc A is semantically closer to query Q than doc B, rank(A) must be better than rank(B)",
+      "input_transformation": "Compare two documents with known relative semantic distances to a query",
+      "expected_output_property": "rank(closer_doc) < rank(further_doc)",
+      "domain": "medical",
+      "testable": true,
+      "test_strategy": "Use ground-truth labeled pairs; verify ranking order"
+    },
+    {
+      "relation_id": "MR-MED-03",
+      "name": "Hard Negative Discrimination",
+      "description": "Hard negative pairs (surface-similar but semantically different) should NOT appear as top-1 results for each other",
+      "input_transformation": "Use text_a as query, search for text_b",
+      "expected_output_property": "rank(text_b) > K/2 when searching with text_a (not in top half)",
+      "domain": "medical",
+      "testable": true,
+      "test_strategy": "Use hard_negative pairs; search text_a for text_b and verify rank"
+    },
+    {
+      "relation_id": "MR-MED-04",
+      "name": "Negative Pair Rejection",
+      "description": "Semantically dissimilar texts should not appear in each other's top-K results",
+      "input_transformation": "Use text_a as query, check if text_b appears in top-K",
+      "expected_output_property": "text_b NOT in top-K results when searching with text_a",
+      "domain": "medical",
+      "testable": true,
+      "test_strategy": "Use negative pairs; verify neither text appears in the other's top-K"
+    },
+    {
+      "relation_id": "MR-MED-05",
+      "name": "Distance Symmetry",
+      "description": "Distance(A, B) should approximately equal Distance(B, A)",
+      "input_transformation": "Swap query and document roles",
+      "expected_output_property": "|rank_A_in_results_B - rank_B_in_results_A| <= tolerance",
+      "domain": "medical",
+      "testable": true,
+      "test_strategy": "Search both directions; compare relative rankings"
+    }
+  ],
+  "stats": {
+    "positive": 10,
+    "negative": 5,
+    "hard_negative": 10,
+    "boundary": 3
+  }
+}

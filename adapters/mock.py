@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from adapters.base import AdapterBase
+from adapters.base import AdapterBase, OperationNotSupportedError
 from schemas.common import ObservedOutcome
 from schemas.result import OracleResult
 
@@ -45,6 +45,24 @@ class MockAdapter(AdapterBase):
         self.result_count = result_count
         self.filter_reduction_factor = filter_reduction_factor
         self._current_data: Optional[list] = None
+
+        # Define supported operations for MockAdapter
+        self._supported_operations = [
+            "create_collection",
+            "insert",
+            "insert_unique",
+            "search",
+            "search_exact",
+            "build_index",
+            "load",
+            "filtered_search",
+            "drop_collection",
+            "delete",
+            "release",
+            "reload",
+            "count",
+            "wait"
+        ]
 
     def execute(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Execute request and return simulated response."""
@@ -151,3 +169,7 @@ class MockAdapter(AdapterBase):
             "supported_features": ["search", "filtered_search", "insert", "create_collection"],
             "memory_stats": {}
         }
+
+    def supported_operations(self) -> List[str]:
+        """Return list of operations supported by MockAdapter."""
+        return self._supported_operations

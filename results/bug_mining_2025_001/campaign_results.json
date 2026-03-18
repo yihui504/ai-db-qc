@@ -1,0 +1,272 @@
+{
+  "campaign_id": "BUG_MINING_2025_001",
+  "start_time": "2026-03-17T21:09:03.753785",
+  "phases": {
+    "phase1": {
+      "status": "passed",
+      "checks": {
+        "python_version": true,
+        "contracts_available": true,
+        "fuzzing_modules": true,
+        "adapters_available": true,
+        "milvus_connection": true,
+        "qdrant_connection": true,
+        "weaviate_connection": true,
+        "pgvector_connection": true
+      },
+      "timestamp": "2026-03-17T21:09:05.563348"
+    },
+    "phase2": {
+      "status": "completed",
+      "contracts_tested": [
+        {
+          "contract_id": "CONC-001",
+          "database": "milvus",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "threads": 4,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": ", Vectors per thread: 100\n    VIOLATION: expected=400, got=1, errors=0, p95=391.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 400, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_milvus_t4.json\n============================================================\n\n"
+              },
+              {
+                "threads": 8,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": ", Vectors per thread: 100\n    VIOLATION: expected=800, got=1, errors=0, p95=485.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_milvus_t8.json\n============================================================\n\n"
+              },
+              {
+                "threads": 16,
+                "vectors": 50,
+                "returncode": 1,
+                "stdout": ", Vectors per thread: 50\n    VIOLATION: expected=800, got=1, errors=0, p95=718.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_milvus_t16.json\n============================================================\n\n"
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-001",
+          "database": "qdrant",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "threads": 4,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": "4, Vectors per thread: 100\n    VIOLATION: expected=400, got=1, errors=0, p95=31.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 400, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_qdrant_t4.json\n============================================================\n\n"
+              },
+              {
+                "threads": 8,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": "8, Vectors per thread: 100\n    VIOLATION: expected=800, got=1, errors=0, p95=47.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_qdrant_t8.json\n============================================================\n\n"
+              },
+              {
+                "threads": 16,
+                "vectors": 50,
+                "returncode": 1,
+                "stdout": "6, Vectors per thread: 50\n    VIOLATION: expected=800, got=1, errors=0, p95=47.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_qdrant_t16.json\n============================================================\n\n"
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-001",
+          "database": "weaviate",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "threads": 4,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": " Vectors per thread: 100\n    VIOLATION: expected=400, got=1, errors=0, p95=62.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 400, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_weaviate_t4.json\n============================================================\n\n"
+              },
+              {
+                "threads": 8,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": " Vectors per thread: 100\n    VIOLATION: expected=800, got=1, errors=0, p95=79.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_weaviate_t8.json\n============================================================\n\n"
+              },
+              {
+                "threads": 16,
+                "vectors": 50,
+                "returncode": 1,
+                "stdout": " Vectors per thread: 50\n    VIOLATION: expected=800, got=1, errors=0, p95=63.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_weaviate_t16.json\n============================================================\n\n"
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-001",
+          "database": "pgvector",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "threads": 4,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": "Vectors per thread: 100\n    VIOLATION: expected=400, got=1, errors=0, p95=172.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 400, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_pgvector_t4.json\n============================================================\n\n"
+              },
+              {
+                "threads": 8,
+                "vectors": 100,
+                "returncode": 1,
+                "stdout": "Vectors per thread: 100\n    VIOLATION: expected=800, got=1, errors=0, p95=204.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_pgvector_t8.json\n============================================================\n\n"
+              },
+              {
+                "threads": 16,
+                "vectors": 50,
+                "returncode": 1,
+                "stdout": "Vectors per thread: 50\n    VIOLATION: expected=800, got=1, errors=0, p95=235.0ms\n\n============================================================\n  Test Summary\n============================================================\n  Total: 1\n  PASS:  0\n  VIOLATIONS: 1\n  ERRORS: 0\n\n  Violation Details:\n    [CONC-001]\n      - count_mismatch: Count mismatch: expected 800, got 1\n\n  Results saved: results\\bug_mining_2025_001\\conc001_pgvector_t16.json\n============================================================\n\n"
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-002",
+          "database": "milvus",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "readers": 4,
+                "deleters": 2,
+                "returncode": 0
+              },
+              {
+                "readers": 8,
+                "deleters": 4,
+                "returncode": 0
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-002",
+          "database": "qdrant",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "readers": 4,
+                "deleters": 2,
+                "returncode": 0
+              },
+              {
+                "readers": 8,
+                "deleters": 4,
+                "returncode": 1
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-003",
+          "database": "milvus",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "searchers": 4,
+                "deleters": 2,
+                "returncode": 0
+              }
+            ]
+          }
+        },
+        {
+          "contract_id": "CONC-003",
+          "database": "qdrant",
+          "result": {
+            "violations": [],
+            "details": [
+              {
+                "searchers": 4,
+                "deleters": 2,
+                "returncode": 0
+              }
+            ]
+          }
+        }
+      ],
+      "violations_found": [],
+      "timestamp": "2026-03-17T21:09:05.563348"
+    },
+    "phase3": {
+      "status": "completed",
+      "strategies_executed": [
+        {
+          "strategy": "random",
+          "iterations": 100,
+          "status": "completed"
+        },
+        {
+          "strategy": "boundary",
+          "iterations": 50,
+          "status": "completed"
+        },
+        {
+          "strategy": "arithmetic",
+          "iterations": 50,
+          "status": "completed"
+        },
+        {
+          "strategy": "dictionary",
+          "iterations": 50,
+          "status": "completed"
+        },
+        {
+          "strategy": "splicing",
+          "iterations": 30,
+          "status": "completed"
+        },
+        {
+          "strategy": "crossover",
+          "iterations": 30,
+          "status": "completed"
+        }
+      ],
+      "interesting_cases": [],
+      "timestamp": "2026-03-17T21:16:21.795213"
+    },
+    "phase4": {
+      "status": "completed",
+      "def_verifications": [
+        {
+          "def_id": "DEF-001",
+          "type": "count_inconsistency",
+          "detectable": true,
+          "method": "CONC-001"
+        },
+        {
+          "def_id": "DEF-003",
+          "type": "filter_false_positive",
+          "detectable": true,
+          "method": "boundary"
+        },
+        {
+          "def_id": "DEF-005",
+          "type": "filter_false_negative",
+          "detectable": true,
+          "method": "dictionary"
+        }
+      ],
+      "timestamp": "2026-03-17T21:16:21.797214"
+    }
+  },
+  "new_bugs": [],
+  "statistics": {
+    "phases_completed": 3,
+    "total_phases": 4,
+    "contracts_tested": 8,
+    "strategies_executed": 6,
+    "violations_found": 0,
+    "new_bugs": 0
+  },
+  "end_time": "2026-03-17T21:16:21.797214"
+}

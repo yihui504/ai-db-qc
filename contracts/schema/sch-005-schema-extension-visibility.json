@@ -1,0 +1,79 @@
+{
+  "contract_id": "SCH-005",
+  "name": "Schema Extension Data Visibility",
+  "family": "SCHEMA",
+  "type": "universal",
+  "statement": "After adding a new field to schema, all existing data with that field should be queryable via the new field",
+  "rationale": "Schema evolution should be seamless - adding fields should not create data visibility gaps for records that already have that field populated",
+  "scope": {
+    "databases": ["milvus", "qdrant", "weaviate", "pgvector"],
+    "operations": ["add_field", "search", "filtered_search"],
+    "conditions": ["dynamic_field_enabled"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "data_inserted_with_dynamic_field",
+    "field_not_in_static_schema"
+  ],
+  "postconditions": [
+    "field_queryable_immediately",
+    "existing_data_visible_via_new_field"
+  ],
+  "invariants": [
+    "Schema evolution preserves data accessibility",
+    "No data loss during field addition"
+  ],
+  "violation_criteria": {
+    "condition": "existing_data_not_queryable_via_new_field",
+    "severity": "high",
+    "cc_classification": "Type-4"
+  },
+  "test_generation": {
+    "strategy": "sequence",
+    "cases": [
+      {
+        "name": "Dynamic field visibility after schema extension",
+        "sequence": [
+          "create_collection with dynamic_field=True",
+          "insert data with dynamic field 'category'",
+          "search with filter on 'category' - should succeed",
+          "add static field 'category' to schema",
+          "search with filter on 'category' again - should still return same results"
+        ],
+        "verification": "results consistent before and after schema extension"
+      },
+      {
+        "name": "Multi-stage schema extension",
+        "sequence": [
+          "create_collection with dynamic_field=True",
+          "insert batch 1 with fields [a, b]",
+          "insert batch 2 with fields [a, b, c]",
+          "add static field 'c'",
+          "search with filter on 'c' - should return batch 2"
+        ],
+        "verification": "partial field visibility preserved"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "field_query_consistency_across_schema_versions",
+    "verification": "assert results_before_extension == results_after_extension",
+    "classification": {
+      "violation": "BUG (schema_evolution_data_loss)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["SCH-001"],
+    "test_complexity": "high",
+    "version": "1.0",
+    "sbmf_reference": "DEF-002",
+    "target_databases": {
+      "milvus": {
+        "affected_versions": ["2.5.x", "2.6.x"],
+        "related_issue": "#41684"
+      }
+    }
+  }
+}

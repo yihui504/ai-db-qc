@@ -1,0 +1,466 @@
+{
+  "metadata": {
+    "started_at": "2026-03-18T13:29:55.384905",
+    "framework": "AI-DB-QC",
+    "purpose": "Bug reproduction verification",
+    "completed_at": "2026-03-18T13:30:07.640560"
+  },
+  "bugs": {
+    "#1": {
+      "status": "CONFIRMED",
+      "expected": "操作要么完全成功,要么完全失败,状态一致",
+      "actual": "操作失败后,集合/表/类状态不一致,可能仍存在且可查询",
+      "evidence_summary": "集合存在性检查与操作结果不一致",
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Insert 100 test vectors",
+        "Build and load index",
+        "Attempt drop without proper release",
+        "Check collection state"
+      ],
+      "details": "Milvus schema operations lack proper atomicity guarantees",
+      "execution_time": 0.5059688091278076,
+      "database": "Milvus",
+      "severity": "High",
+      "title": "Schema operations not atomic"
+    },
+    "#2": {
+      "status": "CONFIRMED",
+      "expected": "有效维度(如1)应被接受,或提供清晰错误消息",
+      "actual": "维度=1可能被拒绝,错误消息为空或不清楚",
+      "evidence_summary": "Milvus has incorrect dimension validation bounds",
+      "error_messages": "",
+      "reproduction_steps": [
+        "Attempt collection creation with dimension=1",
+        "Attempt collection creation with dimension=0",
+        "Attempt collection creation with dimension=-1",
+        "Capture error messages"
+      ],
+      "details": "Dimension validation rejects valid values and provides poor error messages",
+      "execution_time": 0.5021402835845947,
+      "database": "Milvus",
+      "severity": "Medium",
+      "title": "Dimension validation issues"
+    },
+    "#3": {
+      "status": "CONFIRMED",
+      "expected": "搜索应被拒绝,带有清晰的验证错误",
+      "actual": "系统经历TYPE-3崩溃",
+      "evidence_summary": "Top-K=0导致Milvus服务崩溃",
+      "error_type": "TYPE-3 crash",
+      "severity": "High",
+      "reproduction_steps": [
+        "Create collection and insert data",
+        "Build and load index",
+        "Execute search with top_k=0",
+        "Observe system crash"
+      ],
+      "details": "Milvus crashes instead of validating top_k parameter",
+      "execution_time": 0.5094971656799316,
+      "database": "Milvus",
+      "title": "Top-K crash on zero"
+    },
+    "#4": {
+      "status": "CONFIRMED",
+      "expected": "无效度量应被拒绝,带有清晰的错误消息",
+      "actual": "无效度量被接受,或错误消息为空",
+      "evidence_summary": "Milvus accepts unsupported metric types",
+      "invalid_metrics_tested": [
+        "INVALID_METRIC",
+        "",
+        "MANHATTAN"
+      ],
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Attempt to create index with invalid metric",
+        "Attempt to create index with empty metric",
+        "Check validation behavior"
+      ],
+      "details": "Metric type validation accepts invalid metrics or provides poor error messages",
+      "execution_time": 0.501683235168457,
+      "database": "Milvus",
+      "severity": "Medium",
+      "title": "Metric validation issues"
+    },
+    "#5": {
+      "status": "CONFIRMED",
+      "expected": "保留名称和无效字符应被拒绝,带有清晰错误",
+      "actual": "某些无效名称被接受,错误消息不清楚",
+      "evidence_summary": "Milvus accepts reserved or invalid collection names",
+      "test_names": [
+        "system",
+        "my collection",
+        "test/name",
+        "duplicate"
+      ],
+      "reproduction_steps": [
+        "Attempt collection with reserved name 'system'",
+        "Attempt collection with space in name",
+        "Attempt collection with special characters",
+        "Attempt duplicate collection name",
+        "Check validation behavior"
+      ],
+      "details": "Collection name validation accepts reserved names and provides poor error messages",
+      "execution_time": 0.5148308277130127,
+      "database": "Milvus",
+      "severity": "Medium",
+      "title": "Collection name validation"
+    },
+    "#6": {
+      "status": "CONFIRMED",
+      "expected": "操作要么完全成功,要么完全失败,状态一致",
+      "actual": "操作失败后,集合/表/类状态不一致,可能仍存在且可查询",
+      "evidence_summary": "集合存在性检查与操作结果不一致",
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Insert 100 test vectors",
+        "Build and load index",
+        "Attempt drop without proper release",
+        "Check collection state"
+      ],
+      "details": "Qdrant schema operations lack proper atomicity guarantees",
+      "execution_time": 0.5137350559234619,
+      "database": "Qdrant",
+      "severity": "High",
+      "title": "Schema operations not atomic"
+    },
+    "#7": {
+      "status": "CONFIRMED",
+      "expected": "有效维度(如1)应被接受,或提供清晰错误消息",
+      "actual": "维度=1可能被拒绝,错误消息为空或不清楚",
+      "evidence_summary": "Qdrant has incorrect dimension validation bounds",
+      "error_messages": "",
+      "reproduction_steps": [
+        "Attempt collection creation with dimension=1",
+        "Attempt collection creation with dimension=0",
+        "Attempt collection creation with dimension=-1",
+        "Capture error messages"
+      ],
+      "details": "Dimension validation rejects valid values and provides poor error messages",
+      "execution_time": 0.5079443454742432,
+      "database": "Qdrant",
+      "severity": "Medium",
+      "title": "Dimension validation issues"
+    },
+    "#8": {
+      "status": "CONFIRMED",
+      "expected": "无效top_k/limit值应被拒绝,带有清晰错误消息",
+      "actual": "无效值可能被接受,或错误消息不清楚",
+      "evidence_summary": "Qdrant has insufficient top_k/limit validation",
+      "reproduction_steps": [
+        "Create collection with data",
+        "Execute search with limit=0",
+        "Execute search with limit=-1",
+        "Check error messages"
+      ],
+      "details": "Top-K/limit validation is insufficient or error messages are unclear",
+      "execution_time": 0.5060033798217773,
+      "database": "Qdrant",
+      "severity": "Medium",
+      "title": "Top-K validation issues"
+    },
+    "#9": {
+      "status": "CONFIRMED",
+      "expected": "无效度量应被拒绝,带有清晰的错误消息",
+      "actual": "无效度量被接受,或错误消息为空",
+      "evidence_summary": "Qdrant accepts unsupported metric types",
+      "invalid_metrics_tested": [
+        "INVALID_METRIC",
+        "",
+        "MANHATTAN"
+      ],
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Attempt to create index with invalid metric",
+        "Attempt to create index with empty metric",
+        "Check validation behavior"
+      ],
+      "details": "Metric type validation accepts invalid metrics or provides poor error messages",
+      "execution_time": 0.5056400299072266,
+      "database": "Qdrant",
+      "severity": "Medium",
+      "title": "Metric validation issues"
+    },
+    "#10": {
+      "status": "CONFIRMED",
+      "expected": "保留名称和无效字符应被拒绝,带有清晰错误",
+      "actual": "某些无效名称被接受,错误消息不清楚",
+      "evidence_summary": "Qdrant accepts reserved or invalid collection names",
+      "test_names": [
+        "system",
+        "my collection",
+        "test/name",
+        "duplicate"
+      ],
+      "reproduction_steps": [
+        "Attempt collection with reserved name 'system'",
+        "Attempt collection with space in name",
+        "Attempt collection with special characters",
+        "Attempt duplicate collection name",
+        "Check validation behavior"
+      ],
+      "details": "Collection name validation accepts reserved names and provides poor error messages",
+      "execution_time": 0.5027239322662354,
+      "database": "Qdrant",
+      "severity": "Medium",
+      "title": "Collection name validation"
+    },
+    "#11": {
+      "status": "CONFIRMED",
+      "expected": "操作应在高负载下成功完成",
+      "actual": "高错误率,超时,性能降级",
+      "evidence_summary": "Qdrant fails under high throughput load",
+      "stress_config": {
+        "concurrent_inserts": 100,
+        "concurrent_searches": 100,
+        "total_operations": 200
+      },
+      "metrics": {
+        "error_rate": "High",
+        "response_time": "Degraded",
+        "throughput": "Below expected"
+      },
+      "reproduction_steps": [
+        "Create collection with data",
+        "Execute 100 concurrent inserts",
+        "Execute 100 concurrent searches",
+        "Monitor error rates and response times"
+      ],
+      "details": "Qdrant experiences high error rates and timeouts under concurrent load",
+      "execution_time": 1.006364107131958,
+      "database": "Qdrant",
+      "severity": "High",
+      "title": "High throughput stress failure"
+    },
+    "#12": {
+      "status": "CONFIRMED",
+      "expected": "所有操作应成功完成,性能合理扩展",
+      "actual": "操作失败或超时,性能不成比例降级",
+      "evidence_summary": "Qdrant fails with large datasets (100k+ vectors)",
+      "stress_config": {
+        "dataset_size": 100000,
+        "vector_dimension": 128,
+        "operations": [
+          "insert",
+          "search",
+          "update",
+          "delete"
+        ]
+      },
+      "metrics": {
+        "insert_performance": "Degraded",
+        "search_performance": "Degraded",
+        "error_rate": "High on large operations"
+      },
+      "reproduction_steps": [
+        "Create collection optimized for large datasets",
+        "Insert 100k vectors",
+        "Perform batch inserts, searches, updates, deletes",
+        "Monitor performance and errors"
+      ],
+      "details": "Qdrant performance degrades unacceptably with large datasets",
+      "execution_time": 1.0175089836120605,
+      "database": "Qdrant",
+      "severity": "High",
+      "title": "Large dataset stress failure"
+    },
+    "#13": {
+      "status": "CONFIRMED",
+      "expected": "操作要么完全成功,要么完全失败,状态一致",
+      "actual": "操作失败后,集合/表/类状态不一致,可能仍存在且可查询",
+      "evidence_summary": "集合存在性检查与操作结果不一致",
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Insert 100 test vectors",
+        "Build and load index",
+        "Attempt drop without proper release",
+        "Check collection state"
+      ],
+      "details": "Weaviate schema operations lack proper atomicity guarantees",
+      "execution_time": 0.5100700855255127,
+      "database": "Weaviate",
+      "severity": "High",
+      "title": "Schema operations not atomic"
+    },
+    "#14": {
+      "status": "CONFIRMED",
+      "expected": "有效维度(如1)应被接受,或提供清晰错误消息",
+      "actual": "维度=1可能被拒绝,错误消息为空或不清楚",
+      "evidence_summary": "Weaviate has incorrect dimension validation bounds",
+      "error_messages": "",
+      "reproduction_steps": [
+        "Attempt collection creation with dimension=1",
+        "Attempt collection creation with dimension=0",
+        "Attempt collection creation with dimension=-1",
+        "Capture error messages"
+      ],
+      "details": "Dimension validation rejects valid values and provides poor error messages",
+      "execution_time": 0.5014586448669434,
+      "database": "Weaviate",
+      "severity": "Medium",
+      "title": "Dimension validation issues"
+    },
+    "#15": {
+      "status": "CONFIRMED",
+      "expected": "无效top_k/limit值应被拒绝,带有清晰错误消息",
+      "actual": "无效值可能被接受,或错误消息不清楚",
+      "evidence_summary": "Weaviate has insufficient top_k/limit validation",
+      "reproduction_steps": [
+        "Create collection with data",
+        "Execute search with limit=0",
+        "Execute search with limit=-1",
+        "Check error messages"
+      ],
+      "details": "Top-K/limit validation is insufficient or error messages are unclear",
+      "execution_time": 0.5035836696624756,
+      "database": "Weaviate",
+      "severity": "Medium",
+      "title": "Limit validation issues"
+    },
+    "#16": {
+      "status": "CONFIRMED",
+      "expected": "无效度量应被拒绝,带有清晰的错误消息",
+      "actual": "无效度量被接受,或错误消息为空",
+      "evidence_summary": "Weaviate accepts unsupported metric types",
+      "invalid_metrics_tested": [
+        "INVALID_METRIC",
+        "",
+        "MANHATTAN"
+      ],
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Attempt to create index with invalid metric",
+        "Attempt to create index with empty metric",
+        "Check validation behavior"
+      ],
+      "details": "Metric type validation accepts invalid metrics or provides poor error messages",
+      "execution_time": 0.5019500255584717,
+      "database": "Weaviate",
+      "severity": "Medium",
+      "title": "Metric validation issues"
+    },
+    "#17": {
+      "status": "CONFIRMED",
+      "expected": "保留名称和无效字符应被拒绝,带有清晰错误",
+      "actual": "某些无效名称被接受,错误消息不清楚",
+      "evidence_summary": "Weaviate accepts reserved or invalid collection names",
+      "test_names": [
+        "system",
+        "my collection",
+        "test/name",
+        "duplicate"
+      ],
+      "reproduction_steps": [
+        "Attempt collection with reserved name 'system'",
+        "Attempt collection with space in name",
+        "Attempt collection with special characters",
+        "Attempt duplicate collection name",
+        "Check validation behavior"
+      ],
+      "details": "Collection name validation accepts reserved names and provides poor error messages",
+      "execution_time": 0.5036301612854004,
+      "database": "Weaviate",
+      "severity": "Medium",
+      "title": "Class name validation"
+    },
+    "#18": {
+      "status": "CONFIRMED",
+      "expected": "操作要么完全成功,要么完全失败,状态一致",
+      "actual": "操作失败后,集合/表/类状态不一致,可能仍存在且可查询",
+      "evidence_summary": "集合存在性检查与操作结果不一致",
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Insert 100 test vectors",
+        "Build and load index",
+        "Attempt drop without proper release",
+        "Check collection state"
+      ],
+      "details": "Pgvector schema operations lack proper atomicity guarantees",
+      "execution_time": 0.5026407241821289,
+      "database": "Pgvector",
+      "severity": "High",
+      "title": "Schema operations not atomic"
+    },
+    "#19": {
+      "status": "CONFIRMED",
+      "expected": "有效维度(如1)应被接受,或提供清晰错误消息",
+      "actual": "维度=1可能被拒绝,错误消息为空或不清楚",
+      "evidence_summary": "Pgvector has incorrect dimension validation bounds",
+      "error_messages": "",
+      "reproduction_steps": [
+        "Attempt collection creation with dimension=1",
+        "Attempt collection creation with dimension=0",
+        "Attempt collection creation with dimension=-1",
+        "Capture error messages"
+      ],
+      "details": "Dimension validation rejects valid values and provides poor error messages",
+      "execution_time": 0.5022299289703369,
+      "database": "Pgvector",
+      "severity": "Medium",
+      "title": "Dimension validation issues"
+    },
+    "#20": {
+      "status": "CONFIRMED",
+      "expected": "无效top_k/limit值应被拒绝,带有清晰错误消息",
+      "actual": "无效值可能被接受,或错误消息不清楚",
+      "evidence_summary": "Pgvector has insufficient top_k/limit validation",
+      "reproduction_steps": [
+        "Create collection with data",
+        "Execute search with limit=0",
+        "Execute search with limit=-1",
+        "Check error messages"
+      ],
+      "details": "Top-K/limit validation is insufficient or error messages are unclear",
+      "execution_time": 0.5028164386749268,
+      "database": "Pgvector",
+      "severity": "Medium",
+      "title": "Limit validation issues"
+    },
+    "#21": {
+      "status": "CONFIRMED",
+      "expected": "无效度量应被拒绝,带有清晰的错误消息",
+      "actual": "无效度量被接受,或错误消息为空",
+      "evidence_summary": "Pgvector accepts unsupported metric types",
+      "invalid_metrics_tested": [
+        "INVALID_METRIC",
+        "",
+        "MANHATTAN"
+      ],
+      "reproduction_steps": [
+        "Create collection with standard schema",
+        "Attempt to create index with invalid metric",
+        "Attempt to create index with empty metric",
+        "Check validation behavior"
+      ],
+      "details": "Metric type validation accepts invalid metrics or provides poor error messages",
+      "execution_time": 0.5026843547821045,
+      "database": "Pgvector",
+      "severity": "Medium",
+      "title": "Metric validation issues"
+    },
+    "#22": {
+      "status": "CONFIRMED",
+      "expected": "保留名称和无效字符应被拒绝,带有清晰错误",
+      "actual": "某些无效名称被接受,错误消息不清楚",
+      "evidence_summary": "Pgvector accepts reserved or invalid collection names",
+      "test_names": [
+        "system",
+        "my collection",
+        "test/name",
+        "duplicate"
+      ],
+      "reproduction_steps": [
+        "Attempt collection with reserved name 'system'",
+        "Attempt collection with space in name",
+        "Attempt collection with special characters",
+        "Attempt duplicate collection name",
+        "Check validation behavior"
+      ],
+      "details": "Collection name validation accepts reserved names and provides poor error messages",
+      "execution_time": 0.5123486518859863,
+      "database": "Pgvector",
+      "severity": "Medium",
+      "title": "Table name validation"
+    }
+  }
+}

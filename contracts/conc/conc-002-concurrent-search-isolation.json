@@ -1,0 +1,70 @@
+{
+  "contract_id": "CONC-002",
+  "name": "Concurrent Search Isolation",
+  "family": "CONC",
+  "type": "universal",
+  "statement": "Concurrent search operations must not return phantom data or corrupted results",
+  "rationale": "Search operations running concurrently with writes must maintain isolation; deleted entities must not appear, new entities may or may not appear depending on isolation level",
+  "scope": {
+    "databases": ["all"],
+    "operations": ["search", "delete"],
+    "conditions": ["concurrent_read_write"]
+  },
+  "preconditions": [
+    "collection_exists",
+    "collection_loaded",
+    "initial_data_populated"
+  ],
+  "postconditions": [
+    "search_results_do_not_contain_deleted_entities",
+    "search_cardinality_satisfies_top_k_constraint"
+  ],
+  "invariants": [
+    "Deleted entities never appear in search results",
+    "Search cardinality never exceeds top_k"
+  ],
+  "violation_criteria": {
+    "condition": "deleted_entity_in_search_results OR search_cardinality_violation",
+    "severity": "critical",
+    "cc_classification": "Type-4"
+  },
+  "test_generation": {
+    "strategy": "concurrent_interleaved",
+    "parameters": {
+      "n_readers": [2, 4],
+      "n_deleters": [1, 2],
+      "read_duration_seconds": [5, 10],
+      "top_k": [5, 10, 50]
+    },
+    "cases": [
+      {
+        "name": "Read during delete",
+        "n_readers": 4,
+        "n_deleters": 1,
+        "entities_to_delete": 20,
+        "verification": "no_deleted_in_results"
+      },
+      {
+        "name": "High concurrency search",
+        "n_readers": 8,
+        "queries_per_reader": 50,
+        "verification": "cardinality_check"
+      }
+    ]
+  },
+  "oracle": {
+    "check": "all_results_satisfy_cardinality AND no_deleted_entities",
+    "verification": "for result in results: assert len(result) <= top_k AND not contains_deleted(result)",
+    "classification": {
+      "violation": "BUG (isolation_violation)",
+      "compliant": "PASS"
+    }
+  },
+  "metadata": {
+    "confidence": "high",
+    "dependencies": ["CONC-001"],
+    "test_complexity": "high",
+    "version": "1.0",
+    "sbmf_reference": "CONC-002"
+  }
+}
